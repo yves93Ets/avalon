@@ -8,18 +8,17 @@ router.post("/", (req, res) => {
     expires: new Date(Date.now())
   };
 
-  Vote.insertMany(newVote)
-    .then(() => {
-      console.log("Inserted");
-    })
-    .catch(e => console.log("error", e));
+  Vote.insertMany(newVote).catch(e => console.log("error", e));
 });
 
 router.get("/", async (req, res) => {
   await Vote.find()
     .exec()
     .then(docs => {
-      res.status(200).json(docs);
+      const votes = docs.map(d => {
+        return d.vote;
+      });
+      res.status(200).json(votes);
     });
 });
 
