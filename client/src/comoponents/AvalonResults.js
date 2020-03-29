@@ -6,14 +6,12 @@ export default function AvalonResultTable(props) {
   const { blueSrc, redSrc } = props;
   useEffect(() => {
     getVotes();
-    console.log("useeffect");
   }, []);
 
   const getVotes = async () => {
     await fetch("/api/avalon")
       .then(res => {
         res.json().then(v => {
-          console.log(v);
           setVotes(v);
         });
       })
@@ -24,16 +22,12 @@ export default function AvalonResultTable(props) {
 
   const handleClickDelete = async e => {
     e.preventDefault();
+    setVotes([]);
     await fetch("/api/avalon", {
-      method: "Delete",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(setVotes([]))
-      .catch(err => {
-        console.log(err);
-      });
+      method: "Delete"
+    }).catch(err => {
+      console.log(err);
+    });
   };
 
   const handleClickRefresh = e => {

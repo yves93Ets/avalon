@@ -2,17 +2,23 @@ const express = require("express");
 const router = express.Router();
 const Vote = require("../models/voteModel");
 
-router.post("/", async (req, res) => {
+const connectDb = require("../../db");
+
+connectDb();
+
+router.post("/", (req, res) => {
   const newVote = {
     vote: req.body.vote
     //expires: new Date(Date.now())
   };
 
-  await Vote.insertMany(newVote).catch(e => console.log("error", e));
+  Vote.insertMany(newVote)
+    .then(res.status(200).json(newVote))
+    .catch(e => console.log("error", e));
 });
 
-router.get("/", async (req, res) => {
-  await Vote.find()
+router.get("/", (req, res) => {
+  Vote.find()
     .exec()
     .then(docs => {
       const votes = docs.map(d => {
@@ -22,12 +28,13 @@ router.get("/", async (req, res) => {
     });
 });
 
-router.delete("/", async (req, res) => {
-  await Vote.deleteMany({})
+router.delete("/", (req, res) => {
+  Vote.deleteMany({})
     .exec()
     .then(docs => {
-      res.status(200);
-    });
+      res.status(200).json({ deleted: docs.deletedCount });
+    })
+    .catch(err => console.log("error", err));
 });
 
 module.exports = router;
