@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const appConfig = require("./appConfig");
 const dbConnectionUrl = appConfig.db.dbConnectionUrl;
 
-console.log(dbConnectionUrl);
 const connectDb = async () => {
   await mongoose
     .connect(dbConnectionUrl, {
