@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Vote = require("../models/voteModel");
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const newVote = {
-    vote: req.body.vote,
-    expires: new Date(Date.now())
+    vote: req.body.vote
+    //expires: new Date(Date.now())
   };
 
-  Vote.insertMany(newVote).catch(e => console.log("error", e));
+  await Vote.insertMany(newVote).catch(e => console.log("error", e));
 });
 
 router.get("/", async (req, res) => {

@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Card, Image, Checkbox, Form } from "semantic-ui-react";
-import blueSrc from "../images/lancelot.jpg";
-import redSrc from "../images/mordred.jpg";
 
-export default function AvalonForm() {
+export default function AvalonForm(props) {
   const handleSubmit = async e => {
     e.preventDefault();
     await fetch("/api/avalon", {
@@ -16,6 +14,8 @@ export default function AvalonForm() {
       console.log(err);
     });
   };
+
+  const { blueSrc, redSrc } = props;
 
   const [card, setCard] = useState({
     isSuccesfull: true,

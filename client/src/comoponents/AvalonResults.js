@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import blueSrc from "../images/lancelot.jpg";
-import redSrc from "../images/mordred.jpg";
 import { Header, Image, Table, Button } from "semantic-ui-react";
 
-export default function TableExampleCollapsing() {
+export default function AvalonResultTable(props) {
   const [votes, setVotes] = useState([]);
-
-  useEffect(async => {
+  const { blueSrc, redSrc } = props;
+  useEffect(() => {
     getVotes();
     console.log("useeffect");
   }, []);
@@ -38,7 +36,7 @@ export default function TableExampleCollapsing() {
       });
   };
 
-  const handleClickRefresh = async e => {
+  const handleClickRefresh = e => {
     e.preventDefault();
     getVotes();
   };
