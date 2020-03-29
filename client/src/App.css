@@ -22,6 +22,8 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  min-height: 50%;
+  padding-bottom: 10px;
 }
 
 .App-link {
@@ -35,4 +37,20 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.card-header-red {
+  background-color: #b30000;
+}
+
+.card-header-blue {
+  background-color: #2185d0;
+}
+
+.vote-red {
+  color: #b30000;
+}
+
+.vote-blue {
+  color: #2185d0;
 }
