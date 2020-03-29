@@ -2,10 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Vote = require("../models/voteModel");
 
-const connectDb = require("../../db");
-
-connectDb();
-
 router.post("/", (req, res) => {
   const newVote = {
     vote: req.body.vote
