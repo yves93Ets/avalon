@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Header, Image, Table, Button } from "semantic-ui-react";
+import socketIOClient from "socket.io-client";
 
 export default function AvalonResultTable(props) {
   const [votes, setVotes] = useState([]);
@@ -30,9 +31,11 @@ export default function AvalonResultTable(props) {
     setVotes([]);
     await fetch("/api/avalon", {
       method: "Delete",
-    }).catch((err) => {
-      console.log(err);
-    });
+    })
+      .then(socketIOClient().emit("submit count", 0))
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleClickRefresh = (e) => {

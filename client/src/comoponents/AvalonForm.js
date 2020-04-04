@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Image, Checkbox, Form, Button } from "semantic-ui-react";
 import { isSuccesfullEnum } from "../const/enums";
 import { fail, succes, neutral } from "../const/constants";
+import socketIOClient from "socket.io-client";
+
 export default function AvalonForm(props) {
+  const url = "/api/avalon";
+  const [card, setCard] = useState(succes);
+  const [isSubmitted, setIsSubmitted] = useState(true);
+  const [submitCount, setSubmitCount] = useState(0);
+
+  const send = () => {
+    const socket = socketIOClient(); // no need of url because of proxy
+    const count = submitCount + 1;
+    setSubmitCount(count);
+    socket.emit("submit count", count);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch("/api/avalon", {
+    await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -15,6 +29,7 @@ export default function AvalonForm(props) {
       .then((e) => {
         setIsSubmitted(false);
         setCard(neutral);
+        send();
       })
       .catch((err) => {
         console.log(err);
@@ -23,16 +38,20 @@ export default function AvalonForm(props) {
     setTimeout(() => {
       setCard(succes);
       setIsSubmitted(true);
-    }, 5000);
+    }, 3000);
   };
-
-  const [card, setCard] = useState(succes);
-
-  const [isSubmitted, setIsSubmitted] = useState(true);
 
   const handleCheckbox = () => {
     card.isSuccesfull ? setCard(fail) : setCard(succes);
   };
+
+  useEffect(() => {
+    const socket = socketIOClient();
+
+    socket.on("submit count", (submitCount) => {
+      setSubmitCount(submitCount);
+    });
+  }, []);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -49,10 +68,13 @@ export default function AvalonForm(props) {
           <Card.Content extra>
             <Checkbox
               disabled={!isSubmitted}
-              checked={card.isSuccesfull}
+              checked={card.isSuccesfull !== 0 ? true : false}
               toggle
               onChange={handleCheckbox}
             />
+          </Card.Content>
+          <Card.Content extra>
+            <p>{submitCount}</p>
           </Card.Content>
         </Card>
       </Form.Group>
