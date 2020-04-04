@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Card, Image, Checkbox, Form, Button } from "semantic-ui-react";
+import {
+  Card,
+  Image,
+  Checkbox,
+  Form,
+  Button,
+  Segment,
+  Icon,
+} from "semantic-ui-react";
 import { isSuccesfullEnum } from "../const/enums";
 import { fail, succes, neutral } from "../const/constants";
 import socketIOClient from "socket.io-client";
@@ -52,7 +60,7 @@ export default function AvalonForm(props) {
       setSubmitCount(submitCount);
     });
   }, []);
-
+  //********************************************************TAMANO DE LAS IMAGENES */
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group widths="equal">
@@ -72,9 +80,9 @@ export default function AvalonForm(props) {
               toggle
               onChange={handleCheckbox}
             />
-          </Card.Content>
-          <Card.Content extra>
-            <p>{submitCount}</p>
+            <Segment>
+              <Icon name="users" /> : {submitCount}
+            </Segment>
           </Card.Content>
         </Card>
       </Form.Group>

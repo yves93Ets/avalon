@@ -8,9 +8,6 @@ import AvalonResult from "./comoponents/AvalonResults";
 export default function App() {
   return (
     <div className="App">
-      <div>
-        <p>Making sure this works</p>
-      </div>
       <AvalonForm />
       <AvalonResult blueSrc={blueSrc} redSrc={redSrc} />
     </div>
