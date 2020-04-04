@@ -1,6 +1,6 @@
 import blueSrc from "../images/lancelot.png";
 import redSrc from "../images/mordred.png";
-import neutralSrc from "../images/neutral.jpg";
+import neutralSrc from "../images/neutral.png";
 import { isSuccesfullEnum } from "../const/enums";
 
 export const succes = {

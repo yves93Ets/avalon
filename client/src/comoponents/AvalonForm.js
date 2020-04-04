@@ -65,7 +65,7 @@ export default function AvalonForm(props) {
     <Form onSubmit={handleSubmit}>
       <Form.Group widths="equal">
         <Card centered>
-          <Image bordered src={card.src} wrapped ui={false} size="small" />
+          <Image bordered src={card.src} wrapped ui={false} />
           <Card.Header className={card.cssClass}>
             {card.isSuccesfull === isSuccesfullEnum.FAIL
               ? "Fail"
