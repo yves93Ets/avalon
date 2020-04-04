@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  margin-top: 20px;
 }
 
 .App-logo {
@@ -45,6 +46,10 @@
 
 .card-header-blue {
   background-color: #2185d0;
+}
+
+.card-header-neutral {
+  background-color: lightgray;
 }
 
 .vote-red {

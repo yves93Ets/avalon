@@ -4,33 +4,38 @@ import { Header, Image, Table, Button } from "semantic-ui-react";
 export default function AvalonResultTable(props) {
   const [votes, setVotes] = useState([]);
   const { blueSrc, redSrc } = props;
+
   useEffect(() => {
     getVotes();
   }, []);
 
   const getVotes = async () => {
     await fetch("/api/avalon")
-      .then(res => {
-        res.json().then(v => {
-          setVotes(v);
+      .then((res) => {
+        res.json().then((v) => {
+          var shuffled = v
+            .map((a) => [Math.random(), a])
+            .sort((a, b) => a[0] - b[0])
+            .map((a) => a[1]);
+          setVotes(shuffled);
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
 
-  const handleClickDelete = async e => {
+  const handleClickDelete = async (e) => {
     e.preventDefault();
     setVotes([]);
     await fetch("/api/avalon", {
-      method: "Delete"
-    }).catch(err => {
+      method: "Delete",
+    }).catch((err) => {
       console.log(err);
     });
   };
 
-  const handleClickRefresh = e => {
+  const handleClickRefresh = (e) => {
     e.preventDefault();
     getVotes();
   };
