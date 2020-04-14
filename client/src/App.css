@@ -60,3 +60,8 @@
 .users {
   color: #2185d0;
 }
+
+.margin {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

@@ -1,15 +1,28 @@
 import React from "react";
-import blueSrc from "./images/lancelot.png";
-import redSrc from "./images/mordred.png";
 import "./App.css";
-import AvalonForm from "./comoponents/AvalonForm";
-import AvalonResult from "./comoponents/AvalonResults";
+import { useRoutes } from "hookrouter";
+import AvalonApp from "./comoponents/AvalonApp";
+import AvalonAdmin from "./comoponents/AvalonAdmin";
+import AvalonNavigation from "./comoponents/AvalonNavigation";
+import AvalonRules from "./comoponents/AvalonRules";
+import AvalonChooseCharactere from "./comoponents/AvalonChooseCharactere";
+
+import { ApiProvider } from "./context/ContextApi";
+
+const routes = {
+  "/vote": () => <AvalonApp />,
+  "/admin": () => <AvalonAdmin />,
+  "/characteres": () => <AvalonChooseCharactere />,
+  "/rules": () => <AvalonRules />,
+};
 
 export default function App() {
+  const routeResult = useRoutes(routes);
+
   return (
-    <div className="App">
-      <AvalonForm />
-      <AvalonResult blueSrc={blueSrc} redSrc={redSrc} />
+    <div>
+      <AvalonNavigation />
+      <ApiProvider>{routeResult || <div>not found</div>}</ApiProvider>
     </div>
   );
 }

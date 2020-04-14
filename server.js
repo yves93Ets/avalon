@@ -21,6 +21,10 @@ io.on("connection", (socket) => {
     io.sockets.emit("submit count", count);
   });
 
+  socket.on("clear-show results", () => {
+    io.sockets.emit("clear-show results");
+  });
+
   // disconnect is fired when a client leaves the server
   socket.on("disconnect", () => {
     console.log("user disconnected");

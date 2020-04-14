@@ -1,13 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Header, Image, Table, Button } from "semantic-ui-react";
 import socketIOClient from "socket.io-client";
+import { ApiContext } from "../context/ContextApi";
 
 export default function AvalonResultTable(props) {
   const [votes, setVotes] = useState([]);
+  const [count, setCount] = useContext(ApiContext);
+
   const { blueSrc, redSrc } = props;
 
   useEffect(() => {
     getVotes();
+
+    const socket = socketIOClient();
+
+    socket.on("clear-show results", () => {
+      getVotes();
+    });
   }, []);
 
   const getVotes = async () => {
@@ -19,6 +28,7 @@ export default function AvalonResultTable(props) {
             .sort((a, b) => a[0] - b[0])
             .map((a) => a[1]);
           setVotes(shuffled);
+          setCount(shuffled.length);
         });
       })
       .catch((err) => {
@@ -33,6 +43,7 @@ export default function AvalonResultTable(props) {
       method: "Delete",
     })
       .then(socketIOClient().emit("submit count", 0))
+      .then(socketIOClient().emit("clear-show results"))
       .catch((err) => {
         console.log(err);
       });
@@ -41,6 +52,7 @@ export default function AvalonResultTable(props) {
   const handleClickRefresh = (e) => {
     e.preventDefault();
     getVotes();
+    socketIOClient().emit("clear-show results");
   };
 
   return (
@@ -64,20 +76,26 @@ export default function AvalonResultTable(props) {
           </Table.Row>
         </Table.Header>
       </Table>
-      <Button
-        negative
-        icon="trash"
-        content="Clear"
-        onClick={handleClickDelete}
-        color="red"
-        className="vote-red"
-      ></Button>
-      <Button
-        icon="refresh"
-        content="Refresh"
-        onClick={handleClickRefresh}
-        color="blue"
-      ></Button>
+      {props.isAdmin ? (
+        <div>
+          <Button
+            negative
+            icon="trash"
+            content="Clear"
+            onClick={handleClickDelete}
+            color="red"
+            className="vote-red"
+          ></Button>
+          <Button
+            icon="refresh"
+            content="Refresh"
+            onClick={handleClickRefresh}
+            color="blue"
+          ></Button>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
