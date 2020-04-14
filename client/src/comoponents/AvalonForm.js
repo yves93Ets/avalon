@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Card,
   Image,
@@ -11,18 +11,19 @@ import {
 import { isSuccesfullEnum } from "../const/enums";
 import { fail, succes, neutral } from "../const/constants";
 import socketIOClient from "socket.io-client";
+import { ApiContext } from "../context/ContextApi";
 
 export default function AvalonForm(props) {
   const url = "/api/avalon";
   const [card, setCard] = useState(succes);
   const [isSubmitted, setIsSubmitted] = useState(true);
-  const [submitCount, setSubmitCount] = useState(0);
+  const [count, setCount] = useContext(ApiContext);
 
   const send = () => {
     const socket = socketIOClient(); // no need of url because of proxy
-    const count = submitCount + 1;
-    setSubmitCount(count);
-    socket.emit("submit count", count);
+    const submitCount = count + 1;
+    setCount(submitCount);
+    socket.emit("submit count", submitCount);
   };
 
   const handleSubmit = async (e) => {
@@ -56,11 +57,11 @@ export default function AvalonForm(props) {
   useEffect(() => {
     const socket = socketIOClient();
 
-    socket.on("submit count", (submitCount) => {
-      setSubmitCount(submitCount);
+    socket.on("submit count", (count) => {
+      setCount(count);
     });
   }, []);
-  //********************************************************TAMANO DE LAS IMAGENES */
+  // TAMANO DE LAS IMAGENES */
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group widths="equal">
@@ -81,7 +82,7 @@ export default function AvalonForm(props) {
               onChange={handleCheckbox}
             />
             <Segment>
-              <Icon name="users" /> : {submitCount}
+              <Icon name="users" /> : {count}
             </Segment>
           </Card.Content>
         </Card>
