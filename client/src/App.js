@@ -10,7 +10,8 @@ import AvalonChooseCharactere from "./comoponents/AvalonChooseCharactere";
 import { ApiProvider } from "./context/ContextApi";
 
 const routes = {
-  "/vote": () => <AvalonApp />,
+  ["/"]: () => <AvalonApp />,
+  ["/vote"]: () => <AvalonApp />,
   "/admin": () => <AvalonAdmin />,
   "/characteres": () => <AvalonChooseCharactere />,
   "/rules": () => <AvalonRules />,

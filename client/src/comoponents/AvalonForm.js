@@ -18,9 +18,17 @@ export default function AvalonForm(props) {
   const [card, setCard] = useState(succes);
   const [isSubmitted, setIsSubmitted] = useState(true);
   const [count, setCount] = useContext(ApiContext);
+ // const socket = socketIOClient({transports:['websocket']});
+  const socket = socketIOClient();
+
+  useEffect(() => {
+    socket.on("submit count", (c) => {
+      setCount(c);
+    });
+  }, []);
 
   const send = () => {
-    const socket = socketIOClient(); // no need of url because of proxy
+
     const submitCount = count + 1;
     setCount(submitCount);
     socket.emit("submit count", submitCount);
@@ -54,14 +62,6 @@ export default function AvalonForm(props) {
     card.isSuccesfull ? setCard(fail) : setCard(succes);
   };
 
-  useEffect(() => {
-    const socket = socketIOClient();
-
-    socket.on("submit count", (count) => {
-      setCount(count);
-    });
-  }, []);
-  // TAMANO DE LAS IMAGENES */
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group widths="equal">

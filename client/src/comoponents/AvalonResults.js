@@ -6,15 +6,17 @@ import { ApiContext } from "../context/ContextApi";
 export default function AvalonResultTable(props) {
   const [votes, setVotes] = useState([]);
   const [count, setCount] = useContext(ApiContext);
-
+  const [isVisible, setIsVisible] = useState(false);
+  // const socket = socketIOClient({transports:['websocket']});
+  const socket = socketIOClient();
+  
   const { blueSrc, redSrc } = props;
 
   useEffect(() => {
     getVotes();
 
-    const socket = socketIOClient();
-
-    socket.on("clear-show results", () => {
+    socket.on("clear-show results", (isVisible) => {
+      setIsVisible(isVisible);
       getVotes();
     });
   }, []);
@@ -42,8 +44,8 @@ export default function AvalonResultTable(props) {
     await fetch("/api/avalon", {
       method: "Delete",
     })
-      .then(socketIOClient().emit("submit count", 0))
-      .then(socketIOClient().emit("clear-show results"))
+      .then(socketIOClient().emit("submit count", 0),)
+      .then(socketIOClient().emit("clear-show results"),false)
       .catch((err) => {
         console.log(err);
       });
@@ -52,12 +54,12 @@ export default function AvalonResultTable(props) {
   const handleClickRefresh = (e) => {
     e.preventDefault();
     getVotes();
-    socketIOClient().emit("clear-show results");
+    socketIOClient().emit("clear-show results",true);
   };
 
   return (
     <div>
-      <Table>
+      <Table className={isVisible ? "" : "hidden"}>
         <Table.Header>
           <Table.Row>
             {votes.map((vote, i) => {

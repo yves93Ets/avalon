@@ -4,17 +4,19 @@ import { Card, Image } from "semantic-ui-react";
 export default function CharactereCard(props) {
   const good = "card-header-blue";
   const evil = "card-header-red";
-  const colorClass = props.isGood ? good : evil;
+  const   {src , name ,description, isGood} = props.charactere;
+  const colorClass = isGood ? good : evil;
+
   return (
-    <Card>
+    <Card  >
       <Image
-        src="https://react.semantic-ui.com/images/avatar/large/daniel.jpg"
+        src={src}
         wrapped
         ui={false}
       />
       <Card.Content>
-        <Card.Header className={colorClass}>{props.name}</Card.Header>
-        <Card.Description>{props.description}</Card.Description>
+        <Card.Header className={colorClass}>{name}</Card.Header>
+        <Card.Description>{description}</Card.Description>
       </Card.Content>
     </Card>
   );

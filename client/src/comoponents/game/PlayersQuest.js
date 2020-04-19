@@ -13,7 +13,7 @@ export default function PlayersQuest() {
   ];
   return (
     <div>
-      <Table compact>
+      <Table unstackable={true}>
         <PlayersHeaderTable />
         <Table.Body>
           {questNumbers.map((q, i) => {

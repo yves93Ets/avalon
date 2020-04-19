@@ -5,7 +5,7 @@ const options = [
   { key: "Assassin", text: "Assassin", value: "Assassin" },
   { key: "Mordred", text: "Mordred", value: "Mordred" },
   { key: "Morgana", text: "Morgana", value: "Morgana" },
-  { key: "Oberon", text: "", value: "Oberon" },
+  { key: "Oberon", text: "Oberon", value: "Oberon" },
 
   { key: "Merlin", text: "Merlin", value: "Merlin" },
   { key: "Percival", text: "Percival", value: "Percival" },
@@ -13,6 +13,7 @@ const options = [
   { key: "Good Guy 2", text: "Good Guy 2", value: "Good Guy 2" },
   { key: "Good Guy 3", text: "Good Guy 3", value: "Good Guy 3" },
   { key: "Good Guy 4", text: "Good Guy 4", value: "Good Guy 4" },
+  { key: "Bad Guy 1", text: "Bad Guy 1", value: "Bad Guy 1" },
 ];
 export default function AvalonCharacter() {
   const [value, setvalue] = useState([
@@ -32,7 +33,7 @@ export default function AvalonCharacter() {
   };
 
   return (
-    <Form className="margin" centered onSubmit={handleSubmit}>
+    <Form className="margin" onSubmit={handleSubmit}>
       <Form.Group>
         <Form.Dropdown
           fluid
@@ -44,9 +45,7 @@ export default function AvalonCharacter() {
           onChange={onChange}
         />
       </Form.Group>
-      <Form.Button centered type="submit">
-        Play
-      </Form.Button>
+      <Form.Button type="submit">Play</Form.Button>
     </Form>
   );
 }
