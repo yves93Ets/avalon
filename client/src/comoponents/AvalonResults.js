@@ -7,9 +7,9 @@ export default function AvalonResultTable(props) {
   const [votes, setVotes] = useState([]);
   const [count, setCount] = useContext(ApiContext);
   const [isVisible, setIsVisible] = useState(false);
-  // const socket = socketIOClient({transports:['websocket']});
-  const socket = socketIOClient();
-  
+  const socket = socketIOClient({transports:['websocket']});
+  //const socket = socketIOClient();
+
   const { blueSrc, redSrc } = props;
 
   useEffect(() => {

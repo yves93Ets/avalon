@@ -18,8 +18,8 @@ export default function AvalonForm(props) {
   const [card, setCard] = useState(succes);
   const [isSubmitted, setIsSubmitted] = useState(true);
   const [count, setCount] = useContext(ApiContext);
- // const socket = socketIOClient({transports:['websocket']});
-  const socket = socketIOClient();
+  const socket = socketIOClient({transports:['websocket']});
+  //const socket = socketIOClient();
 
   useEffect(() => {
     socket.on("submit count", (c) => {
