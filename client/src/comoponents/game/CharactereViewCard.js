@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Image } from "semantic-ui-react";
 
-export default function CharactereCard(props) {
+export default function CharactereViewCard(props) {
   const good = "card-header-blue";
   const evil = "card-header-red";
   const   {src , name ,description, isGood} = props.charactere;

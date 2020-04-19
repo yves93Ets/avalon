@@ -41,11 +41,11 @@
 }
 
 .card-header-red {
-  background-color: #b30000;
+  background-color: #8e4a4b;
 }
 
 .card-header-blue {
-  background-color: #2185d0;
+  background-color: #4882b4;
 }
 
 .card-header-neutral {
@@ -53,12 +53,12 @@
 }
 
 .vote-red {
-  color: #b30000;
+  color: #8e4a4b;
 }
 
 .vote-blue,
 .users {
-  color: #2185d0;
+  color: #4882b4;
 }
 
 .margin {

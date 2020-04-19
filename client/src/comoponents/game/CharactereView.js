@@ -1,15 +1,19 @@
 import React from "react";
 import { Card } from "semantic-ui-react";
-import CharactereCard from "./CharactereCard";
+import CharactereViewCard from "./CharactereViewCard";
 import { characteres } from "../../const/constants";
 
+
 export default function CharactereView() {
+  
   return (
-    <Card.Group    style={cardStyle} itemsPerRow={4}>
-      <CharactereCard  charactere={characteres.mordred} />
-      <CharactereCard  charactere={characteres.merlin} />
-      <CharactereCard  charactere={characteres.assassin} />
-      <CharactereCard charactere={characteres.lancelot}/>
+    <Card.Group    style={cardStyle} itemsPerRow={3}>
+      {
+        characteres.map(c => {
+         return <CharactereViewCard  charactere={c} />
+        })
+      }
+          
     </Card.Group>
   );
 }

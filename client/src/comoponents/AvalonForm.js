@@ -23,6 +23,8 @@ export default function AvalonForm(props) {
 
   useEffect(() => {
     socket.on("submit count", (c) => {
+      socket.io.opts.transports = ['polling', 'websocket'];
+
       setCount(c);
     });
   }, []);

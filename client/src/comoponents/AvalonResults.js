@@ -10,12 +10,14 @@ export default function AvalonResultTable(props) {
   const socket = socketIOClient({transports:['websocket']});
   //const socket = socketIOClient();
 
-  const { blueSrc, redSrc } = props;
+  const { successSrc, failSrc } = props;
 
   useEffect(() => {
     getVotes();
 
     socket.on("clear-show results", (isVisible) => {
+      socket.io.opts.transports = ['polling', 'websocket'];
+      
       setIsVisible(isVisible);
       getVotes();
     });
@@ -66,7 +68,7 @@ export default function AvalonResultTable(props) {
               return (
                 <Table.HeaderCell key={i}>
                   <Header image textAlign="center">
-                    <Image src={vote ? blueSrc : redSrc} rounded size="big" />
+                    <Image src={vote ? successSrc : failSrc} rounded size="big" />
 
                     <Header.Content className={vote ? "vote-blue" : "vote-red"}>
                       {vote ? "Succesfull" : "Fail"}

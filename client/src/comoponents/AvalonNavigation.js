@@ -10,7 +10,7 @@ export default function AvalonNavigation() {
   };
 
   return (
-    <Menu pointing vertical>
+    <Menu pointing>
       <Menu.Item
         name="Vote"
         active={active === "Vote"}
