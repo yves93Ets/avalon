@@ -7,13 +7,14 @@ import AvalonNavigation from "./comoponents/AvalonNavigation";
 import AvalonRules from "./comoponents/AvalonRules";
 import AvalonChooseCharactere from "./comoponents/AvalonChooseCharactere";
 
-import { ApiProvider } from "./context/ContextApi";
+import { CountProvider } from "./context/CountContext";
+import { SocketProvider } from "./context/SocketContext";
 
 const routes = {
   ["/"]: () => <AvalonApp />,
   ["/vote"]: () => <AvalonApp />,
   "/admin": () => <AvalonAdmin />,
-  "/characteres": () => <AvalonChooseCharactere />,
+  "/newgame": () => <AvalonChooseCharactere />,
   "/rules": () => <AvalonRules />,
 };
 
@@ -23,7 +24,9 @@ export default function App() {
   return (
     <div>
       <AvalonNavigation />
-      <ApiProvider>{routeResult || <div>not found</div>}</ApiProvider>
+      <CountProvider>
+        <SocketProvider>{routeResult || <div>not found</div>}</SocketProvider>
+      </CountProvider>
     </div>
   );
 }

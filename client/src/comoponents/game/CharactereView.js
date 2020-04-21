@@ -7,7 +7,7 @@ import { characteres } from "../../const/constants";
 export default function CharactereView() {
   
   return (
-    <Card.Group    style={cardStyle} itemsPerRow={3}>
+    <Card.Group   doubling   style={cardStyle} itemsPerRow={4}>
       {
         characteres.map(c => {
          return <CharactereViewCard  charactere={c} />

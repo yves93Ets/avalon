@@ -10,30 +10,25 @@ import {
 } from "semantic-ui-react";
 import { isSuccesfullEnum } from "../const/enums";
 import { fail, succes, neutral } from "../const/constants";
-import socketIOClient from "socket.io-client";
-import { ApiContext } from "../context/ContextApi";
-
-export default function AvalonForm(props) {
+import { CountContext } from "../context/CountContext";
+import { SocketContext } from "../context/SocketContext";
+export default function AvalonForm() {
   const url = "/api/avalon";
+  const socket = useContext(SocketContext);
+  const [count, setCount] = useContext(CountContext);
   const [card, setCard] = useState(succes);
   const [isSubmitted, setIsSubmitted] = useState(true);
-  const [count, setCount] = useContext(ApiContext);
-  const socket = socketIOClient({transports:['websocket']});
-  //const socket = socketIOClient();
 
   useEffect(() => {
-    socket.on("submit count", (c) => {
-      socket.io.opts.transports = ['polling', 'websocket'];
-
+    socket.on("submit-count", (c) => {
       setCount(c);
     });
-  }, []);
+  }, [setCount, socket]);
 
   const send = () => {
-
     const submitCount = count + 1;
     setCount(submitCount);
-    socket.emit("submit count", submitCount);
+    socket.emit("submit-count", submitCount);
   };
 
   const handleSubmit = async (e) => {

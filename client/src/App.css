@@ -52,6 +52,22 @@
   background-color: lightgray;
 }
 
+.card-red {
+  border:2px solid #8e4a4b!important;
+}
+
+.card-blue {
+  border:2px solid#4882b4 !important;
+}
+
+.card-red-header {
+  color:#8e4a4b !important;
+}
+
+.card-blue-header {
+  color:#4882b4 !important;
+}
+
 .vote-red {
   color: #8e4a4b;
 }
@@ -69,4 +85,8 @@
 
 .hidden {
   display: none;
+}
+
+.description {
+  font-size: 12px;
 }

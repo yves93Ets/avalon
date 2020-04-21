@@ -8,9 +8,10 @@ const connectDb = async () => {
     .connect(dbConnectionUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      dbName: "avalon"
+      dbName: "avalon",
     })
-    .catch(e => console.log("error", e));
+    .then(console.log("db connection successfull"))
+    .catch((e) => console.log("error", e));
 };
 
 module.exports = connectDb;

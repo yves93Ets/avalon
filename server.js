@@ -8,9 +8,7 @@ const port = process.env.PORT || 5000;
 const connectDb = require("./db");
 const http = require("http");
 const server = http.createServer(app);
-const io = socketIo(server,{
-  transports: ['websocket','polling']
-});
+const io = socketIo(server);
 
 connectDb();
 app.use(bodyParser.json());
@@ -28,13 +26,18 @@ if (process.env.NODE_ENV === "production") {
 }
 
 io.on("connection", (socket) => {
-  socket.on("submit count", (count) => {
+  console.log(socket.id, "connected");
 
-    io.sockets.emit("submit count", count);
+  socket.on("reconnect_attempt", () => {
+    socket.io.opts.transports = ["websocket", "polling"];
   });
 
-  socket.on("clear-show results", (isVisible) => {
-    io.sockets.emit("clear-show results",(isVisible));
+  socket.on("submit-count", (count) => {
+    socket.broadcast.emit("submit-count", count);
+  });
+
+  socket.on("clear-show-results", (isVisible) => {
+    socket.broadcast.emit("clear-show-results", isVisible);
   });
 });
 

@@ -6,7 +6,7 @@ export default function AvalonNavigation() {
 
   const handleItemClick = (e, { name }) => {
     setActive(name);
-    window.location.href = "/" + name.toLowerCase();
+    window.location.href = "/" + name.toLowerCase().split(" ").join("");
   };
 
   return (
@@ -22,8 +22,8 @@ export default function AvalonNavigation() {
         onClick={handleItemClick}
       />
       <Menu.Item
-        name="Characteres"
-        active={active === "Characteres"}
+        name="New Game"
+        active={active === "New Game"}
         onClick={handleItemClick}
       />
       <Menu.Item

@@ -1,44 +1,42 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Header, Image, Table, Button } from "semantic-ui-react";
 import socketIOClient from "socket.io-client";
-import { ApiContext } from "../context/ContextApi";
+import { CountContext } from "../context/CountContext";
+import { SocketContext } from "../context/SocketContext";
 
 export default function AvalonResultTable(props) {
+  const socket = useContext(SocketContext);
+  const [count, setCount] = useContext(CountContext);
   const [votes, setVotes] = useState([]);
-  const [count, setCount] = useContext(ApiContext);
   const [isVisible, setIsVisible] = useState(false);
-  const socket = socketIOClient({transports:['websocket']});
-  //const socket = socketIOClient();
 
   const { successSrc, failSrc } = props;
 
   useEffect(() => {
+    const getVotes = async () => {
+      await fetch("/api/avalon")
+        .then((res) => {
+          res.json().then((v) => {
+            var shuffled = v
+              .map((a) => [Math.random(), a])
+              .sort((a, b) => a[0] - b[0])
+              .map((a) => a[1]);
+            setVotes(shuffled);
+            setCount(shuffled.length);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
     getVotes();
 
-    socket.on("clear-show results", (isVisible) => {
-      socket.io.opts.transports = ['polling', 'websocket'];
-      
+    socket.on("clear-show-results", (isVisible) => {
       setIsVisible(isVisible);
       getVotes();
     });
-  }, []);
-
-  const getVotes = async () => {
-    await fetch("/api/avalon")
-      .then((res) => {
-        res.json().then((v) => {
-          var shuffled = v
-            .map((a) => [Math.random(), a])
-            .sort((a, b) => a[0] - b[0])
-            .map((a) => a[1]);
-          setVotes(shuffled);
-          setCount(shuffled.length);
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  }, [count, setCount, socket]);
 
   const handleClickDelete = async (e) => {
     e.preventDefault();
@@ -46,8 +44,8 @@ export default function AvalonResultTable(props) {
     await fetch("/api/avalon", {
       method: "Delete",
     })
-      .then(socketIOClient().emit("submit count", 0),)
-      .then(socketIOClient().emit("clear-show results"),false)
+      .then(socketIOClient().emit("submit-count", 0))
+      .then(socketIOClient().emit("clear-show-results"), false)
       .catch((err) => {
         console.log(err);
       });
@@ -55,8 +53,7 @@ export default function AvalonResultTable(props) {
 
   const handleClickRefresh = (e) => {
     e.preventDefault();
-    getVotes();
-    socketIOClient().emit("clear-show results",true);
+    socketIOClient().emit("clear-show-results", true);
   };
 
   return (
@@ -68,7 +65,11 @@ export default function AvalonResultTable(props) {
               return (
                 <Table.HeaderCell key={i}>
                   <Header image textAlign="center">
-                    <Image src={vote ? successSrc : failSrc} rounded size="big" />
+                    <Image
+                      src={vote ? successSrc : failSrc}
+                      rounded
+                      size="big"
+                    />
 
                     <Header.Content className={vote ? "vote-blue" : "vote-red"}>
                       {vote ? "Succesfull" : "Fail"}
