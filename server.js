@@ -10,26 +10,6 @@ const http = require("http");
 const server = http.createServer(app);
 const io = socketIo(server);
 
-//Setting up a socket with the namespace "connection" for new sockets
-io.on("connection", (socket) => {
-  // just like on the client side, we have a socket.on method that takes a callback function
-  //Here we listen on a new namespace called "change color"
-
-  socket.on("submit count", (count) => {
-    // once we get a 'change color' event from one of our clients, we will send it to the rest of the clients
-    // we make use of the socket.emit method again with the argument given to use from the callback function above
-    io.sockets.emit("submit count", count);
-  });
-
-  socket.on("clear-show results", () => {
-    io.sockets.emit("clear-show results");
-  });
-
-  // disconnect is fired when a client leaves the server
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
-});
 connectDb();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,5 +24,21 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "client/build", "index.html"));
   });
 }
+
+io.on("connection", (socket) => {
+  console.log(socket.id, "connected");
+
+  socket.on("reconnect_attempt", () => {
+    socket.io.opts.transports = ["websocket", "polling"];
+  });
+
+  socket.on("submit-count", (count) => {
+    socket.broadcast.emit("submit-count", count);
+  });
+
+  socket.on("clear-show-results", (isVisible) => {
+    socket.broadcast.emit("clear-show-results", isVisible);
+  });
+});
 
 server.listen(port, () => console.log(`Listening on port ${port}`));

@@ -41,27 +41,52 @@
 }
 
 .card-header-red {
-  background-color: #b30000;
+  background-color: #8e4a4b;
 }
 
 .card-header-blue {
-  background-color: #2185d0;
+  background-color: #4882b4;
 }
 
 .card-header-neutral {
   background-color: lightgray;
 }
 
+.card-red {
+  border:2px solid #8e4a4b!important;
+}
+
+.card-blue {
+  border:2px solid#4882b4 !important;
+}
+
+.card-red-header {
+  color:#8e4a4b !important;
+}
+
+.card-blue-header {
+  color:#4882b4 !important;
+}
+
 .vote-red {
-  color: #b30000;
+  color: #8e4a4b;
 }
 
 .vote-blue,
 .users {
-  color: #2185d0;
+  color: #4882b4;
 }
 
 .margin {
   margin-top: 10px;
   margin-bottom: 10px;
+  display: inline-block;
+}
+
+.hidden {
+  display: none;
+}
+
+.description {
+  font-size: 12px;
 }

@@ -7,7 +7,7 @@ export default function PlayersTable() {
   const evilNumbers = [2, 2, 3, 3, 3, 4];
 
   return (
-    <Table compact>
+    <Table unstackable={true}>
       <PlayersHeaderTable />
 
       <Table.Body>

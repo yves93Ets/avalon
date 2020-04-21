@@ -10,20 +10,25 @@ import {
 } from "semantic-ui-react";
 import { isSuccesfullEnum } from "../const/enums";
 import { fail, succes, neutral } from "../const/constants";
-import socketIOClient from "socket.io-client";
-import { ApiContext } from "../context/ContextApi";
-
-export default function AvalonForm(props) {
+import { CountContext } from "../context/CountContext";
+import { SocketContext } from "../context/SocketContext";
+export default function AvalonForm() {
   const url = "/api/avalon";
+  const socket = useContext(SocketContext);
+  const [count, setCount] = useContext(CountContext);
   const [card, setCard] = useState(succes);
   const [isSubmitted, setIsSubmitted] = useState(true);
-  const [count, setCount] = useContext(ApiContext);
+
+  useEffect(() => {
+    socket.on("submit-count", (c) => {
+      setCount(c);
+    });
+  }, [setCount, socket]);
 
   const send = () => {
-    const socket = socketIOClient(); // no need of url because of proxy
     const submitCount = count + 1;
     setCount(submitCount);
-    socket.emit("submit count", submitCount);
+    socket.emit("submit-count", submitCount);
   };
 
   const handleSubmit = async (e) => {
@@ -54,14 +59,6 @@ export default function AvalonForm(props) {
     card.isSuccesfull ? setCard(fail) : setCard(succes);
   };
 
-  useEffect(() => {
-    const socket = socketIOClient();
-
-    socket.on("submit count", (count) => {
-      setCount(count);
-    });
-  }, []);
-  // TAMANO DE LAS IMAGENES */
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group widths="equal">

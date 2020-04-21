@@ -4,8 +4,8 @@ const Vote = require("../models/voteModel");
 
 router.post("/", (req, res) => {
   const newVote = {
-    vote: req.body.vote
-    //expires: new Date(Date.now())
+    vote: req.body.vote,
+    expires: new Date(Date.now())
   };
 
   Vote.insertMany(newVote)

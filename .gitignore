@@ -147,3 +147,4 @@ sketch
 
 # End of https://www.gitignore.io/api/node,react
 client/build
+TODO.json
