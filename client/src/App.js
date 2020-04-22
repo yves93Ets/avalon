@@ -1,32 +1,42 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import "./App.css";
 import { useRoutes } from "hookrouter";
+import AvalonLogin from "./comoponents/AvalonLogin";
 import AvalonApp from "./comoponents/AvalonApp";
 import AvalonAdmin from "./comoponents/AvalonAdmin";
 import AvalonNavigation from "./comoponents/AvalonNavigation";
 import AvalonRules from "./comoponents/AvalonRules";
-import AvalonChooseCharactere from "./comoponents/AvalonChooseCharactere";
 
-import { CountProvider } from "./context/CountContext";
-import { SocketProvider } from "./context/SocketContext";
-
-const routes = {
-  ["/"]: () => <AvalonApp />,
-  ["/vote"]: () => <AvalonApp />,
-  "/admin": () => <AvalonAdmin />,
-  "/newgame": () => <AvalonChooseCharactere />,
-  "/rules": () => <AvalonRules />,
-};
+import { UserContext, CountProvider } from "./context";
 
 export default function App() {
+  const [username, setUsername] = useContext(UserContext);
+
+  useEffect(() => {
+    const user = localStorage.getItem("username") || "";
+    setUsername(user);
+  }, [username, setUsername]);
+
+  const routes = {
+    "/": () => <AvalonLogin />,
+    "/vote": () => <AvalonApp />,
+    "/admin": () => <AvalonAdmin />,
+    "/rules": () => <AvalonRules />,
+  };
+
   const routeResult = useRoutes(routes);
+  const active = routeResult.type.name;
 
   return (
     <div>
-      <AvalonNavigation />
-      <CountProvider>
-        <SocketProvider>{routeResult || <div>not found</div>}</SocketProvider>
-      </CountProvider>
+      {username === "" || username === "undefined" ? (
+        <AvalonLogin />
+      ) : (
+        <div>
+          <AvalonNavigation active={active} />
+          <CountProvider>{routeResult || <div>not found</div>}</CountProvider>
+        </div>
+      )}
     </div>
   );
 }

@@ -29,6 +29,7 @@ export default function AvalonForm() {
     const submitCount = count + 1;
     setCount(submitCount);
     socket.emit("submit-count", submitCount);
+    socket.emit("clear-show-results", false);
   };
 
   const handleSubmit = async (e) => {
@@ -60,10 +61,10 @@ export default function AvalonForm() {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group widths="equal">
+    <Form size="small" onSubmit={handleSubmit}>
+      <Form.Group>
         <Card centered>
-          <Image bordered src={card.src} wrapped ui={false} />
+          <Image fluid src={card.src} />
           <Card.Header className={card.cssClass}>
             {card.isSuccesfull === isSuccesfullEnum.FAIL
               ? "Fail"
