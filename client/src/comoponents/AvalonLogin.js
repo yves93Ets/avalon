@@ -24,28 +24,32 @@ export default function AvalonLogin() {
           Choose a player name
         </Header>
         <Grid.Row centered>
-          <Grid.Column width={4}>
-            <Form size="small" success onSubmit={handleSubmit}>
-              <Form.Field required>
-                <label>User name</label>
-                <Input
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                  placeholder="User name"
-                  value={name}
-                  onChange={handleChange}
-                />
-              </Form.Field>
+          <Form onSubmit={handleSubmit} style={cardStyle}>
+            <Form.Field required>
+              <label>User name</label>
+              <Input
+                fluid
+                icon="user"
+                iconPosition="left"
+                placeholder="User name"
+                value={name}
+                onChange={handleChange}
+              />
+            </Form.Field>
+            <Form.Field>
               <Form.Button
                 fluid
                 color="blue"
                 content={username === "" ? "Login" : "Rename"}
               />
-            </Form>
-          </Grid.Column>
+            </Form.Field>
+          </Form>
         </Grid.Row>
       </Grid.Column>
     </Grid>
   );
 }
+
+const cardStyle = {
+  margin: "10px",
+};
