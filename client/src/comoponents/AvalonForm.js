@@ -24,7 +24,8 @@ export default function AvalonForm() {
     });
   }, [setCount, socket]);
 
-  const send = () => {
+  const send = (e) => {
+    e.preventDefault();
     const submitCount = count + 1;
     setCount(submitCount);
     socket.emit("submit-count", submitCount);

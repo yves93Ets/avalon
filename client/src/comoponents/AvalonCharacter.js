@@ -6,7 +6,7 @@ import { SocketContext } from "../context";
 export default function AvalonCharacter() {
   const socket = useContext(SocketContext);
 
-  const [rolesArr, setRolesArr] = useState([
+  const [namesArray, setNamesArray] = useState([
     "Assassin",
     "Mordred",
     "Merlin",
@@ -16,11 +16,13 @@ export default function AvalonCharacter() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    socket.emit("distribute", rolesArr);
+    socket.emit("distribute", namesArray);
   };
   const onChange = (e, data) => {
     e.preventDefault();
-    setRolesArr(data.value);
+    console.log(1, data);
+    console.log(3, data.options);
+    setNamesArray(data.value);
   };
 
   return (
@@ -32,7 +34,7 @@ export default function AvalonCharacter() {
           multiple
           selection
           options={options}
-          value={rolesArr}
+          value={namesArray}
           onChange={onChange}
         />
       </Form.Group>

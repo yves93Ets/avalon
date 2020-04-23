@@ -8,7 +8,8 @@ export default function AvalonLogin() {
   const [name, setName] = useState("");
   const socket = useContext(SocketContext);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     socket.emit("send-name", name);
     localStorage.setItem("username", name);
     setUsername(name);

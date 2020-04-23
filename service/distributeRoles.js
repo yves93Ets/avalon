@@ -1,15 +1,18 @@
 const shuffle = require("../utilities");
 
-//const names = ["yves", "serge", "david", "Val", "my", "Jack"];
-//const roles = ["Mordred", "Merlin", "Assassin", "good 1", "good 2", "Morgana"];
-//console.log(suffle(names));
-//console.log(suffle(names));
-
 const distributeRoles = (names, roles) => {
-  shuffle(roles);
-  shuffle(names);
-  console.log(shuffle(names));
-  console.log(shuffle(roles));
+  const array = shuffle(roles).map((r, index) => {
+    return { charactere: r, username: names[index] };
+  });
+
+  var characteresArray = [];
+  array.map((a) => {
+    characteresArray.push(create(a.charactere.toLowerCase(), a.username));
+  });
+
+  characteresArray.map((c) => {
+    var a = (c.knowledge = setKnowledge(c.group, characteresArray));
+  });
 };
 
 module.exports = distributeRoles;
