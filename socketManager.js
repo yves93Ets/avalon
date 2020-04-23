@@ -2,7 +2,7 @@ const socket = require("socket.io");
 const { removeUser, addUser, getUserNames } = require("./service/userService");
 const distributeRoles = require("./service/distributeRoles");
 
-const ioWorker = async (server) => {
+const ioWorker = (server) => {
   const io = socket(server);
 
   io.on("connection", (socket) => {
