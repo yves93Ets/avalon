@@ -26,7 +26,7 @@ export default function App() {
 
   const routeResult = useRoutes(routes);
   const active = routeResult.type.name;
-
+  console.log(4444444, routeResult.type);
   return (
     <div>
       {username === "" || username === "undefined" ? (

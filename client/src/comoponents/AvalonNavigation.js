@@ -12,6 +12,7 @@ export default function AvalonNavigation(props) {
 
   useEffect(() => {
     socket.on("roles", (roles) => {
+      console.log(1111, roles);
       roles.map((r) => {
         if (r.username === username) {
           setRole({
@@ -20,6 +21,9 @@ export default function AvalonNavigation(props) {
           });
         }
       });
+      console.log(2222, role);
+      console.log(333333333, props.active);
+
       setIsVisible(true);
     });
   });
