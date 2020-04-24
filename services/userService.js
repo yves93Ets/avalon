@@ -1,3 +1,5 @@
+const shuffle = require("../utilities");
+
 let names = [];
 
 function addUser(n) {
@@ -18,9 +20,13 @@ function getNumUsers() {
   return names.length;
 }
 
+function shuffleNames() {
+  names = shuffle(names);
+}
 module.exports = {
   addUser,
   removeUser,
   getUserNames,
   getNumUsers,
+  shuffleNames,
 };

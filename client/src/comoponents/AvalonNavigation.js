@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Menu, Dropdown } from "semantic-ui-react";
 import { UserContext, SocketContext } from "../context";
+import PlayerList from "./players/PlayerList";
 
 export default function AvalonNavigation(props) {
   const [active] = useState(props.active);
@@ -8,15 +9,20 @@ export default function AvalonNavigation(props) {
   const socket = useContext(SocketContext);
 
   const handleItemClick = (e, { name }) => {
+    console.log(name);
     window.location.href = "/" + name.toLowerCase().split(" ").join("");
   };
 
-  const handleRenameClick = (e, { name }) => {
+  const handleRenameClick = () => {
     window.location.href = "/";
   };
 
+  const handleShuffleListClick = () => {
+    socket.emit("shuffle-list");
+  };
+
   const handleLogOutClick = (e, { name }) => {
-    socket.emit("disconnecting", name);
+    socket.emit("logout", name);
     localStorage.removeItem("username");
     setUsername("");
   };
@@ -46,11 +52,15 @@ export default function AvalonNavigation(props) {
               text="change name"
               onClick={handleRenameClick}
             ></Dropdown.Item>
-            <Dropdown.Item
-              icon="ordered list"
-              text="list of players"
-              onClick={handleRenameClick}
-            ></Dropdown.Item>
+            <PlayerList></PlayerList>
+            {active === "AvalonAdmin" ? (
+              <Dropdown.Item
+                icon="list alternate outline"
+                text="order"
+                onClick={handleShuffleListClick}
+              ></Dropdown.Item>
+            ) : null}
+
             <Dropdown.Item
               name={username}
               icon="log out"

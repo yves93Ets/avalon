@@ -1,6 +1,11 @@
 const socket = require("socket.io");
-const { removeUser, addUser, getUserNames } = require("./service/userService");
-const distributeRoles = require("./service/distributeRoles");
+const {
+  removeUser,
+  addUser,
+  getUserNames,
+  shuffleNames,
+} = require("./services/userService");
+const distributeRoles = require("./services/distributeRoles");
 
 const ioWorker = (server) => {
   const io = socket(server);
@@ -12,9 +17,16 @@ const ioWorker = (server) => {
       socket.io.opts.transports = ["websocket", "polling"];
     });
 
-    socket.on("send-name", (name) => {
+    socket.on("login", (name) => {
       socket.username = name;
       addUser(name);
+      console.log(getUserNames(), "added");
+    });
+
+    socket.on("rename", (newName, oldName) => {
+      socket.username = newName;
+      addUser(newName);
+      removeUser(oldName);
       console.log(getUserNames(), "added");
     });
 
@@ -22,16 +34,24 @@ const ioWorker = (server) => {
       io.emit("clear-show-results", isVisible);
     });
 
+    socket.on("player-list", () => {
+      io.emit("player-list", getUserNames());
+    });
+
+    socket.on("shuffle-list", () => {
+      shuffleNames();
+    });
+
     socket.on("submit-count", (count) => {
       socket.broadcast.emit("submit-count", count);
     });
 
     socket.on("distribute", (roles) => {
-      console.log(socket);
-      distributeRoles(getUserNames(), roles);
+      const distributedRoles = distributeRoles(getUserNames(), roles);
+      io.emit("roles", distributedRoles);
     });
 
-    socket.on("disconnecting", (name) => {
+    socket.on("logout", (name) => {
       removeUser(name);
     });
   });

@@ -6,7 +6,7 @@ export default function AvalonResultTable(props) {
   const socket = useContext(SocketContext);
   const [count, setCount] = useContext(CountContext);
   const [votes, setVotes] = useState([]);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState();
 
   const { successSrc, failSrc } = props;
 
@@ -33,6 +33,10 @@ export default function AvalonResultTable(props) {
     socket.on("clear-show-results", (isVisible) => {
       setIsVisible(isVisible);
       getVotes();
+    });
+
+    socket.on("roles", (data) => {
+      console.log(data);
     });
   }, [count, setCount, socket]);
 

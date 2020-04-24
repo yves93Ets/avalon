@@ -1,11 +1,3 @@
-const array = [
-  { username: "yves", charactere: "Mordred" },
-  { username: "serge", charactere: "Percival" },
-  { username: "david", charactere: "Morgana" },
-  { username: "val", charactere: "Merlin" },
-  { username: "Marley", charactere: "Good" },
-];
-
 function RolesCreator(charactere, username) {
   this.charactere = charactere;
   this.username = username;
@@ -74,3 +66,5 @@ function getGroup(charactereName) {
   }
   return group;
 }
+
+module.exports = { create, setKnowledge };

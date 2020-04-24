@@ -10,7 +10,9 @@ export default function AvalonLogin() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("send-name", name);
+    username === ""
+      ? socket.emit("login", name)
+      : socket.emit("rename", name, username);
     localStorage.setItem("username", name);
     setUsername(name);
     window.location.href = "/vote";
