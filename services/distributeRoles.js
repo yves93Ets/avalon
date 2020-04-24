@@ -1,8 +1,6 @@
 const shuffle = require("../utilities");
 const RolesFactory = require("./RolesFactory");
 const distributeRoles = (names, roles) => {
-  names = ["David", "Yves", "Serge"];
-
   const array = shuffle(roles).map((r, index) => {
     return { charactere: r, username: names[index] };
   });

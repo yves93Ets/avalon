@@ -34,10 +34,6 @@ export default function AvalonResultTable(props) {
       setIsVisible(isVisible);
       getVotes();
     });
-
-    socket.on("roles", (data) => {
-      console.log(data);
-    });
   }, [count, setCount, socket]);
 
   const handleClickDelete = async (e) => {

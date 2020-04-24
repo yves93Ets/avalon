@@ -20,14 +20,12 @@ const ioWorker = (server) => {
     socket.on("login", (name) => {
       socket.username = name;
       addUser(name);
-      console.log(getUserNames(), "added");
     });
 
     socket.on("rename", (newName, oldName) => {
       socket.username = newName;
       addUser(newName);
       removeUser(oldName);
-      console.log(getUserNames(), "added");
     });
 
     socket.on("clear-show-results", (isVisible) => {

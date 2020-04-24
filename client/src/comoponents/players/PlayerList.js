@@ -8,7 +8,6 @@ const PlayerList = () => {
 
   useEffect(() => {
     socket.on("player-list", (namesList) => {
-      console.log(namesList);
       setNames(namesList);
     });
   });

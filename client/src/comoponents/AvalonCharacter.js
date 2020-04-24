@@ -20,8 +20,6 @@ export default function AvalonCharacter() {
   };
   const onChange = (e, data) => {
     e.preventDefault();
-    console.log(1, data);
-    console.log(3, data.options);
     setNamesArray(data.value);
   };
 
