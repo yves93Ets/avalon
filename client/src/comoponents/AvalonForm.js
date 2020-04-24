@@ -10,8 +10,7 @@ import {
 } from "semantic-ui-react";
 import { isSuccesfullEnum } from "../const/enums";
 import { fail, succes, neutral } from "../const/constants";
-import { CountContext } from "../context/CountContext";
-import { SocketContext } from "../context/SocketContext";
+import { CountContext, SocketContext } from "../context";
 export default function AvalonForm() {
   const url = "/api/avalon";
   const socket = useContext(SocketContext);
@@ -29,6 +28,7 @@ export default function AvalonForm() {
     const submitCount = count + 1;
     setCount(submitCount);
     socket.emit("submit-count", submitCount);
+    socket.emit("clear-show-results", false);
   };
 
   const handleSubmit = async (e) => {
@@ -60,10 +60,10 @@ export default function AvalonForm() {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group widths="equal">
-        <Card centered>
-          <Image bordered src={card.src} wrapped ui={false} />
+    <Form size="small" onSubmit={handleSubmit}>
+      <Form.Group>
+        <Card className="width" fluid centered>
+          <Image size="small" src={card.src} />
           <Card.Header className={card.cssClass}>
             {card.isSuccesfull === isSuccesfullEnum.FAIL
               ? "Fail"

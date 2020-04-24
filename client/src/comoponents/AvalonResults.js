@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Header, Image, Table, Button } from "semantic-ui-react";
-import socketIOClient from "socket.io-client";
-import { CountContext } from "../context/CountContext";
-import { SocketContext } from "../context/SocketContext";
+import { CountContext, SocketContext } from "../context";
 
 export default function AvalonResultTable(props) {
   const socket = useContext(SocketContext);
   const [count, setCount] = useContext(CountContext);
   const [votes, setVotes] = useState([]);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState();
 
   const { successSrc, failSrc } = props;
 
@@ -36,16 +34,21 @@ export default function AvalonResultTable(props) {
       setIsVisible(isVisible);
       getVotes();
     });
+
+    socket.on("roles", (data) => {
+      console.log(data);
+    });
   }, [count, setCount, socket]);
 
   const handleClickDelete = async (e) => {
     e.preventDefault();
+    setIsVisible(false);
     setVotes([]);
     await fetch("/api/avalon", {
       method: "Delete",
     })
-      .then(socketIOClient().emit("submit-count", 0))
-      .then(socketIOClient().emit("clear-show-results"), false)
+      .then(socket.emit("submit-count", 0), setCount(0))
+      .then(socket.emit("clear-show-results"), false)
       .catch((err) => {
         console.log(err);
       });
@@ -53,7 +56,7 @@ export default function AvalonResultTable(props) {
 
   const handleClickRefresh = (e) => {
     e.preventDefault();
-    socketIOClient().emit("clear-show-results", true);
+    socket.emit("clear-show-results", true);
   };
 
   return (
