@@ -28,11 +28,13 @@ const PlayerList = () => {
       <Modal.Header>Players List</Modal.Header>
       <Modal.Content>
         <Modal.Description>
-          <Step.Group link ordered>
-            {names.map((n) => {
-              return <Step>{n}</Step>;
-            })}
-          </Step.Group>
+          <Step link>
+            <Step.Group size="small" unstackable ordered>
+              {names.map((n) => {
+                return <Step key={n}>{n}</Step>;
+              })}
+            </Step.Group>
+          </Step>
         </Modal.Description>
       </Modal.Content>
     </Modal>
