@@ -68,12 +68,14 @@
   color: #4882b4 !important;
 }
 
-.vote-red {
+.vote-red,
+.evil {
   color: #8e4a4b;
 }
 
 .vote-blue,
-.users {
+.users,
+.good {
   color: #4882b4;
 }
 
