@@ -92,7 +92,7 @@ export default function AvalonResultTable(props) {
           ></Button>
           <Button
             icon="refresh"
-            content="Refresh"
+            content="Show"
             onClick={handleClickRefresh}
             color="blue"
           ></Button>

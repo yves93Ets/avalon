@@ -9,7 +9,7 @@ function create(charactere, username) {
   return new RolesCreator(charactere, username);
 }
 
-function setKnowledge(group, characteresArray) {
+function setKnowledge(group, username, characteresArray) {
   const knowledge = [];
   switch (group) {
     case "mordred":
@@ -38,7 +38,10 @@ function setKnowledge(group, characteresArray) {
       break;
     default:
   }
-  return knowledge;
+
+  return knowledge.filter((k) => {
+    return k !== username;
+  });
 }
 
 function getGroup(charactereName) {

@@ -12,7 +12,11 @@ const distributeRoles = (names, roles) => {
   });
 
   characteresArray.map((c) => {
-    c.knowledge = RolesFactory.setKnowledge(c.group, characteresArray);
+    c.knowledge = RolesFactory.setKnowledge(
+      c.group,
+      c.username,
+      characteresArray
+    );
   });
   return characteresArray;
 };
