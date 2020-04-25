@@ -12,17 +12,19 @@ export default function AvalonNavigation(props) {
 
   useEffect(() => {
     socket.on("roles", (roles) => {
-      console.log(1111, roles);
+      console.log("roles", roles);
       roles.map((r) => {
         if (r.username === username) {
+          console.log("inside", {
+            charactere: r.charactere,
+            knowledge: setKnowledge(r.knowledge),
+          });
           setRole({
             charactere: r.charactere,
             knowledge: setKnowledge(r.knowledge),
           });
         }
       });
-      console.log(2222, role);
-      console.log(333333333, props.active);
 
       setIsVisible(true);
     });
@@ -101,11 +103,13 @@ export default function AvalonNavigation(props) {
       {isVisible ? (
         <Message onDismiss={handleDismiss} floating size="small">
           <Message.Content style={contentStyle}>
-            You are <p style={pStyle}>{role.charactere}</p> and you know
+            You are
+            <p style={pStyle}> {role.charactere} </p>
+            and you know
           </Message.Content>
           <Message.List style={ListStyle}>
             {role.knowledge.map((k) => (
-              <Message.Item>{k}</Message.Item>
+              <Message.Item key={k}>{k}</Message.Item>
             ))}
           </Message.List>
         </Message>
@@ -115,7 +119,7 @@ export default function AvalonNavigation(props) {
 }
 
 const contentStyle = {
-  display: "ruby",
+  display: "flex",
 };
 
 const ListStyle = {
@@ -124,4 +128,6 @@ const ListStyle = {
 
 const pStyle = {
   fontWeight: "bold",
+  marginLeft: "0.5em",
+  marginRight: "0.5em",
 };
