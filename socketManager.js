@@ -4,6 +4,7 @@ const {
   addUser,
   getUserNames,
   shuffleNames,
+  emptyUsersList,
 } = require("./services/userService");
 const distributeRoles = require("./services/distributeRoles");
 
@@ -26,6 +27,10 @@ const ioWorker = (server) => {
       socket.username = newName;
       addUser(newName);
       removeUser(oldName);
+    });
+
+    socket.on("remove-names", (name) => {
+      emptyUsersList();
     });
 
     socket.on("clear-show-results", (isVisible) => {

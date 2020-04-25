@@ -23,10 +23,16 @@ function getNumUsers() {
 function shuffleNames() {
   names = shuffle(names);
 }
+
+function emptyUsersList() {
+  names = [];
+}
+
 module.exports = {
   addUser,
   removeUser,
   getUserNames,
   getNumUsers,
   shuffleNames,
+  emptyUsersList,
 };

@@ -1,34 +1,17 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Menu, Dropdown, Message } from "semantic-ui-react";
+import { Menu, Dropdown } from "semantic-ui-react";
 import { UserContext, SocketContext } from "../context";
-import PlayerList from "./players/PlayerList";
 import { getTitle } from "hookrouter";
+import PlayerList from "./players/PlayerList";
+import PlayerRoleMessage from "./players/PlayerRoleMessage";
 
 export default function AvalonNavigation() {
-  const [role, setRole] = useState();
-  const [isVisible, setIsVisible] = useState(false);
   const [active, setActive] = useState();
   const [username, setUsername] = useContext(UserContext);
   const socket = useContext(SocketContext);
   useEffect(() => {
     setActive(getTitle());
-    socket.on("roles", (roles) => {
-      roles.map((r) => {
-        if (r.username === username) {
-          setRole({
-            charactere: r.charactere,
-            knowledge: setKnowledge(r.knowledge),
-          });
-        }
-      });
-
-      setIsVisible(true);
-    });
   });
-
-  const setKnowledge = (knowledge) => {
-    return knowledge.length === 0 ? ["nobody"] : knowledge;
-  };
 
   const handleItemClick = (e, { name }) => {
     window.location.href = "/" + name.toLowerCase().split(" ").join("");
@@ -48,11 +31,12 @@ export default function AvalonNavigation() {
     setUsername("");
   };
 
-  const handleDismiss = () => {
-    setIsVisible(false);
+  const handleRemoveNamesClick = (e, { name }) => {
+    socket.emit("remove-names", name);
   };
+
   return (
-    <div>
+    <>
       <Menu pointing>
         <Menu.Item
           name="Vote"
@@ -78,12 +62,20 @@ export default function AvalonNavigation() {
                 onClick={handleRenameClick}
               ></Dropdown.Item>
               <PlayerList></PlayerList>
-              {active === "AvalonAdmin" ? (
-                <Dropdown.Item
-                  icon="list alternate outline"
-                  text="order"
-                  onClick={handleShuffleListClick}
-                ></Dropdown.Item>
+              {active === "Admin" ? (
+                <>
+                  <Dropdown.Item
+                    icon="list alternate outline"
+                    text="order"
+                    onClick={handleShuffleListClick}
+                  ></Dropdown.Item>
+                  <Dropdown.Item
+                    name={username}
+                    icon="eraser"
+                    text="empty list"
+                    onClick={handleRemoveNamesClick}
+                  ></Dropdown.Item>
+                </>
               ) : null}
 
               <Dropdown.Item
@@ -96,36 +88,7 @@ export default function AvalonNavigation() {
           </Dropdown>
         </Menu.Menu>
       </Menu>
-      {isVisible ? (
-        <Message onDismiss={handleDismiss} floating size="small">
-          <Message.Content style={contentStyle}>
-            You are
-            <p style={pStyle}> {role.charactere} </p>
-            and you know
-          </Message.Content>
-          <Message.List style={ListStyle}>
-            {role.knowledge.map((k) => (
-              <Message.Item key={k}>{k}</Message.Item>
-            ))}
-          </Message.List>
-        </Message>
-      ) : null}
-    </div>
+      <PlayerRoleMessage username={username} />
+    </>
   );
 }
-
-const contentStyle = {
-  display: "flex",
-};
-
-const ListStyle = {
-  margin: "15px",
-  textTransform: "capitalize",
-};
-
-const pStyle = {
-  fontWeight: "bold",
-  marginLeft: "0.5em",
-  marginRight: "0.5em",
-  textTransform: "capitalize",
-};
