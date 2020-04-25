@@ -25,17 +25,13 @@ export default function App() {
   };
 
   const routeResult = useRoutes(routes);
-  const active = routeResult.type.name;
-  console.log("routeResult", routeResult);
-  console.log("routeResult.type", routeResult.type);
-  console.log("routeResult.type.name", routeResult.type.name);
   return (
     <div>
       {username === "" || username === "undefined" ? (
         <AvalonLogin />
       ) : (
         <div>
-          <AvalonNavigation active={active} />
+          <AvalonNavigation />
           <CountProvider>{routeResult || <div>not found</div>}</CountProvider>
         </div>
       )}

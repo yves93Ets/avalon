@@ -4,8 +4,11 @@ import failSrc from "../images/Fail.jpeg";
 import AvalonForm from "./AvalonForm";
 import AvalonResult from "./AvalonResults";
 import AvalonCharacter from "./AvalonCharacter";
+import { useTitle } from "hookrouter";
 
 export default function AvalonAdmin() {
+  useTitle("Admin");
+
   return (
     <div className="advalon-admin App">
       <AvalonForm />

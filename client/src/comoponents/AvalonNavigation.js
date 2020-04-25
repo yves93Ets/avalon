@@ -2,23 +2,20 @@ import React, { useState, useContext, useEffect } from "react";
 import { Menu, Dropdown, Message } from "semantic-ui-react";
 import { UserContext, SocketContext } from "../context";
 import PlayerList from "./players/PlayerList";
+import { getTitle } from "hookrouter";
 
-export default function AvalonNavigation(props) {
+export default function AvalonNavigation() {
   const [role, setRole] = useState();
   const [isVisible, setIsVisible] = useState(false);
-  const [active] = useState(props.active);
+  const [active, setActive] = useState();
   const [username, setUsername] = useContext(UserContext);
   const socket = useContext(SocketContext);
-
   useEffect(() => {
+    setActive(getTitle());
     socket.on("roles", (roles) => {
       console.log("roles", roles);
       roles.map((r) => {
         if (r.username === username) {
-          console.log("inside", {
-            charactere: r.charactere,
-            knowledge: setKnowledge(r.knowledge),
-          });
           setRole({
             charactere: r.charactere,
             knowledge: setKnowledge(r.knowledge),
@@ -60,17 +57,17 @@ export default function AvalonNavigation(props) {
       <Menu pointing>
         <Menu.Item
           name="Vote"
-          active={active === "AvalonApp"}
+          active={active === "Vote"}
           onClick={handleItemClick}
         />
         <Menu.Item
           name="Admin"
-          active={active === "AvalonAdmin"}
+          active={active === "Admin"}
           onClick={handleItemClick}
         />
         <Menu.Item
           name="Rules"
-          active={active === "AvalonRules"}
+          active={active === "Rules"}
           onClick={handleItemClick}
         />
         <Menu.Menu position="right">
@@ -124,10 +121,12 @@ const contentStyle = {
 
 const ListStyle = {
   margin: "15px",
+  textTransform: "capitalize",
 };
 
 const pStyle = {
   fontWeight: "bold",
   marginLeft: "0.5em",
   marginRight: "0.5em",
+  textTransform: "capitalize",
 };

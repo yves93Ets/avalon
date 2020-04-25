@@ -29,7 +29,7 @@ const PlayerList = () => {
       <Modal.Content>
         <Modal.Description>
           <Step link>
-            <Step.Group size="small" unstackable ordered>
+            <Step.Group fluid size="small" ordered>
               {names.map((n) => {
                 return <Step key={n}>{n}</Step>;
               })}

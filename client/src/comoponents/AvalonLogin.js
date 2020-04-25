@@ -2,11 +2,13 @@ import React, { useState, useContext } from "react";
 import { Form, Input, Grid, Header, Image } from "semantic-ui-react";
 import { UserContext, SocketContext } from "../context";
 import merlinSrc from "../images/Merlin.jpg";
+import { useTitle } from "hookrouter";
 
 export default function AvalonLogin() {
   const [username, setUsername] = useContext(UserContext);
   const [name, setName] = useState("");
   const socket = useContext(SocketContext);
+  useTitle("Rules");
 
   const handleSubmit = (e) => {
     e.preventDefault();
