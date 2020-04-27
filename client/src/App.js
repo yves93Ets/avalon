@@ -13,7 +13,9 @@ export default function App() {
   const [username, setUsername] = useContext(UserContext);
 
   useEffect(() => {
-    const user = localStorage.getItem("username") || "";
+    const itemStr = localStorage.getItem("item");
+    const item = JSON.parse(itemStr);
+    const user = !item ? "" : item.name;
     setUsername(user);
   }, [username, setUsername]);
 

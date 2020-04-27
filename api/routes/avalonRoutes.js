@@ -1,36 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const Vote = require("../models/voteModel");
+const voteController = require("../controllers/voteController");
+const gameController = require("../controllers/gameController");
 
-router.post("/", (req, res) => {
-  const newVote = {
-    vote: req.body.vote,
-    expires: new Date(Date.now())
-  };
+router.get("/", voteController.getAll);
+router.delete("/", voteController.deleteAll);
+router.post("/", voteController.add);
 
-  Vote.insertMany(newVote)
-    .then(res.status(200).json(newVote))
-    .catch(e => console.log("error", e));
-});
-
-router.get("/", (req, res) => {
-  Vote.find()
-    .exec()
-    .then(docs => {
-      const votes = docs.map(d => {
-        return d.vote;
-      });
-      res.status(200).json(votes);
-    });
-});
-
-router.delete("/", (req, res) => {
-  Vote.deleteMany({})
-    .exec()
-    .then(docs => {
-      res.status(200).json({ deleted: docs.deletedCount });
-    })
-    .catch(err => console.log("error", err));
-});
+router.post("/players", gameController.addPlayer);
+router.get("/players", gameController.getPlayers);
+router.post("/players:game", gameController.newGame);
+router.delete("/players", gameController.getPlayers);
 
 module.exports = router;

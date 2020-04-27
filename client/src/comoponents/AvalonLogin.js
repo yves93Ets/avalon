@@ -15,7 +15,10 @@ export default function AvalonLogin() {
     username === ""
       ? socket.emit("login", name)
       : socket.emit("rename", name, username);
-    localStorage.setItem("username", name);
+    const now = new Date().getHours();
+    const expiry = new Date().setHours(now + 4);
+    const item = { name, expiry };
+    localStorage.setItem("item", JSON.stringify(item));
     setUsername(name);
     window.location.href = "/vote";
   };
