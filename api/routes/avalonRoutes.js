@@ -11,5 +11,6 @@ router.post("/players", gameController.addPlayer);
 router.get("/players", gameController.getPlayers);
 router.post("/players:game", gameController.newGame);
 router.delete("/players", gameController.getPlayers);
+router.get("/votes", gameController.getVotes);
 
 module.exports = router;

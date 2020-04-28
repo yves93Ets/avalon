@@ -1,22 +1,48 @@
 const Game = require("../models/gameModel");
+const shuffle = require("../../utilities");
+
 module.exports = {
-  addPlayer: (req, res) => {
+  addPlayer: (name) => {
     //  add name
-    name = req.body.name;
-    Game.updateOne({ room: "Avalon" }, { $push: { playersList: name } });
+    console.log(name);
+    Game.updateOne({ room: "Avalon" }, { $push: { playersList: name } }).exec();
   },
-  getPlayers: (req, res) => {
-    router.get("/players", (req, res) => {
-      Game.findOne({ room: "Avalon" })
-        .select("playersList")
-        .exec()
-        .then((docs) => {
-          const playersList = docs.map((d) => {
-            return d.playersList;
-          });
-          res.status(200).json(playersList);
-        });
-    });
+  updatePlayer: (newName, oldName) => {
+    //  add name
+    Game.updateOne(
+      { room: "Avalon" },
+      { $set: { "playersList.$[element]": newName } },
+      {
+        arrayFilters: [{ element: oldName }],
+        upsert: true,
+      }
+    ).exec();
+  },
+  getPlayers: () => {
+    return Game.findOne({ room: "Avalon" })
+      .select("playersList")
+      .then((docs) => {
+        return docs.playersList;
+      });
+  },
+
+  getDistributionList: () => {
+    return Game.findOne({ room: "Avalon" })
+      .select("distributionList")
+      .then((docs) => {
+        return docs.distributionList;
+      });
+  },
+  reorderPlayers: () => {
+    return Game.findOne({ room: "Avalon" })
+      .select("playersList")
+      .then((docs) => {
+        const newList = shuffle(docs.playersList);
+        Game.updateOne(
+          { room: "Avalon" },
+          { $set: { playersList: newList } }
+        ).exec();
+      });
   },
   newGame: (req, res) => {
     // const game = req.params.stopId;
@@ -37,5 +63,19 @@ module.exports = {
       { room: "Avalon" },
       { $pull: { playersList: { $in: [name] } } }
     );
+  },
+  setVote: (isVisible) => {
+    Game.updateOne(
+      { room: "Avalon" },
+      { $set: { showResults: isVisible } }
+    ).exec();
+  },
+
+  getVotes: (req, res) => {
+    Game.findOne({ room: "Avalon" })
+      .select("showResults")
+      .then((docs) => {
+        res.status(200).json(docs.showResults);
+      });
   },
 };

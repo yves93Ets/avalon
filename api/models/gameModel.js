@@ -4,11 +4,11 @@ const mongoose = require("mongoose");
 const gameSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   room: { type: String, default: "Avalon" },
-  oldList: [String],
-  newList: [String],
+  distributionList: [Object],
   playersList: [String],
   characteresList: [String],
-  position: Number,
+  playerRound: Number,
+  round: Number,
   showResults: Boolean,
   expires: Date,
 });

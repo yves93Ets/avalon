@@ -1,7 +1,8 @@
 const socket = require("socket.io");
+const gameController = require("./api/controllers/gameController");
+
 const {
   removeUser,
-  addUser,
   getUserNames,
   shuffleNames,
   emptyUsersList,
@@ -12,21 +13,20 @@ const ioWorker = (server) => {
   const io = socket(server);
 
   io.on("connection", (socket) => {
-    console.log(socket.id, "connected");
-
     socket.on("reconnect_attempt", () => {
       socket.io.opts.transports = ["websocket", "polling"];
     });
 
     socket.on("login", (name) => {
       socket.username = name;
-      addUser(name);
+      gameController.addPlayer(name);
     });
 
     socket.on("rename", (newName, oldName) => {
-      socket.username = newName;
-      addUser(newName);
-      removeUser(oldName);
+      gameController.updatePlayer(newName, oldName);
+
+      //  addUser(newName);  used to save players on server
+      ///  removeUser(oldName);
     });
 
     socket.on("remove-names", (name) => {
@@ -34,24 +34,29 @@ const ioWorker = (server) => {
     });
 
     socket.on("clear-show-results", (isVisible) => {
+      gameController.setVote(isVisible);
       io.emit("clear-show-results", isVisible);
     });
 
     socket.on("player-list", () => {
-      io.emit("player-list", getUserNames());
+      const playersCallback = gameController.getPlayers();
+      playersCallback.then((pList) => io.emit("player-list", pList));
     });
 
     socket.on("shuffle-list", () => {
-      shuffleNames();
+      gameController.reorderPlayers();
     });
 
     socket.on("submit-count", (count) => {
       socket.broadcast.emit("submit-count", count);
     });
 
-    socket.on("distribute", (roles) => {
-      const distributedRoles = distributeRoles(getUserNames(), roles);
-      io.emit("roles", distributedRoles);
+    socket.on("distribute", (roles, names) => {
+      const lastGameListCB = gameController.getDistributionList();
+      lastGameListCB.then((gList) => {
+        const distributedRoles = distributeRoles(names, roles, gList);
+        io.emit("roles", distributedRoles);
+      });
     });
 
     socket.on("logout", (name) => {

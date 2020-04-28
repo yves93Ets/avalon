@@ -28,13 +28,26 @@ export default function AvalonResultTable(props) {
         });
     };
 
+    const getVotesVisible = async () => {
+      await fetch("/api/avalon/votes")
+        .then((res) => {
+          res.json().then((v) => {
+            setIsVisible(v);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
     getVotes();
+    getVotesVisible();
 
     socket.on("clear-show-results", (isVisible) => {
       setIsVisible(isVisible);
       getVotes();
     });
-  }, [count, setCount, socket]);
+  }, [count, setCount, socket, isVisible, setIsVisible]);
 
   const handleClickDelete = async (e) => {
     e.preventDefault();
@@ -53,6 +66,7 @@ export default function AvalonResultTable(props) {
   const handleClickRefresh = (e) => {
     e.preventDefault();
     socket.emit("clear-show-results", true);
+    setIsVisible(true);
   };
 
   return (

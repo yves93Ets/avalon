@@ -11,7 +11,7 @@ export default function AvalonNavigation() {
   const socket = useContext(SocketContext);
   useEffect(() => {
     setActive(getTitle());
-  });
+  }, [setActive]);
 
   const handleItemClick = (e, { name }) => {
     window.location.href = "/" + name.toLowerCase().split(" ").join("");
@@ -29,10 +29,6 @@ export default function AvalonNavigation() {
     socket.emit("logout", name);
     localStorage.removeItem("username");
     setUsername("");
-  };
-
-  const handleRemoveNamesClick = (e, { name }) => {
-    socket.emit("remove-names", name);
   };
 
   return (
@@ -68,12 +64,6 @@ export default function AvalonNavigation() {
                     icon="list alternate outline"
                     text="order"
                     onClick={handleShuffleListClick}
-                  ></Dropdown.Item>
-                  <Dropdown.Item
-                    name={username}
-                    icon="eraser"
-                    text="empty list"
-                    onClick={handleRemoveNamesClick}
                   ></Dropdown.Item>
                 </>
               ) : null}

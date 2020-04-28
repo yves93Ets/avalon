@@ -8,7 +8,7 @@ export default function AvalonLogin() {
   const [username, setUsername] = useContext(UserContext);
   const [name, setName] = useState("");
   const socket = useContext(SocketContext);
-  useTitle("Rules");
+  useTitle("Login");
 
   const handleSubmit = (e) => {
     e.preventDefault();
