@@ -5,26 +5,24 @@ import { SocketContext } from "../context";
 
 export default function AvalonCharacter() {
   const socket = useContext(SocketContext);
-
-  const [characteresArray, setCharacteresArray] = useState([
-    "Assassin",
-    "Mordred",
-    "Merlin",
-    "Loyal Servant of Arthur 1",
-    "Loyal Servant of Arthur 2",
-  ]);
-
-  const [namesArray, setNamesArray] = useState();
+  const [characteresArray, setCharacteresArray] = useState([]);
+  const [namesArray, setNamesArray] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
 
   useEffect(() => {
-    socket.emit("player-list");
-    socket.on("player-list", (namesList) => {
-      setNamesArray(namesList);
-      const o = namesList.map((n) => {
+    const setArray = (array, arraySetter, optionSetter = null) => {
+      arraySetter(array);
+      const o = array.map((n) => {
         return { key: n, text: n, value: n };
       });
-      setNameOptions(o);
+      if (optionSetter) {
+        optionSetter(o);
+      }
+    };
+    socket.emit("list");
+    socket.on("list", (namesList, characteresList) => {
+      setArray(namesList, setNamesArray, setNameOptions);
+      setArray(characteresList, setCharacteresArray);
     });
   }, [socket]);
 
@@ -69,7 +67,7 @@ export default function AvalonCharacter() {
       </Form.Group>
       <Form.Button type="submit">
         {" "}
-        <Icon name="play circle" />
+        <Icon name="gamepad" />
         play
       </Form.Button>
     </Form>

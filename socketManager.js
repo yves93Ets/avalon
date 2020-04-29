@@ -1,12 +1,8 @@
 const socket = require("socket.io");
 const gameController = require("./api/controllers/gameController");
+const { shuffle, capitalize } = require("./utilities");
 
-const {
-  removeUser,
-  getUserNames,
-  shuffleNames,
-  emptyUsersList,
-} = require("./services/userService");
+const { removeUser, emptyUsersList } = require("./services/userService");
 const distributeRoles = require("./services/distributeRoles");
 
 const ioWorker = (server) => {
@@ -29,18 +25,31 @@ const ioWorker = (server) => {
       ///  removeUser(oldName);
     });
 
-    socket.on("remove-names", (name) => {
+    socket.on("remove-names", () => {
       emptyUsersList();
     });
 
-    socket.on("clear-show-results", (isVisible) => {
-      gameController.setVote(isVisible);
+    socket.on("clear-show-results", (isVisible, round) => {
+      gameController.setVote(isVisible, round);
       io.emit("clear-show-results", isVisible);
     });
 
     socket.on("player-list", () => {
       const playersCallback = gameController.getPlayers();
       playersCallback.then((pList) => io.emit("player-list", pList));
+    });
+
+    socket.on("list", () => {
+      const playersCallback = gameController.getPlayersAndCharacteres();
+      const id = socket.id;
+
+      playersCallback.then((docs) => {
+        io.to(id).emit(
+          "list",
+          docs.playersList,
+          docs.characteresList.map((c) => capitalize(c))
+        );
+      });
     });
 
     socket.on("shuffle-list", () => {
@@ -54,8 +63,19 @@ const ioWorker = (server) => {
     socket.on("distribute", (roles, names) => {
       const lastGameListCB = gameController.getDistributionList();
       lastGameListCB.then((gList) => {
-        const distributedRoles = distributeRoles(names, roles, gList);
-        io.emit("roles", distributedRoles);
+        const distributionList = distributeRoles(names, roles, gList);
+        roles = roles.map((r) => r.toLowerCase());
+        names = shuffle(names);
+        gameController.newGame({ names, distributionList, roles });
+        io.emit("roles", distributionList);
+      });
+    });
+
+    socket.on("my-role", (username) => {
+      const roleCb = gameController.getRole(username);
+      const id = socket.id;
+      roleCb.then((r) => {
+        io.to(id).emit("roles", r);
       });
     });
 

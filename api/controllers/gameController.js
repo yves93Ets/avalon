@@ -1,5 +1,5 @@
 const Game = require("../models/gameModel");
-const shuffle = require("../../utilities");
+const { shuffle } = require("../../utilities");
 
 module.exports = {
   addPlayer: (name) => {
@@ -26,6 +26,25 @@ module.exports = {
       });
   },
 
+  getPlayersAndCharacteres: () => {
+    return Game.findOne({ room: "Avalon" })
+      .select({ playersList: 1, characteresList: 1, _id: 0 })
+      .then((docs) => {
+        return docs;
+      });
+  },
+
+  getRole: (username) => {
+    return Game.findOne(
+      { room: "Avalon" },
+      { distributionList: { $elemMatch: { username } } }
+    )
+      .select("distributionList")
+      .then((docs) => {
+        return docs.distributionList;
+      });
+  },
+
   getDistributionList: () => {
     return Game.findOne({ room: "Avalon" })
       .select("distributionList")
@@ -44,17 +63,19 @@ module.exports = {
         ).exec();
       });
   },
-  newGame: (req, res) => {
+  newGame: (game) => {
     // const game = req.params.stopId;
-
     const newGame = {
-      Gamename: req.body.Gamename,
-      expires: new Date(Date.now()),
+      Gamename: "Avalon",
+      playersList: game.names,
+      distributionList: game.distributionList,
+      characteresList: game.roles,
+      playerTurn: 1,
+      round: 1,
+      showResults: false,
+      //expires: new Date(Date.now()),
     };
-
-    Game.insertMany(newGame)
-      .then(res.status(200).json(newGame))
-      .catch((e) => console.log("error", e));
+    Game.updateOne({ room: "Avalon" }, newGame).exec();
   },
   get: (req, res) => {
     //  add name

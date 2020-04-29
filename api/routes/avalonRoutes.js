@@ -7,10 +7,6 @@ router.get("/", voteController.getAll);
 router.delete("/", voteController.deleteAll);
 router.post("/", voteController.add);
 
-router.post("/players", gameController.addPlayer);
-router.get("/players", gameController.getPlayers);
-router.post("/players:game", gameController.newGame);
-router.delete("/players", gameController.getPlayers);
 router.get("/votes", gameController.getVotes);
 
 module.exports = router;

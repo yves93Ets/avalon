@@ -1,11 +1,9 @@
-const shuffle = require("../utilities");
+const { shuffle } = require("../utilities");
 const RolesFactory = require("./RolesFactory");
 const distributeRoles = (names, roles, lastGameList) => {
   let matches = true;
   let count = 0;
   while (matches) {
-    console.log("matches", matches, "count", count);
-
     names = shuffle(names);
     const array = shuffle(roles).map((r, index) => {
       return { charactere: r, username: names[index] };

@@ -7,6 +7,7 @@ import PlayerRoleMessage from "./players/PlayerRoleMessage";
 
 export default function AvalonNavigation() {
   const [active, setActive] = useState();
+
   const [username, setUsername] = useContext(UserContext);
   const socket = useContext(SocketContext);
   useEffect(() => {
@@ -31,6 +32,10 @@ export default function AvalonNavigation() {
     setUsername("");
   };
 
+  const handleRoleClick = () => {
+    socket.emit("my-role", username);
+  };
+
   return (
     <>
       <Menu pointing>
@@ -40,6 +45,7 @@ export default function AvalonNavigation() {
           onClick={handleItemClick}
         />
         <Menu.Item
+          disabled={username === "David" || username === "Yves" ? false : true}
           name="Admin"
           active={active === "Admin"}
           onClick={handleItemClick}
@@ -58,6 +64,12 @@ export default function AvalonNavigation() {
                 onClick={handleRenameClick}
               ></Dropdown.Item>
               <PlayerList></PlayerList>
+              <Dropdown.Item
+                name={username}
+                icon="pied piper alternate"
+                text="your role"
+                onClick={handleRoleClick}
+              ></Dropdown.Item>
               {active === "Admin" ? (
                 <>
                   <Dropdown.Item

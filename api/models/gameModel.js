@@ -7,7 +7,7 @@ const gameSchema = new mongoose.Schema({
   distributionList: [Object],
   playersList: [String],
   characteresList: [String],
-  playerRound: Number,
+  playerTurn: Number,
   round: Number,
   showResults: Boolean,
   expires: Date,
