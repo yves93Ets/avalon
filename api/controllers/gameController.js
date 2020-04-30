@@ -2,13 +2,23 @@ const Game = require("../models/gameModel");
 const { shuffle } = require("../../utilities");
 
 module.exports = {
+  getResultId: () => {
+    return Game.findOne({ room: "Avalon" })
+      .select("resultId")
+      .then((r) => r.resultId);
+  },
+
   addPlayer: (name) => {
     //  add name
-    console.log(name);
     Game.updateOne({ room: "Avalon" }, { $push: { playersList: name } }).exec();
   },
+
+  removePlayer: (name) => {
+    console.log(name);
+    Game.updateOne({ room: "Avalon" }, { $pull: { playersList: name } }).exec();
+  },
+
   updatePlayer: (newName, oldName) => {
-    //  add name
     Game.updateOne(
       { room: "Avalon" },
       { $set: { "playersList.$[element]": newName } },
@@ -18,6 +28,7 @@ module.exports = {
       }
     ).exec();
   },
+
   getPlayers: () => {
     return Game.findOne({ room: "Avalon" })
       .select("playersList")
@@ -71,20 +82,13 @@ module.exports = {
       distributionList: game.distributionList,
       characteresList: game.roles,
       playerTurn: 1,
-      round: 1,
+      resultId: game.resultId,
       showResults: false,
       //expires: new Date(Date.now()),
     };
     Game.updateOne({ room: "Avalon" }, newGame).exec();
   },
-  get: (req, res) => {
-    //  add name
-    name = req.body.name;
-    Game.updateOne(
-      { room: "Avalon" },
-      { $pull: { playersList: { $in: [name] } } }
-    );
-  },
+
   setVote: (isVisible) => {
     Game.updateOne(
       { room: "Avalon" },

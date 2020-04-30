@@ -1,5 +1,6 @@
 const socket = require("socket.io");
 const gameController = require("./api/controllers/gameController");
+const resultsController = require("./api/controllers/resultsController");
 const { shuffle, capitalize } = require("./utilities");
 
 const { removeUser, emptyUsersList } = require("./services/userService");
@@ -39,6 +40,17 @@ const ioWorker = (server) => {
       playersCallback.then((pList) => io.emit("player-list", pList));
     });
 
+    socket.on("game-results", () => {
+      const idCb = gameController.getResultId();
+      idCb.then((id) => {
+        const resultsCb = resultsController.get(id);
+
+        resultsCb.then((c) => {
+          io.emit("game-results", c);
+        });
+      });
+    });
+
     socket.on("list", () => {
       const playersCallback = gameController.getPlayersAndCharacteres();
       const id = socket.id;
@@ -66,8 +78,16 @@ const ioWorker = (server) => {
         const distributionList = distributeRoles(names, roles, gList);
         roles = roles.map((r) => r.toLowerCase());
         names = shuffle(names);
-        gameController.newGame({ names, distributionList, roles });
-        io.emit("roles", distributionList);
+        const resultIdCb = resultsController.createResult();
+        resultIdCb.then((r) => {
+          gameController.newGame({
+            names,
+            distributionList,
+            roles,
+            resultId: r[0].id,
+          });
+          io.emit("roles", distributionList);
+        });
       });
     });
 
@@ -79,8 +99,8 @@ const ioWorker = (server) => {
       });
     });
 
-    socket.on("logout", (name) => {
-      removeUser(name);
+    socket.on("logout", (username) => {
+      gameController.removePlayer(username);
     });
   });
 };

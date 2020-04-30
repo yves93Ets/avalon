@@ -6,6 +6,7 @@ import AvalonApp from "./comoponents/AvalonApp";
 import AvalonAdmin from "./comoponents/AvalonAdmin";
 import AvalonNavigation from "./comoponents/AvalonNavigation";
 import AvalonRules from "./comoponents/AvalonRules";
+import AvalonResultStats from "./comoponents/AvalonResultStats";
 
 import { UserContext, CountProvider } from "./context";
 
@@ -15,7 +16,8 @@ export default function App() {
   useEffect(() => {
     const itemStr = localStorage.getItem("item");
     const item = JSON.parse(itemStr);
-    const user = !item ? "" : item.name;
+    const name = item && item.expiry > new Date() ? item.name : "";
+    const user = !item ? "" : name;
     setUsername(user);
   }, [username, setUsername]);
 
@@ -24,6 +26,7 @@ export default function App() {
     "/vote": () => <AvalonApp />,
     "/admin": () => <AvalonAdmin />,
     "/rules": () => <AvalonRules />,
+    "/results": () => <AvalonResultStats />,
   };
 
   const routeResult = useRoutes(routes);

@@ -28,7 +28,7 @@ export default function AvalonNavigation() {
 
   const handleLogOutClick = (e, { name }) => {
     socket.emit("logout", name);
-    localStorage.removeItem("username");
+    localStorage.removeItem("item");
     setUsername("");
   };
 
@@ -53,6 +53,11 @@ export default function AvalonNavigation() {
         <Menu.Item
           name="Rules"
           active={active === "Rules"}
+          onClick={handleItemClick}
+        />
+        <Menu.Item
+          name="Results"
+          active={active === "Results"}
           onClick={handleItemClick}
         />
         <Menu.Menu position="right">

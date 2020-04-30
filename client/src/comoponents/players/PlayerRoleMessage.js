@@ -33,13 +33,15 @@ const PlayerRoleMessage = (props) => {
 
   return (
     <>
-      {isVisible ? (
+      {isVisible && role ? (
         <Message onDismiss={handleDismiss} floating size="small">
           <Message.Content style={contentStyle}>
             You are
             <p
               className={
-                role.group === ("mordred" || "oberon") ? "evil" : "good"
+                role.group === "mordred" || role.group === "oberon"
+                  ? "evil"
+                  : "good"
               }
               style={pStyle}
             >
