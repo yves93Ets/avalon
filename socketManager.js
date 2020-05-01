@@ -1,6 +1,7 @@
 const socket = require("socket.io");
 const gameController = require("./api/controllers/gameController");
 const resultsController = require("./api/controllers/resultsController");
+const voteController = require("./api/controllers/voteController");
 const { shuffle, capitalize } = require("./utilities");
 
 const { removeUser, emptyUsersList } = require("./services/userService");
@@ -21,17 +22,28 @@ const ioWorker = (server) => {
 
     socket.on("rename", (newName, oldName) => {
       gameController.updatePlayer(newName, oldName);
-
-      //  addUser(newName);  used to save players on server
-      ///  removeUser(oldName);
     });
 
     socket.on("remove-names", () => {
       emptyUsersList();
     });
 
-    socket.on("clear-show-results", (isVisible, round) => {
-      gameController.setVote(isVisible, round);
+    socket.on("clear-show-results", (isVisible, id, round) => {
+      console.log(111, id);
+      if (isVisible) {
+        const votesCb = voteController.getAll();
+        const votes = [],
+          names = [];
+        votesCb.then((d) => {
+          d.map((v) => {
+            votes.push(v.vote);
+            names.push(v.username);
+          });
+          resultsController.addResults(votes, names, round, id);
+        });
+      }
+
+      gameController.setVoteAndRound(isVisible, round);
       io.emit("clear-show-results", isVisible);
     });
 
@@ -59,7 +71,9 @@ const ioWorker = (server) => {
         io.to(id).emit(
           "list",
           docs.playersList,
-          docs.characteresList.map((c) => capitalize(c))
+          docs.characteresList.map((c) => capitalize(c)),
+          docs.resultId,
+          docs.round
         );
       });
     });

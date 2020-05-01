@@ -4,8 +4,6 @@ const uuid = require("uuid");
 module.exports = {
   createResult: () => {
     const newResult = {
-      VotersList: [[]],
-      VoteResultList: [[]],
       round: 1,
       expires: new Date().getTime(),
       _id: uuid.v1(),
@@ -17,10 +15,14 @@ module.exports = {
       .catch((e) => console.log("error", e));
   },
 
-  addResults: (votes, voters, round) => {
+  addResults: (votes, voters, round, _id) => {
+    console.log(111, votes, voters, _id, round);
     Result.updateOne(
       { _id },
-      { $push: { VotersList: voters }, $push: { VoteResultList: votes }, round }
+      {
+        $push: { votersList: voters, voteResultList: votes },
+        round,
+      }
     ).exec();
   },
 

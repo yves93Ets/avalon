@@ -39,7 +39,13 @@ module.exports = {
 
   getPlayersAndCharacteres: () => {
     return Game.findOne({ room: "Avalon" })
-      .select({ playersList: 1, characteresList: 1, _id: 0 })
+      .select({
+        playersList: 1,
+        characteresList: 1,
+        _id: 0,
+        round: 1,
+        resultId: 1,
+      })
       .then((docs) => {
         return docs;
       });
@@ -82,6 +88,7 @@ module.exports = {
       distributionList: game.distributionList,
       characteresList: game.roles,
       playerTurn: 1,
+      round: 1,
       resultId: game.resultId,
       showResults: false,
       //expires: new Date(Date.now()),
@@ -89,10 +96,10 @@ module.exports = {
     Game.updateOne({ room: "Avalon" }, newGame).exec();
   },
 
-  setVote: (isVisible) => {
+  setVoteAndRound: (isVisible, round) => {
     Game.updateOne(
       { room: "Avalon" },
-      { $set: { showResults: isVisible } }
+      { $set: { showResults: isVisible, round } }
     ).exec();
   },
 

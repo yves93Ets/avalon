@@ -1,6 +1,6 @@
 const Vote = require("../models/voteModel");
 module.exports = {
-  getAll: (req, res) => {
+  getVotes: (req, res) => {
     Vote.find()
       .exec()
       .then((docs) => {
@@ -9,6 +9,11 @@ module.exports = {
         });
         res.status(200).json(votes);
       });
+  },
+  getAll: () => {
+    return Vote.find().then((docs) => {
+      return docs;
+    });
   },
   deleteAll: (req, res) => {
     Vote.deleteMany({})
@@ -21,6 +26,7 @@ module.exports = {
   add: (req, res) => {
     const newVote = {
       vote: req.body.vote,
+      username: req.body.username,
       expires: new Date(Date.now()),
     };
 

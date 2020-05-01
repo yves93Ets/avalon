@@ -12,7 +12,7 @@ export default function AvalonAdmin() {
   return (
     <div className="advalon-admin App">
       <AvalonForm />
-      <AvalonResult isAdmin={true} successSrc={successSrc} failSrc={failSrc} />
+      <AvalonResult successSrc={successSrc} failSrc={failSrc} />
       <AvalonCharacter />
     </div>
   );

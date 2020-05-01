@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Form, Icon } from "semantic-ui-react";
+import { Form, Icon, Button } from "semantic-ui-react";
 import { options } from "../const/constants";
 import { SocketContext } from "../context";
 
@@ -8,6 +8,7 @@ export default function AvalonCharacter() {
   const [characteresArray, setCharacteresArray] = useState([]);
   const [namesArray, setNamesArray] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
+  const [gameIdgameRound, setGameIdgameRound] = useState([]);
 
   useEffect(() => {
     const setArray = (array, arraySetter, optionSetter = null) => {
@@ -20,9 +21,11 @@ export default function AvalonCharacter() {
       }
     };
     socket.emit("list");
-    socket.on("list", (namesList, characteresList) => {
+    socket.on("list", (namesList, characteresList, id, round) => {
       setArray(namesList, setNamesArray, setNameOptions);
       setArray(characteresList, setCharacteresArray);
+
+      setGameIdgameRound({ id, round });
     });
   }, [socket]);
 
@@ -41,9 +44,53 @@ export default function AvalonCharacter() {
     setNamesArray(data.value);
   };
 
+  const handleClickDelete = async (e) => {
+    e.preventDefault();
+    //setIsVisible(false);
+    //setVotes([]);
+    await fetch("/api/avalon", {
+      method: "Delete",
+    })
+      .then(socket.emit("submit-count", 0))
+      .then(
+        socket.emit("clear-show-results"),
+        false,
+        gameIdgameRound.id,
+        gameIdgameRound.round
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleClickRefresh = (e) => {
+    e.preventDefault();
+    socket.emit(
+      "clear-show-results",
+      true,
+      gameIdgameRound.id,
+      gameIdgameRound.round + 1
+    );
+  };
   return (
     <Form className="margin" onSubmit={handleSubmit}>
       <Form.Group>
+        <Button
+          negative
+          icon="trash"
+          content="Clear"
+          onClick={handleClickDelete}
+          color="red"
+          className="vote-red"
+        ></Button>
+        <Button
+          icon="refresh"
+          content="Show"
+          onClick={handleClickRefresh}
+          color="blue"
+        ></Button>
+      </Form.Group>
+      <Form.Group className="margin">
         <Form.Dropdown
           fluid
           placeholder="Characteres"
@@ -54,7 +101,7 @@ export default function AvalonCharacter() {
           onChange={onChange}
         />
       </Form.Group>
-      <Form.Group>
+      <Form.Group className="margin">
         <Form.Dropdown
           fluid
           placeholder="Names"
@@ -65,7 +112,7 @@ export default function AvalonCharacter() {
           onChange={onChangeNames}
         />
       </Form.Group>
-      <Form.Button type="submit">
+      <Form.Button className="margin" type="submit">
         {" "}
         <Icon name="gamepad" />
         play
