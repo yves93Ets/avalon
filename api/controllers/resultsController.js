@@ -16,7 +16,6 @@ module.exports = {
   },
 
   addResults: (votes, voters, round, _id) => {
-    console.log(111, votes, voters, _id, round);
     Result.updateOne(
       { _id },
       {
@@ -33,5 +32,11 @@ module.exports = {
       .then((r) => {
         return r;
       });
+  },
+  deleteLastResult: (_id) => {
+    Result.updateOne(
+      { _id },
+      { $pop: { voteResultList: 1, votersList: 1 } }
+    ).exec();
   },
 };

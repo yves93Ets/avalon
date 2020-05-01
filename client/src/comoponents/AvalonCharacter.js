@@ -24,8 +24,11 @@ export default function AvalonCharacter() {
     socket.on("list", (namesList, characteresList, id, round) => {
       setArray(namesList, setNamesArray, setNameOptions);
       setArray(characteresList, setCharacteresArray);
-
       setGameIdgameRound({ id, round });
+    });
+
+    socket.on("result-id", (id) => {
+      setGameIdgameRound({ id, round: 1 });
     });
   }, [socket]);
 

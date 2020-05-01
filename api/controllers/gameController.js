@@ -9,12 +9,10 @@ module.exports = {
   },
 
   addPlayer: (name) => {
-    //  add name
     Game.updateOne({ room: "Avalon" }, { $push: { playersList: name } }).exec();
   },
 
   removePlayer: (name) => {
-    console.log(name);
     Game.updateOne({ room: "Avalon" }, { $pull: { playersList: name } }).exec();
   },
 
@@ -42,9 +40,9 @@ module.exports = {
       .select({
         playersList: 1,
         characteresList: 1,
-        _id: 0,
         round: 1,
         resultId: 1,
+        _id: 0,
       })
       .then((docs) => {
         return docs;
@@ -81,15 +79,14 @@ module.exports = {
       });
   },
   newGame: (game) => {
-    // const game = req.params.stopId;
     const newGame = {
       Gamename: "Avalon",
       playersList: game.names,
       distributionList: game.distributionList,
       characteresList: game.roles,
-      playerTurn: 1,
-      round: 1,
       resultId: game.resultId,
+      round: 1,
+      plaplayerTurn: 1,
       showResults: false,
       //expires: new Date(Date.now()),
     };
@@ -97,10 +94,17 @@ module.exports = {
   },
 
   setVoteAndRound: (isVisible, round) => {
-    Game.updateOne(
-      { room: "Avalon" },
-      { $set: { showResults: isVisible, round } }
-    ).exec();
+    if (round == 0) {
+      Game.updateOne(
+        { room: "Avalon" },
+        { $set: { showResults: isVisible } }
+      ).exec();
+    } else {
+      Game.updateOne(
+        { room: "Avalon" },
+        { $set: { showResults: isVisible, round } }
+      ).exec();
+    }
   },
 
   getVotes: (req, res) => {

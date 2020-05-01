@@ -29,7 +29,6 @@ const ioWorker = (server) => {
     });
 
     socket.on("clear-show-results", (isVisible, id, round) => {
-      console.log(111, id);
       if (isVisible) {
         const votesCb = voteController.getAll();
         const votes = [],
@@ -39,10 +38,14 @@ const ioWorker = (server) => {
             votes.push(v.vote);
             names.push(v.username);
           });
-          resultsController.addResults(votes, names, round, id);
+          resultsController.addResults(
+            shuffle(votes),
+            shuffle(names),
+            round,
+            id
+          );
         });
       }
-
       gameController.setVoteAndRound(isVisible, round);
       io.emit("clear-show-results", isVisible);
     });
@@ -77,7 +80,6 @@ const ioWorker = (server) => {
         );
       });
     });
-
     socket.on("shuffle-list", () => {
       gameController.reorderPlayers();
     });
@@ -87,6 +89,7 @@ const ioWorker = (server) => {
     });
 
     socket.on("distribute", (roles, names) => {
+      io.emit("clear-show-results", false);
       const lastGameListCB = gameController.getDistributionList();
       lastGameListCB.then((gList) => {
         const distributionList = distributeRoles(names, roles, gList);
@@ -101,6 +104,7 @@ const ioWorker = (server) => {
             resultId: r[0].id,
           });
           io.emit("roles", distributionList);
+          io.emit("result-id", r[0].id);
         });
       });
     });
