@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const voteSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   vote: Boolean,
+  username: String,
   expires: Date,
 });
 

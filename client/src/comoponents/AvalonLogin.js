@@ -2,18 +2,23 @@ import React, { useState, useContext } from "react";
 import { Form, Input, Grid, Header, Image } from "semantic-ui-react";
 import { UserContext, SocketContext } from "../context";
 import merlinSrc from "../images/Merlin.jpg";
+import { useTitle } from "hookrouter";
 
 export default function AvalonLogin() {
   const [username, setUsername] = useContext(UserContext);
   const [name, setName] = useState("");
   const socket = useContext(SocketContext);
+  useTitle("Login");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     username === ""
       ? socket.emit("login", name)
       : socket.emit("rename", name, username);
-    localStorage.setItem("username", name);
+    const now = new Date().getHours();
+    const expiry = new Date().setHours(now + 4);
+    const item = { name, expiry };
+    localStorage.setItem("item", JSON.stringify(item));
     setUsername(name);
     window.location.href = "/vote";
   };

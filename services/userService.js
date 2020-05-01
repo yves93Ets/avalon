@@ -1,5 +1,5 @@
-const shuffle = require("../utilities");
-
+const { shuffle } = require("../utilities");
+// NOT USED ANYMORE CAN BE DELETED
 let names = [];
 
 function addUser(n) {
@@ -23,10 +23,16 @@ function getNumUsers() {
 function shuffleNames() {
   names = shuffle(names);
 }
+
+function emptyUsersList() {
+  names = [];
+}
+
 module.exports = {
   addUser,
   removeUser,
   getUserNames,
   getNumUsers,
   shuffleNames,
+  emptyUsersList,
 };

@@ -9,7 +9,7 @@ function create(charactere, username) {
   return new RolesCreator(charactere, username);
 }
 
-function setKnowledge(group, characteresArray) {
+function setKnowledge(group, username, characteresArray) {
   const knowledge = [];
   switch (group) {
     case "mordred":
@@ -38,7 +38,10 @@ function setKnowledge(group, characteresArray) {
       break;
     default:
   }
-  return knowledge;
+
+  return knowledge.filter((k) => {
+    return k !== username;
+  });
 }
 
 function getGroup(charactereName) {
@@ -67,4 +70,17 @@ function getGroup(charactereName) {
   return group;
 }
 
-module.exports = { create, setKnowledge };
+function verifyRoles(cArray, lgList) {
+  let sameCount = 0;
+  cArray.map((c) => {
+    lgList.map((l) => {
+      l.charactere == c.charactere && l.username == c.username
+        ? sameCount++
+        : sameCount;
+    });
+  });
+
+  return sameCount > 2 ? true : false;
+}
+
+module.exports = { create, setKnowledge, verifyRoles };
