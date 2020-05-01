@@ -12,7 +12,7 @@ const ioWorker = (server) => {
 
   io.on("connection", (socket) => {
     socket.on("reconnect_attempt", () => {
-      socket.io.opts.transports = ["websocket", "polling"];
+      socket.io.opts.transports = ["websocket"];
     });
 
     socket.on("login", (name) => {
