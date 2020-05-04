@@ -49,8 +49,7 @@ export default function AvalonCharacter() {
 
   const handleClickDelete = async (e) => {
     e.preventDefault();
-    //setIsVisible(false);
-    //setVotes([]);
+
     await fetch("/api/avalon", {
       method: "Delete",
     })

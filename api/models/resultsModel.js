@@ -6,6 +6,7 @@ const resultsSchema = new mongoose.Schema({
   voteResultList: [[Boolean]],
   round: Number,
   expires: Date,
+  finishesAt: Date,
 });
 
 module.exports = mongoose.model("Result", resultsSchema);

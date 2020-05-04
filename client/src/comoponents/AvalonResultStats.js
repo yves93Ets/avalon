@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
-import { List, Table, Header, Button } from "semantic-ui-react";
+import { List, Table, Header } from "semantic-ui-react";
 import { useTitle } from "hookrouter";
-import { SocketContext, UserContext } from "../context";
+import { SocketContext } from "../context";
 
 export default function AvalonResults() {
   useTitle("Results");
@@ -13,8 +13,10 @@ export default function AvalonResults() {
   useEffect(() => {
     socket.emit("game-results");
     socket.on("game-results", (results) => {
-      setVoters(results.votersList);
-      setVotes(results.voteResultList);
+      if (results) {
+        setVoters(results.votersList);
+        setVotes(results.voteResultList);
+      }
     });
   }, [socket]);
 
@@ -27,6 +29,7 @@ export default function AvalonResults() {
           <Table.HeaderCell>Results</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
+      {console.log(11, voters)}
       {voters.length === 0 ? (
         <Table.Body>
           <Table.Row></Table.Row>

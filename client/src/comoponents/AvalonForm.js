@@ -30,6 +30,7 @@ export default function AvalonForm() {
     setCount(submitCount);
     socket.emit("submit-count", submitCount);
     socket.emit("clear-show-results", false, 0, 0);
+    socket.emit("started-at");
   };
 
   const handleSubmit = async (e) => {

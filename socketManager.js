@@ -2,13 +2,20 @@ const socket = require("socket.io");
 const gameController = require("./api/controllers/gameController");
 const resultsController = require("./api/controllers/resultsController");
 const voteController = require("./api/controllers/voteController");
-const { shuffle, capitalize } = require("./utilities");
+const {
+  shuffle,
+  capitalize,
+  setFinishTime,
+  getSecondsLeft,
+} = require("./utilities");
 
-const { removeUser, emptyUsersList } = require("./services/userService");
+const { emptyUsersList } = require("./services/userService");
 const distributeRoles = require("./services/distributeRoles");
 
 const ioWorker = (server) => {
-  const io = socket(server);
+  const io = socket(server, {
+    transports: ["websocket"],
+  });
 
   io.on("connection", (socket) => {
     socket.on("reconnect_attempt", () => {
@@ -42,6 +49,7 @@ const ioWorker = (server) => {
             shuffle(votes),
             shuffle(names),
             round,
+            setFinishTime(),
             id
           );
         });
@@ -66,6 +74,17 @@ const ioWorker = (server) => {
       });
     });
 
+    socket.on("started-at", () => {
+      const idCb = gameController.getResultId();
+      idCb.then((id) => {
+        const resultsCb = resultsController.getTimeLeft(id);
+
+        resultsCb.then((c) => {
+          io.emit("started-at", getSecondsLeft(c.finishesAt));
+        });
+      });
+    });
+
     socket.on("list", () => {
       const playersCallback = gameController.getPlayersAndCharacteres();
       const id = socket.id;
@@ -80,6 +99,7 @@ const ioWorker = (server) => {
         );
       });
     });
+
     socket.on("shuffle-list", () => {
       gameController.reorderPlayers();
     });

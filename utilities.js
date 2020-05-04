@@ -10,4 +10,18 @@ const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
-module.exports = { shuffle, capitalize };
+const setFinishTime = () => {
+  const now = new Date();
+  const min = now.getUTCMinutes();
+  const finishesAt = new Date().setMinutes(min + 10);
+  return finishesAt;
+};
+
+const getSecondsLeft = (time) => {
+  const now = new Date();
+  const utcSeconds = time.getTime() - now.getTime();
+  const seconds = utcSeconds / 1000;
+  return seconds;
+};
+
+module.exports = { shuffle, capitalize, setFinishTime, getSecondsLeft };

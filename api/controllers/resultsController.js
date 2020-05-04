@@ -15,12 +15,13 @@ module.exports = {
       .catch((e) => console.log("error", e));
   },
 
-  addResults: (votes, voters, round, _id) => {
+  addResults: (votes, voters, round, finishesAt, _id) => {
     Result.updateOne(
       { _id },
       {
         $push: { votersList: voters, voteResultList: votes },
         round,
+        finishesAt,
       }
     ).exec();
   },
@@ -33,6 +34,15 @@ module.exports = {
         return r;
       });
   },
+
+  getTimeLeft: (id) => {
+    return Result.findOne({ _id: id })
+      .select("finishesAt")
+      .then((r) => {
+        return r;
+      });
+  },
+
   deleteLastResult: (_id) => {
     Result.updateOne(
       { _id },
