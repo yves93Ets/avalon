@@ -54,7 +54,7 @@ export default function AvalonForm() {
     setTimeout(() => {
       setCard(succes);
       setIsSubmitted(true);
-    }, 3000);
+    }, 1500);
   };
 
   const handleCheckbox = () => {

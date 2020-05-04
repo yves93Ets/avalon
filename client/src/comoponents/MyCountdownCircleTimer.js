@@ -1,6 +1,5 @@
-import React, { useEffect, useContext, useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
-import { SocketContext } from "../context";
 
 const timerProps = {
   isPlaying: true,
@@ -9,15 +8,8 @@ const timerProps = {
 };
 
 export default function MyCountdownCircleTimer(props) {
-  const socket = useContext(SocketContext);
   const [seconds, setSeconds] = useState(props.seconds);
   const duration = 600;
-
-  useLayoutEffect(() => {
-    socket.on("time-over", () => {
-      alert("Time is over");
-    });
-  }, [socket]);
 
   useLayoutEffect(() => {
     setSeconds(props.seconds);
@@ -31,7 +23,8 @@ export default function MyCountdownCircleTimer(props) {
   };
 
   const handleTimeOver = () => {
-    socket.emit("time-over");
+    alert("Time is over");
+    window.location.href = "/vote";
   };
 
   const renderTime = (time) => {
@@ -47,7 +40,8 @@ export default function MyCountdownCircleTimer(props) {
       isPlaying
       duration={duration}
       colors={[["#004777", 0.33], ["#F7B801", 0.33], ["#A30000"]]}
-      initialRemainingTime={seconds}
+      initialRemainingTime={seconds < 0 ? 0 : seconds}
+      onComplete={handleTimeOver}
     >
       {({ elapsedTime }) => renderTime(display(seconds, elapsedTime))}
     </CountdownCircleTimer>

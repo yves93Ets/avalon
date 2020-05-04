@@ -17,7 +17,6 @@ export default function AvalonNavigation() {
     setActive(getTitle());
 
     socket.emit("started-at");
-
     socket.on("started-at", (s) => {
       setSeconds(s);
     });

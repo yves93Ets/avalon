@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
-import { List, Table, Header } from "semantic-ui-react";
+import { List, Table, Header, Icon, Button } from "semantic-ui-react";
 import { useTitle } from "hookrouter";
-import { SocketContext } from "../context";
+import { SocketContext, UserContext } from "../context";
 
 export default function AvalonResults() {
   useTitle("Results");
@@ -9,6 +9,8 @@ export default function AvalonResults() {
   const [voters, setVoters] = useState([[]]);
   const [votes, setVotes] = useState([[]]);
   const socket = useContext(SocketContext);
+  const [username] = useContext(UserContext);
+  const [id, setId] = useState();
 
   useEffect(() => {
     socket.emit("game-results");
@@ -16,9 +18,14 @@ export default function AvalonResults() {
       if (results) {
         setVoters(results.votersList);
         setVotes(results.voteResultList);
+        setId(results._id);
       }
     });
-  }, [socket]);
+  }, []);
+
+  const handleDelete = (e, value) => {
+    socket.emit("delete-round", value.value, id);
+  };
 
   return (
     <Table unstackable compact celled textAlign="center">
@@ -27,9 +34,11 @@ export default function AvalonResults() {
           <Table.HeaderCell>Round</Table.HeaderCell>
           <Table.HeaderCell>Names</Table.HeaderCell>
           <Table.HeaderCell>Results</Table.HeaderCell>
+          {username === "David" ? (
+            <Table.HeaderCell>Delete</Table.HeaderCell>
+          ) : null}
         </Table.Row>
       </Table.Header>
-      {console.log(11, voters)}
       {voters.length === 0 ? (
         <Table.Body>
           <Table.Row></Table.Row>
@@ -41,7 +50,7 @@ export default function AvalonResults() {
               <Table.Row key={index}>
                 <Table.Cell>
                   <Header as="h2" textAlign="center">
-                    {index + 1}
+                    {index + 1}{" "}
                   </Header>
                 </Table.Cell>
                 <Table.Cell>
@@ -62,6 +71,21 @@ export default function AvalonResults() {
                     })}
                   </List>
                 </Table.Cell>
+                {username === "David" && index === votes.length - 1 ? (
+                  <Table.Cell>
+                    <Button
+                      color="red"
+                      basic
+                      icon
+                      value={index}
+                      onClick={handleDelete}
+                    >
+                      <Icon name="trash" circular fitted size="small" />
+                    </Button>
+                  </Table.Cell>
+                ) : username === "David" ? (
+                  <Table.Cell></Table.Cell>
+                ) : null}
               </Table.Row>
             );
           })}

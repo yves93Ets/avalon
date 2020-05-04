@@ -86,7 +86,6 @@ module.exports = {
       characteresList: game.roles,
       resultId: game.resultId,
       round: 1,
-      plaplayerTurn: 1,
       showResults: false,
       //expires: new Date(Date.now()),
     };

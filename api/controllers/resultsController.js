@@ -2,11 +2,12 @@ const Result = require("../models/resultsModel");
 const { shuffle } = require("../../utilities");
 const uuid = require("uuid");
 module.exports = {
-  createResult: () => {
+  createResult: (finishesAt) => {
     const newResult = {
       round: 1,
       expires: new Date().getTime(),
       _id: uuid.v1(),
+      finishesAt,
     };
     return Result.insertMany(newResult)
       .then((r) => {
@@ -22,6 +23,16 @@ module.exports = {
         $push: { votersList: voters, voteResultList: votes },
         round,
         finishesAt,
+        plaplayerTurn: 1,
+      }
+    ).exec();
+  },
+
+  addVotesFormMission: (username, vote, _id) => {
+    Result.updateOne(
+      { _id },
+      {
+        $push: { votesForMission: { username, vote } },
       }
     ).exec();
   },
@@ -43,10 +54,35 @@ module.exports = {
       });
   },
 
-  deleteLastResult: (_id) => {
+  deleteLastRound: (_id, round) => {
+    return Result.updateOne(
+      { _id },
+      { $pop: { voteResultList: 1, votersList: 1 }, round }
+    ).exec();
+  },
+
+  deleteRound: (_id, round) => {
     Result.updateOne(
       { _id },
-      { $pop: { voteResultList: 1, votersList: 1 } }
-    ).exec();
+      {
+        $unset: {
+          "voteResultList.$[element]": 1,
+          "votersList.$[element]": 1,
+        },
+      },
+      {
+        arrayFilters: [{ element: round }],
+        upsert: true,
+      }
+    )
+      .exec()
+      .then((r) => {
+        console.log(r);
+      });
+
+    /*Result.updateOne(
+      { _id },
+      { $pull: { voteResultList: null, votersList: null } }
+    ).exec();*/
   },
 };

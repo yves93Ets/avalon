@@ -74,6 +74,10 @@ const ioWorker = (server) => {
       });
     });
 
+    socket.on("delete-round", (round, id) => {
+      resultsController.deleteLastRound(id, round);
+    });
+
     socket.on("started-at", () => {
       const idCb = gameController.getResultId();
       idCb.then((id) => {
@@ -115,7 +119,7 @@ const ioWorker = (server) => {
         const distributionList = distributeRoles(names, roles, gList);
         roles = roles.map((r) => r.toLowerCase());
         names = shuffle(names);
-        const resultIdCb = resultsController.createResult();
+        const resultIdCb = resultsController.createResult(setFinishTime());
         resultIdCb.then((r) => {
           gameController.newGame({
             names,
@@ -133,6 +137,14 @@ const ioWorker = (server) => {
       const roleCb = gameController.getRole(username);
       const id = socket.id;
       roleCb.then((r) => {
+        io.to(id).emit("roles", r);
+      });
+    });
+
+    socket.on("accept-mission", (username, vote, id) => {
+      const idCb = gameController.getResultId();
+      idCb.then((id) => {
+        resultsController.addVotesFormMission(username, vote, id);
         io.to(id).emit("roles", r);
       });
     });

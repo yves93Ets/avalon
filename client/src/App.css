@@ -79,6 +79,14 @@
   color: #4882b4;
 }
 
+.bg-good {
+  background-color: #4882b4 !important;
+}
+
+.bg-evil {
+  background-color: #8e4a4b !important;
+}
+
 .margin {
   margin-top: 10px;
   margin-bottom: 10px;
