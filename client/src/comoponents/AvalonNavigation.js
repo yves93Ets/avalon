@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Menu, Dropdown } from "semantic-ui-react";
 import { UserContext, SocketContext } from "../context";
 import { getTitle } from "hookrouter";
@@ -20,7 +20,7 @@ export default function AvalonNavigation() {
     socket.on("started-at", (s) => {
       setSeconds(s);
     });
-  }, []);
+  }, [socket]);
 
   const handleItemClick = (e, { name }) => {
     window.location.href = "/" + name.toLowerCase().split(" ").join("");

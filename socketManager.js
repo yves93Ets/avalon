@@ -7,6 +7,7 @@ const {
   capitalize,
   setFinishTime,
   getSecondsLeft,
+  convertToMultipleArray,
 } = require("./utilities");
 
 const { emptyUsersList } = require("./services/userService");
@@ -67,9 +68,17 @@ const ioWorker = (server) => {
       const idCb = gameController.getResultId();
       idCb.then((id) => {
         const resultsCb = resultsController.get(id);
-
         resultsCb.then((c) => {
-          io.emit("game-results", c);
+          io.emit(
+            "game-results",
+            c,
+            convertToMultipleArray(c.votesForMission, c.playerTurn, c.round)
+          );
+          var a = convertToMultipleArray(
+            c.votesForMission,
+            c.playerTurn,
+            c.round
+          );
         });
       });
     });
@@ -84,7 +93,7 @@ const ioWorker = (server) => {
         const resultsCb = resultsController.getTimeLeft(id);
 
         resultsCb.then((c) => {
-          io.emit("started-at", getSecondsLeft(c.finishesAt));
+          c && io.emit("started-at", getSecondsLeft(c.finishesAt));
         });
       });
     });
@@ -141,11 +150,17 @@ const ioWorker = (server) => {
       });
     });
 
-    socket.on("accept-mission", (username, vote, id) => {
+    socket.on("accept-mission", (username, vote) => {
       const idCb = gameController.getResultId();
       idCb.then((id) => {
         resultsController.addVotesFormMission(username, vote, id);
-        io.to(id).emit("roles", r);
+      });
+    });
+
+    socket.on("show-accept-mission", () => {
+      const idCb = gameController.getResultId();
+      idCb.then((id) => {
+        resultsController.addPlayerTurn(id);
       });
     });
 

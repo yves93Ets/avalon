@@ -2,26 +2,28 @@ import React, { useContext, useState, useEffect } from "react";
 import { List, Table, Header, Icon, Button } from "semantic-ui-react";
 import { useTitle } from "hookrouter";
 import { SocketContext, UserContext } from "../context";
-
+import AvalonResultsVotesForMissionList from "./AvalonResultsVotesForMissionList";
 export default function AvalonResults() {
   useTitle("Results");
 
   const [voters, setVoters] = useState([[]]);
   const [votes, setVotes] = useState([[]]);
+  const [votesForMission, setVotesForMission] = useState([[]]);
   const socket = useContext(SocketContext);
   const [username] = useContext(UserContext);
   const [id, setId] = useState();
 
   useEffect(() => {
     socket.emit("game-results");
-    socket.on("game-results", (results) => {
+    socket.on("game-results", (results, vfm) => {
       if (results) {
         setVoters(results.votersList);
         setVotes(results.voteResultList);
         setId(results._id);
+        setVotesForMission(vfm);
       }
     });
-  }, []);
+  }, [socket]);
 
   const handleDelete = (e, value) => {
     socket.emit("delete-round", value.value, id);
@@ -34,6 +36,7 @@ export default function AvalonResults() {
           <Table.HeaderCell>Round</Table.HeaderCell>
           <Table.HeaderCell>Names</Table.HeaderCell>
           <Table.HeaderCell>Results</Table.HeaderCell>
+          <Table.HeaderCell>Votes for mission</Table.HeaderCell>
           {username === "David" ? (
             <Table.HeaderCell>Delete</Table.HeaderCell>
           ) : null}
@@ -71,6 +74,15 @@ export default function AvalonResults() {
                     })}
                   </List>
                 </Table.Cell>
+                {votesForMission.length > 0 ? (
+                  <Table.Cell>
+                    {console.log(222, index, votesForMission)}
+                    <AvalonResultsVotesForMissionList
+                      votesForMission={votesForMission[index]}
+                    />
+                  </Table.Cell>
+                ) : null}
+
                 {username === "David" && index === votes.length - 1 ? (
                   <Table.Cell>
                     <Button

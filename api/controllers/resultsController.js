@@ -23,23 +23,50 @@ module.exports = {
         $push: { votersList: voters, voteResultList: votes },
         round,
         finishesAt,
-        plaplayerTurn: 1,
+        playerTurn: 1,
       }
     ).exec();
   },
 
   addVotesFormMission: (username, vote, _id) => {
-    Result.updateOne(
-      { _id },
-      {
-        $push: { votesForMission: { username, vote } },
-      }
-    ).exec();
+    Result.findOne({ _id })
+      .select({
+        playerTurn: 1,
+        round: 1,
+      })
+      .then((d) => {
+        Result.updateOne(
+          { _id },
+          {
+            $push: {
+              votesForMission: {
+                username,
+                vote,
+                playerTurn: d.playerTurn,
+                round: d.round,
+              },
+            },
+          }
+        ).exec();
+      });
+  },
+
+  addPlayerTurn: (_id) => {
+    Result.findOne({ _id })
+      .select({
+        playerTurn: 1,
+        round: 1,
+      })
+      .then((d) => {
+        Result.updateOne(
+          { _id },
+          { $set: { playerTurn: d.playerTurn + 1 } }
+        ).exec();
+      });
   },
 
   get: (id) => {
     return Result.findOne({ _id: id })
-
       .select()
       .then((r) => {
         return r;
@@ -80,9 +107,9 @@ module.exports = {
         console.log(r);
       });
 
-    /*Result.updateOne(
+    Result.updateOne(
       { _id },
       { $pull: { voteResultList: null, votersList: null } }
-    ).exec();*/
+    ).exec();
   },
 };

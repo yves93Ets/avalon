@@ -34,16 +34,17 @@ export default function MyCountdownCircleTimer(props) {
       </div>
     );
   };
-  return (
+
+  return props.seconds ? (
     <CountdownCircleTimer
       {...timerProps}
       isPlaying
       duration={duration}
       colors={[["#004777", 0.33], ["#F7B801", 0.33], ["#A30000"]]}
-      initialRemainingTime={seconds < 0 ? 0 : seconds}
+      initialRemainingTime={seconds}
       onComplete={handleTimeOver}
     >
       {({ elapsedTime }) => renderTime(display(seconds, elapsedTime))}
     </CountdownCircleTimer>
-  );
+  ) : null;
 }

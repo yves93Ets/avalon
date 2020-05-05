@@ -35,6 +35,7 @@ export default function AvalonCharacter() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     socket.emit("distribute", characteresArray, namesArray);
+    socket.emit("started-at");
   };
 
   const onChange = (e, data) => {
