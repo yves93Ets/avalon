@@ -70,4 +70,17 @@ function getGroup(charactereName) {
   return group;
 }
 
-module.exports = { create, setKnowledge };
+function verifyRoles(cArray, lgList) {
+  let sameCount = 0;
+  cArray.map((c) => {
+    lgList.map((l) => {
+      l.charactere == c.charactere && l.username == c.username
+        ? sameCount++
+        : sameCount;
+    });
+  });
+
+  return sameCount > 2 ? true : false;
+}
+
+module.exports = { create, setKnowledge, verifyRoles };

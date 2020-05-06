@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Header, Image, Table, Button } from "semantic-ui-react";
+import { Header, Image, Table } from "semantic-ui-react";
 import { CountContext, SocketContext } from "../context";
 
 export default function AvalonResultTable(props) {
@@ -28,32 +28,26 @@ export default function AvalonResultTable(props) {
         });
     };
 
+    const getVotesVisible = async () => {
+      await fetch("/api/avalon/votes")
+        .then((res) => {
+          res.json().then((v) => {
+            setIsVisible(v);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
     getVotes();
+    getVotesVisible();
 
     socket.on("clear-show-results", (isVisible) => {
       setIsVisible(isVisible);
       getVotes();
     });
-  }, [count, setCount, socket]);
-
-  const handleClickDelete = async (e) => {
-    e.preventDefault();
-    setIsVisible(false);
-    setVotes([]);
-    await fetch("/api/avalon", {
-      method: "Delete",
-    })
-      .then(socket.emit("submit-count", 0), setCount(0))
-      .then(socket.emit("clear-show-results"), false)
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const handleClickRefresh = (e) => {
-    e.preventDefault();
-    socket.emit("clear-show-results", true);
-  };
+  }, [count, setCount, socket, isVisible, setIsVisible]);
 
   return (
     <div>
@@ -80,26 +74,6 @@ export default function AvalonResultTable(props) {
           </Table.Row>
         </Table.Header>
       </Table>
-      {props.isAdmin ? (
-        <div>
-          <Button
-            negative
-            icon="trash"
-            content="Clear"
-            onClick={handleClickDelete}
-            color="red"
-            className="vote-red"
-          ></Button>
-          <Button
-            icon="refresh"
-            content="Show"
-            onClick={handleClickRefresh}
-            color="blue"
-          ></Button>
-        </div>
-      ) : (
-        ""
-      )}
     </div>
   );
 }

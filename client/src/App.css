@@ -79,6 +79,16 @@
   color: #4882b4;
 }
 
+.bg-good {
+  background-color: #4882b4 !important;
+  color: white !important;
+}
+
+.bg-evil {
+  background-color: #8e4a4b !important;
+  color: white !important;
+}
+
 .margin {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -95,4 +105,15 @@
 
 .width {
   width: 150px !important;
+}
+
+.timer {
+  display: flex;
+  justify-content: space-around;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.time {
+  font-size: 12.5px;
 }

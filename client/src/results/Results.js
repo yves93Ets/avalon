@@ -4,15 +4,13 @@ import { SocketContext } from "../../context";
 
 const PlayerList = () => {
   const [names, setNames] = useState([]);
-  const [playerTurn, setPlayerTurn] = useState(0);
   const socket = useContext(SocketContext);
 
   useEffect(() => {
-    socket.on("player-list", (namesList, turn) => {
+    socket.on("player-list", (namesList) => {
       setNames(namesList);
-      setPlayerTurn(turn);
     });
-  }, [socket]);
+  });
 
   const handlePlayersListClick = () => {
     socket.emit("player-list");
@@ -32,12 +30,8 @@ const PlayerList = () => {
         <Modal.Description>
           <Step link>
             <Step.Group fluid size="small" ordered>
-              {names.map((n, i) => {
-                return (
-                  <Step key={i} active={i + 1 === playerTurn}>
-                    {n}
-                  </Step>
-                );
+              {names.map((n) => {
+                return <Step key={n}>{n}</Step>;
               })}
             </Step.Group>
           </Step>
