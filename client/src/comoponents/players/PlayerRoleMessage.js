@@ -9,7 +9,7 @@ const PlayerRoleMessage = (props) => {
 
   useEffect(() => {
     socket.on("roles", (roles) => {
-      roles.map((r) => {
+      roles.forEach((r) => {
         if (r.username === props.username) {
           setRole({
             charactere: r.charactere,

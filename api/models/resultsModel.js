@@ -6,6 +6,9 @@ const resultsSchema = new mongoose.Schema({
   voteResultList: [[Boolean]],
   round: Number,
   expires: Date,
+  finishesAt: Date,
+  playerTurn: { type: Number, default: 1 },
+  votesForMission: [Object],
 });
 
 module.exports = mongoose.model("Result", resultsSchema);

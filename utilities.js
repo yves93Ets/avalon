@@ -10,4 +10,45 @@ const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
-module.exports = { shuffle, capitalize };
+const setFinishTime = () => {
+  const now = new Date();
+  const min = now.getUTCMinutes();
+  const finishesAt = new Date().setMinutes(min + 10);
+  return finishesAt;
+};
+
+const getSecondsLeft = (time) => {
+  const now = new Date();
+  const utcSeconds = time.getTime() - now.getTime();
+  const seconds = utcSeconds / 1000;
+
+  return seconds > 0 ? seconds : 0;
+};
+
+const convertToMultipleArray = (array, round) => {
+  const arr = [];
+  for (j = 1; j <= round + 1; j++) {
+    const newArr = array
+      .filter((a) => {
+        return a.round == j;
+      })
+      .sort(function (a, b) {
+        if (a.playerTurn == b.PlayerTurn) {
+          return a.vote - b.vote;
+        }
+        return a.playerTurn > b.playerTurn ? 1 : -1;
+      });
+    if (newArr.length > 0) {
+      arr.push(newArr);
+    }
+  }
+  return arr;
+};
+
+module.exports = {
+  shuffle,
+  capitalize,
+  setFinishTime,
+  getSecondsLeft,
+  convertToMultipleArray,
+};

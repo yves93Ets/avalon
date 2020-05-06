@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Menu, Dropdown } from "semantic-ui-react";
 import { UserContext, SocketContext } from "../context";
 import { getTitle } from "hookrouter";
+import CountdownCircleTimer from "./MyCountdownCircleTimer";
 import PlayerList from "./players/PlayerList";
 import PlayerRoleMessage from "./players/PlayerRoleMessage";
 
@@ -9,10 +10,17 @@ export default function AvalonNavigation() {
   const [active, setActive] = useState();
 
   const [username, setUsername] = useContext(UserContext);
+  const [seconds, setSeconds] = useState();
+
   const socket = useContext(SocketContext);
   useEffect(() => {
     setActive(getTitle());
-  }, [setActive]);
+
+    socket.emit("started-at");
+    socket.on("started-at", (s) => {
+      setSeconds(s);
+    });
+  }, [socket]);
 
   const handleItemClick = (e, { name }) => {
     window.location.href = "/" + name.toLowerCase().split(" ").join("");
@@ -60,6 +68,7 @@ export default function AvalonNavigation() {
           active={active === "Results"}
           onClick={handleItemClick}
         />
+        <CountdownCircleTimer seconds={seconds} />
         <Menu.Menu position="right">
           <Dropdown item text={username}>
             <Dropdown.Menu>

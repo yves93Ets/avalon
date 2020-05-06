@@ -2,17 +2,25 @@ const socket = require("socket.io");
 const gameController = require("./api/controllers/gameController");
 const resultsController = require("./api/controllers/resultsController");
 const voteController = require("./api/controllers/voteController");
-const { shuffle, capitalize } = require("./utilities");
+const {
+  shuffle,
+  capitalize,
+  setFinishTime,
+  getSecondsLeft,
+  convertToMultipleArray,
+} = require("./utilities");
 
-const { removeUser, emptyUsersList } = require("./services/userService");
+const { emptyUsersList } = require("./services/userService");
 const distributeRoles = require("./services/distributeRoles");
 
 const ioWorker = (server) => {
-  const io = socket(server);
+  const io = socket(server, {
+    transports: ["websocket"],
+  });
 
   io.on("connection", (socket) => {
     socket.on("reconnect_attempt", () => {
-      socket.io.opts.transports = ["websocket", "polling"];
+      socket.io.opts.transports = ["websocket"];
     });
 
     socket.on("login", (name) => {
@@ -29,7 +37,6 @@ const ioWorker = (server) => {
     });
 
     socket.on("clear-show-results", (isVisible, id, round) => {
-      console.log(111, id);
       if (isVisible) {
         const votesCb = voteController.getAll();
         const votes = [],
@@ -39,26 +46,56 @@ const ioWorker = (server) => {
             votes.push(v.vote);
             names.push(v.username);
           });
-          resultsController.addResults(votes, names, round, id);
+          resultsController.addResults(
+            shuffle(votes),
+            shuffle(names),
+            round,
+            setFinishTime(),
+            id
+          );
         });
       }
-
       gameController.setVoteAndRound(isVisible, round);
       io.emit("clear-show-results", isVisible);
     });
 
     socket.on("player-list", () => {
-      const playersCallback = gameController.getPlayers();
-      playersCallback.then((pList) => io.emit("player-list", pList));
+      const playersCallback = gameController.getPlayersAndResultId();
+      playersCallback.then((pList) => {
+        const rcb = resultsController.getPlayerTurn(pList.resultId);
+        rcb.then((playerTurn) => {
+          io.emit("player-list", pList.playersList, playerTurn);
+        });
+      });
     });
 
     socket.on("game-results", () => {
       const idCb = gameController.getResultId();
-      idCb.then((id) => {
-        const resultsCb = resultsController.get(id);
+      idCb.then((r) => {
+        const resultsCb = resultsController.get(r.resultId);
+        resultsCb.then((c) => {
+          if (c !== null) {
+            io.emit(
+              "game-results",
+              c,
+              convertToMultipleArray(c.votesForMission, c.round)
+            );
+          }
+        });
+      });
+    });
+
+    socket.on("delete-round", (round, id) => {
+      resultsController.deleteLastRound(id, round);
+    });
+
+    socket.on("started-at", () => {
+      const idCb = gameController.getResultId();
+      idCb.then((r) => {
+        const resultsCb = resultsController.getTimeLeft(r.resultId);
 
         resultsCb.then((c) => {
-          io.emit("game-results", c);
+          c && io.emit("started-at", getSecondsLeft(c.finishesAt));
         });
       });
     });
@@ -87,12 +124,13 @@ const ioWorker = (server) => {
     });
 
     socket.on("distribute", (roles, names) => {
+      io.emit("clear-show-results", false);
       const lastGameListCB = gameController.getDistributionList();
       lastGameListCB.then((gList) => {
         const distributionList = distributeRoles(names, roles, gList);
         roles = roles.map((r) => r.toLowerCase());
         names = shuffle(names);
-        const resultIdCb = resultsController.createResult();
+        const resultIdCb = resultsController.createResult(setFinishTime());
         resultIdCb.then((r) => {
           gameController.newGame({
             names,
@@ -101,6 +139,7 @@ const ioWorker = (server) => {
             resultId: r[0].id,
           });
           io.emit("roles", distributionList);
+          io.emit("result-id", r[0].id);
         });
       });
     });
@@ -110,6 +149,20 @@ const ioWorker = (server) => {
       const id = socket.id;
       roleCb.then((r) => {
         io.to(id).emit("roles", r);
+      });
+    });
+
+    socket.on("accept-mission", (username, vote) => {
+      const idCb = gameController.getResultId();
+      idCb.then((r) => {
+        resultsController.addVotesFormMission(username, vote, r.resultId);
+      });
+    });
+
+    socket.on("show-accept-mission", () => {
+      const idCb = gameController.getResultId();
+      idCb.then((r) => {
+        resultsController.addPlayerTurn(r.resultId, r.playersList.length);
       });
     });
 

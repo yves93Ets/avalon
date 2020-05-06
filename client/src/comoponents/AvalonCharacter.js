@@ -24,14 +24,18 @@ export default function AvalonCharacter() {
     socket.on("list", (namesList, characteresList, id, round) => {
       setArray(namesList, setNamesArray, setNameOptions);
       setArray(characteresList, setCharacteresArray);
-
       setGameIdgameRound({ id, round });
+    });
+
+    socket.on("result-id", (id) => {
+      setGameIdgameRound({ id, round: 1 });
     });
   }, [socket]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     socket.emit("distribute", characteresArray, namesArray);
+    socket.emit("started-at");
   };
 
   const onChange = (e, data) => {
@@ -46,8 +50,7 @@ export default function AvalonCharacter() {
 
   const handleClickDelete = async (e) => {
     e.preventDefault();
-    //setIsVisible(false);
-    //setVotes([]);
+
     await fetch("/api/avalon", {
       method: "Delete",
     })
@@ -74,20 +77,19 @@ export default function AvalonCharacter() {
   };
   return (
     <Form className="margin" onSubmit={handleSubmit}>
-      <Form.Group>
+      <Form.Group grouped>
         <Button
           negative
           icon="trash"
           content="Clear"
           onClick={handleClickDelete}
-          color="red"
-          className="vote-red"
+          className="bg-evil"
         ></Button>
         <Button
           icon="refresh"
           content="Show"
           onClick={handleClickRefresh}
-          color="blue"
+          className="bg-good "
         ></Button>
       </Form.Group>
       <Form.Group className="margin">
