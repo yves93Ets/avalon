@@ -4,8 +4,8 @@ const { shuffle } = require("../../utilities");
 module.exports = {
   getResultId: () => {
     return Game.findOne({ room: "Avalon" })
-      .select("resultId")
-      .then((r) => r.resultId);
+      .select({ resultId: 1, playersList: 1 })
+      .then((r) => r);
   },
 
   addPlayer: (name) => {
@@ -27,11 +27,11 @@ module.exports = {
     ).exec();
   },
 
-  getPlayers: () => {
+  getPlayersAndResultId: () => {
     return Game.findOne({ room: "Avalon" })
-      .select("playersList")
+      .select({ playersList: 1, resultId: 1 })
       .then((docs) => {
-        return docs.playersList;
+        return docs;
       });
   },
 

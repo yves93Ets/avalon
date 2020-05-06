@@ -77,20 +77,19 @@ export default function AvalonCharacter() {
   };
   return (
     <Form className="margin" onSubmit={handleSubmit}>
-      <Form.Group>
+      <Form.Group grouped>
         <Button
           negative
           icon="trash"
           content="Clear"
           onClick={handleClickDelete}
-          color="red"
-          className="vote-red"
+          className="bg-evil"
         ></Button>
         <Button
           icon="refresh"
           content="Show"
           onClick={handleClickRefresh}
-          color="blue"
+          className="bg-good "
         ></Button>
       </Form.Group>
       <Form.Group className="margin">

@@ -1,6 +1,8 @@
 import React, { useState, useLayoutEffect } from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 
+const duration = 600;
+
 const timerProps = {
   isPlaying: true,
   size: 40,
@@ -9,7 +11,6 @@ const timerProps = {
 
 export default function MyCountdownCircleTimer(props) {
   const [seconds, setSeconds] = useState(props.seconds);
-  const duration = 600;
 
   useLayoutEffect(() => {
     setSeconds(props.seconds);
@@ -34,7 +35,6 @@ export default function MyCountdownCircleTimer(props) {
       </div>
     );
   };
-
   return props.seconds ? (
     <CountdownCircleTimer
       {...timerProps}

@@ -31,7 +31,13 @@ export default function AvalonAcceptMission() {
           </Button>
         </Button.Group>
       </Form>
-      <Button onClick={handleShow}>Next</Button>
+      {username === "David" ? (
+        <Button style={marginStyle} onClick={handleShow}>
+          Next
+        </Button>
+      ) : null}
     </>
   );
 }
+
+const marginStyle = { margin: "10px" };

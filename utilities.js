@@ -25,7 +25,7 @@ const getSecondsLeft = (time) => {
   return seconds > 0 ? seconds : 0;
 };
 
-const convertToMultipleArray = (array, turn, round) => {
+const convertToMultipleArray = (array, round) => {
   const arr = [];
   for (j = 1; j <= round + 1; j++) {
     const newArr = array

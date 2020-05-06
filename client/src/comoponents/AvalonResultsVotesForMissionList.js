@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Segment, List, Table, Divider } from "semantic-ui-react";
+import { List, Divider } from "semantic-ui-react";
 
 export default function AvalonResultsVotesForMissionList(props) {
   const [votesForMission, setVotesForMission] = useState([[]]);
@@ -22,9 +22,5 @@ export default function AvalonResultsVotesForMissionList(props) {
     ));
   };
 
-  return (
-    <List>
-      <Segment>{createTable()}</Segment>
-    </List>
-  );
+  return <List>{createTable()}</List>;
 }

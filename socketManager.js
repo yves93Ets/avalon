@@ -60,25 +60,27 @@ const ioWorker = (server) => {
     });
 
     socket.on("player-list", () => {
-      const playersCallback = gameController.getPlayers();
-      playersCallback.then((pList) => io.emit("player-list", pList));
+      const playersCallback = gameController.getPlayersAndResultId();
+      playersCallback.then((pList) => {
+        const rcb = resultsController.getPlayerTurn(pList.resultId);
+        rcb.then((playerTurn) => {
+          io.emit("player-list", pList.playersList, playerTurn);
+        });
+      });
     });
 
     socket.on("game-results", () => {
       const idCb = gameController.getResultId();
-      idCb.then((id) => {
-        const resultsCb = resultsController.get(id);
+      idCb.then((r) => {
+        const resultsCb = resultsController.get(r.resultId);
         resultsCb.then((c) => {
-          io.emit(
-            "game-results",
-            c,
-            convertToMultipleArray(c.votesForMission, c.playerTurn, c.round)
-          );
-          var a = convertToMultipleArray(
-            c.votesForMission,
-            c.playerTurn,
-            c.round
-          );
+          if (c !== null) {
+            io.emit(
+              "game-results",
+              c,
+              convertToMultipleArray(c.votesForMission, c.round)
+            );
+          }
         });
       });
     });
@@ -89,8 +91,8 @@ const ioWorker = (server) => {
 
     socket.on("started-at", () => {
       const idCb = gameController.getResultId();
-      idCb.then((id) => {
-        const resultsCb = resultsController.getTimeLeft(id);
+      idCb.then((r) => {
+        const resultsCb = resultsController.getTimeLeft(r.resultId);
 
         resultsCb.then((c) => {
           c && io.emit("started-at", getSecondsLeft(c.finishesAt));
@@ -152,15 +154,15 @@ const ioWorker = (server) => {
 
     socket.on("accept-mission", (username, vote) => {
       const idCb = gameController.getResultId();
-      idCb.then((id) => {
-        resultsController.addVotesFormMission(username, vote, id);
+      idCb.then((r) => {
+        resultsController.addVotesFormMission(username, vote, r.resultId);
       });
     });
 
     socket.on("show-accept-mission", () => {
       const idCb = gameController.getResultId();
-      idCb.then((id) => {
-        resultsController.addPlayerTurn(id);
+      idCb.then((r) => {
+        resultsController.addPlayerTurn(r.resultId, r.playersList.length);
       });
     });
 

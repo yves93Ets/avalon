@@ -17,15 +17,29 @@ module.exports = {
   },
 
   addResults: (votes, voters, round, finishesAt, _id) => {
-    Result.updateOne(
-      { _id },
-      {
-        $push: { votersList: voters, voteResultList: votes },
-        round,
-        finishesAt,
+    Result.findOne({ _id })
+      .select({
         playerTurn: 1,
-      }
-    ).exec();
+      })
+      .then((d) => {
+        Result.updateOne(
+          { _id },
+          {
+            $push: { votersList: voters, voteResultList: votes },
+            round,
+            finishesAt,
+            playerTurn: d.playerTurn + 1,
+          }
+        ).exec();
+      });
+  },
+
+  getPlayerTurn: (_id) => {
+    return Result.findOne({ _id })
+      .select("playerTurn")
+      .then((r) => {
+        return r.playerTurn;
+      });
   },
 
   addVotesFormMission: (username, vote, _id) => {
@@ -51,7 +65,7 @@ module.exports = {
       });
   },
 
-  addPlayerTurn: (_id) => {
+  addPlayerTurn: (_id, length) => {
     Result.findOne({ _id })
       .select({
         playerTurn: 1,
@@ -60,7 +74,7 @@ module.exports = {
       .then((d) => {
         Result.updateOne(
           { _id },
-          { $set: { playerTurn: d.playerTurn + 1 } }
+          { $set: { playerTurn: length > d.playerTurn ? d.playerTurn + 1 : 1 } }
         ).exec();
       });
   },

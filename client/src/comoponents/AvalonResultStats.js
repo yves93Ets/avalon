@@ -76,7 +76,6 @@ export default function AvalonResults() {
                 </Table.Cell>
                 {votesForMission.length > 0 ? (
                   <Table.Cell>
-                    {console.log(222, index, votesForMission)}
                     <AvalonResultsVotesForMissionList
                       votesForMission={votesForMission[index]}
                     />

@@ -81,10 +81,12 @@
 
 .bg-good {
   background-color: #4882b4 !important;
+  color: white !important;
 }
 
 .bg-evil {
   background-color: #8e4a4b !important;
+  color: white !important;
 }
 
 .margin {
