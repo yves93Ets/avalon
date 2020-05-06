@@ -32,12 +32,13 @@ const convertToMultipleArray = (array, round) => {
       .filter((a) => {
         return a.round == j;
       })
-      .sort(function (a, b) {
-        if (a.playerTurn == b.PlayerTurn) {
-          return a.vote - b.vote;
-        }
+      .sort((a, b) => {
+        return a.vote - b.vote;
+      })
+      .sort((a, b) => {
         return a.playerTurn > b.playerTurn ? 1 : -1;
       });
+
     if (newArr.length > 0) {
       arr.push(newArr);
     }
