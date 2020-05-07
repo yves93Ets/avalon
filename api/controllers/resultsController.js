@@ -26,7 +26,7 @@ module.exports = {
           { _id },
           {
             $push: { votersList: voters, voteResultList: votes },
-            round,
+            round: round + 1,
             finishesAt,
             playerTurn: d.playerTurn + 1,
           }
@@ -38,7 +38,7 @@ module.exports = {
     return Result.findOne({ _id })
       .select("playerTurn")
       .then((r) => {
-        return r.playerTurn;
+        return r === null ? 1 : r.playerTurn;
       });
   },
 
@@ -98,7 +98,11 @@ module.exports = {
   deleteLastRound: (_id, round) => {
     return Result.updateOne(
       { _id },
-      { $pop: { voteResultList: 1, votersList: 1 }, round }
+      {
+        $pop: { voteResultList: 1, votersList: 1 },
+        round: round - 1,
+        $pull: { votesForMission: { round: round + 1 } },
+      }
     ).exec();
   },
 
@@ -112,7 +116,7 @@ module.exports = {
         },
       },
       {
-        arrayFilters: [{ element: round }],
+        arrayFilters: [{ element: clear - show - results }],
         upsert: true,
       }
     )
@@ -124,6 +128,15 @@ module.exports = {
     Result.updateOne(
       { _id },
       { $pull: { voteResultList: null, votersList: null } }
+    ).exec();
+  },
+
+  deleteLastVoteFormission: (_id, playerTurn, round) => {
+    console.log(1111, round);
+
+    Result.updateOne(
+      { _id },
+      { $pull: { votesForMission: { playerTurn, round } } }
     ).exec();
   },
 };

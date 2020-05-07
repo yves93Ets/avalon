@@ -8,7 +8,8 @@ export default function AvalonCharacter() {
   const [characteresArray, setCharacteresArray] = useState([]);
   const [namesArray, setNamesArray] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
-  const [gameIdgameRound, setGameIdgameRound] = useState([]);
+  const [gameId, setGameId] = useState(0);
+  const [gameRound, setGameRound] = useState(1);
 
   useEffect(() => {
     const setArray = (array, arraySetter, optionSetter = null) => {
@@ -24,11 +25,13 @@ export default function AvalonCharacter() {
     socket.on("list", (namesList, characteresList, id, round) => {
       setArray(namesList, setNamesArray, setNameOptions);
       setArray(characteresList, setCharacteresArray);
-      setGameIdgameRound({ id, round });
+      setGameId(id);
+      setGameRound(round);
     });
 
-    socket.on("result-id", (id) => {
-      setGameIdgameRound({ id, round: 1 });
+    socket.on("result-id", (id, round) => {
+      setGameId(id);
+      setGameRound(round);
     });
   }, [socket]);
 
@@ -55,12 +58,8 @@ export default function AvalonCharacter() {
       method: "Delete",
     })
       .then(socket.emit("submit-count", 0))
-      .then(
-        socket.emit("clear-show-results"),
-        false,
-        gameIdgameRound.id,
-        gameIdgameRound.round
-      )
+      .then(socket.emit("clear-show-results"), false, gameId, gameRound)
+
       .catch((err) => {
         console.log(err);
       });
@@ -68,12 +67,8 @@ export default function AvalonCharacter() {
 
   const handleClickRefresh = (e) => {
     e.preventDefault();
-    socket.emit(
-      "clear-show-results",
-      true,
-      gameIdgameRound.id,
-      gameIdgameRound.round + 1
-    );
+    socket.emit("clear-show-results", true, gameId, gameRound);
+    setGameRound(gameRound + 1);
   };
   return (
     <Form className="margin" onSubmit={handleSubmit}>

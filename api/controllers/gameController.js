@@ -93,7 +93,7 @@ module.exports = {
   },
 
   setVoteAndRound: (isVisible, round) => {
-    if (round == 0) {
+    if (!round) {
       Game.updateOne(
         { room: "Avalon" },
         { $set: { showResults: isVisible } }
@@ -101,7 +101,7 @@ module.exports = {
     } else {
       Game.updateOne(
         { room: "Avalon" },
-        { $set: { showResults: isVisible, round } }
+        { $set: { showResults: isVisible, round: round + 1 } }
       ).exec();
     }
   },

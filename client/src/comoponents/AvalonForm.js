@@ -29,7 +29,7 @@ export default function AvalonForm() {
     const submitCount = count + 1;
     setCount(submitCount);
     socket.emit("submit-count", submitCount);
-    socket.emit("clear-show-results", false, 0, 0);
+    socket.emit("clear-show-results", false);
     socket.emit("started-at");
   };
 

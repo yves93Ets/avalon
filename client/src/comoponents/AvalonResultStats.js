@@ -30,16 +30,21 @@ export default function AvalonResults() {
   };
 
   return (
-    <Table unstackable compact celled textAlign="center">
+    <Table
+      style={marginBottomStyle}
+      unstackable
+      compact
+      celled
+      textAlign="center"
+    >
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell>Round</Table.HeaderCell>
           <Table.HeaderCell>Names</Table.HeaderCell>
           <Table.HeaderCell>Results</Table.HeaderCell>
-          <Table.HeaderCell>Votes for mission</Table.HeaderCell>
-          {username === "David" ? (
-            <Table.HeaderCell>Delete</Table.HeaderCell>
-          ) : null}
+          {votesForMission.length <= 0 ? null : (
+            <Table.HeaderCell>Votes for mission</Table.HeaderCell>
+          )}
         </Table.Row>
       </Table.Header>
       {voters.length === 0 ? (
@@ -72,30 +77,26 @@ export default function AvalonResults() {
                     {voters[index].map((v, i) => {
                       return <List.Item key={i}>{v}</List.Item>;
                     })}
+                    {username === "David" && index === votes.length - 1 ? (
+                      <Button
+                        color="red"
+                        basic
+                        icon
+                        value={index}
+                        onClick={handleDelete}
+                      >
+                        <Icon name="trash" circular fitted size="small" />
+                      </Button>
+                    ) : null}
                   </List>
                 </Table.Cell>
                 {votesForMission.length > 0 ? (
                   <Table.Cell>
                     <AvalonResultsVotesForMissionList
                       votesForMission={votesForMission[index]}
+                      round={index}
                     />
                   </Table.Cell>
-                ) : null}
-
-                {username === "David" && index === votes.length - 1 ? (
-                  <Table.Cell>
-                    <Button
-                      color="red"
-                      basic
-                      icon
-                      value={index}
-                      onClick={handleDelete}
-                    >
-                      <Icon name="trash" circular fitted size="small" />
-                    </Button>
-                  </Table.Cell>
-                ) : username === "David" ? (
-                  <Table.Cell></Table.Cell>
                 ) : null}
               </Table.Row>
             );
@@ -105,3 +106,7 @@ export default function AvalonResults() {
     </Table>
   );
 }
+
+const marginBottomStyle = {
+  marginBottom: "20px",
+};

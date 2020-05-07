@@ -64,7 +64,7 @@ const ioWorker = (server) => {
       playersCallback.then((pList) => {
         const rcb = resultsController.getPlayerTurn(pList.resultId);
         rcb.then((playerTurn) => {
-          io.emit("player-list", pList.playersList, playerTurn);
+          io.emit("player-list", pList.playersList, playerTurn || 1);
         });
       });
     });
@@ -87,6 +87,18 @@ const ioWorker = (server) => {
 
     socket.on("delete-round", (round, id) => {
       resultsController.deleteLastRound(id, round);
+    });
+
+    socket.on("delete-acceptance-round", (vfm) => {
+      const idCb = gameController.getResultId();
+
+      idCb.then((r) => {
+        resultsController.deleteLastVoteFormission(
+          r.resultId,
+          vfm.playerTurn,
+          vfm.round
+        );
+      });
     });
 
     socket.on("started-at", () => {
@@ -139,7 +151,7 @@ const ioWorker = (server) => {
             resultId: r[0].id,
           });
           io.emit("roles", distributionList);
-          io.emit("result-id", r[0].id);
+          io.emit("result-id", r[0].id, r[0].round);
         });
       });
     });

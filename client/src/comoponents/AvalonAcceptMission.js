@@ -20,7 +20,7 @@ export default function AvalonAcceptMission() {
 
   return (
     <>
-      <Form size="small">
+      <Form style={marginStyle} size="small">
         <Button.Group>
           <Button onClick={handleAccept} className="bg-good">
             Accept
