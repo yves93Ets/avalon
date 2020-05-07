@@ -96,17 +96,38 @@ module.exports = {
   },
 
   deleteLastRound: (_id, round) => {
-    return Result.updateOne(
+    return Result.findOne({ _id })
+      .select("votesForMission")
+      .then((r) => {
+        const pt = r.votesForMission
+          .filter((r) => r.round === round)
+          .reduce((p, n) => (p.playerTurn < n.playerTurn ? p : n));
+        Result.updateOne(
+          { _id },
+          {
+            $pop: { voteResultList: 1, votersList: 1 },
+            round: round,
+            $pull: { votesForMission: { round: round } },
+            playerTurn: pt.playerTurn,
+          }
+        ).exec();
+      });
+  },
+
+  deleteLastVoteFormission: (_id, playerTurn, round) => {
+    Result.updateOne(
       { _id },
       {
-        $pop: { voteResultList: 1, votersList: 1 },
-        round: round - 1,
-        $pull: { votesForMission: { round: round + 1 } },
+        $pull: {
+          votesForMission: { playerTurn: playerTurn, round },
+        },
+        playerTurn: playerTurn,
       }
     ).exec();
   },
 
   deleteRound: (_id, round) => {
+    // no work
     Result.updateOne(
       { _id },
       {
@@ -128,15 +149,6 @@ module.exports = {
     Result.updateOne(
       { _id },
       { $pull: { voteResultList: null, votersList: null } }
-    ).exec();
-  },
-
-  deleteLastVoteFormission: (_id, playerTurn, round) => {
-    console.log(1111, round);
-
-    Result.updateOne(
-      { _id },
-      { $pull: { votesForMission: { playerTurn, round } } }
     ).exec();
   },
 };

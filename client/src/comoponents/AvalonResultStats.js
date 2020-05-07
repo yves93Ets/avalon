@@ -23,10 +23,10 @@ export default function AvalonResults() {
         setVotesForMission(vfm);
       }
     });
-  }, [socket]);
+  }, [socket, setVotesForMission, votesForMission]);
 
   const handleDelete = (e, value) => {
-    socket.emit("delete-round", value.value, id);
+    socket.emit("delete-round", value.value + 1, id);
   };
 
   return (
@@ -53,7 +53,7 @@ export default function AvalonResults() {
         </Table.Body>
       ) : (
         <Table.Body>
-          {votes.map((vote, index) => {
+          {votesForMission.map((vfm, index) => {
             return (
               <Table.Row key={index}>
                 <Table.Cell>
@@ -63,21 +63,26 @@ export default function AvalonResults() {
                 </Table.Cell>
                 <Table.Cell>
                   <List>
-                    {vote.map((v, i) => {
-                      return (
-                        <List.Item key={i} className={v ? "good" : "evil"}>
-                          {v ? "Success" : "Fail"}
-                        </List.Item>
-                      );
-                    })}
+                    {votes.length === index
+                      ? null
+                      : votes[index].map((v, i) => {
+                          return (
+                            <List.Item key={i} className={v ? "good" : "evil"}>
+                              {v ? "Success" : "Fail"}
+                            </List.Item>
+                          );
+                        })}
                   </List>
                 </Table.Cell>
                 <Table.Cell>
                   <List>
-                    {voters[index].map((v, i) => {
-                      return <List.Item key={i}>{v}</List.Item>;
-                    })}
-                    {username === "David" && index === votes.length - 1 ? (
+                    {voters.length === index
+                      ? null
+                      : voters[index].map((v, i) => {
+                          return <List.Item key={i}>{v}</List.Item>;
+                        })}
+                    {username === "David" &&
+                    index === votesForMission.length - 1 ? (
                       <Button
                         color="red"
                         basic
@@ -90,11 +95,13 @@ export default function AvalonResults() {
                     ) : null}
                   </List>
                 </Table.Cell>
+
                 {votesForMission.length > 0 ? (
                   <Table.Cell>
                     <AvalonResultsVotesForMissionList
                       votesForMission={votesForMission[index]}
                       round={index}
+                      last={index === votesForMission.length - 1}
                     />
                   </Table.Cell>
                 ) : null}

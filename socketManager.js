@@ -87,6 +87,17 @@ const ioWorker = (server) => {
 
     socket.on("delete-round", (round, id) => {
       resultsController.deleteLastRound(id, round);
+      const resultsCb = resultsController.get(id);
+
+      resultsCb.then((c) => {
+        if (c !== null) {
+          io.emit(
+            "game-results",
+            c,
+            convertToMultipleArray(c.votesForMission, c.round)
+          );
+        }
+      });
     });
 
     socket.on("delete-acceptance-round", (vfm) => {
@@ -98,6 +109,17 @@ const ioWorker = (server) => {
           vfm.playerTurn,
           vfm.round
         );
+
+        const resultsCb = resultsController.get(r.resultId);
+        resultsCb.then((c) => {
+          if (c !== null) {
+            io.emit(
+              "game-results",
+              c,
+              convertToMultipleArray(c.votesForMission, c.round)
+            );
+          }
+        });
       });
     });
 
