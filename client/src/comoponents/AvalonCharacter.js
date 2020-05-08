@@ -65,12 +65,17 @@ export default function AvalonCharacter() {
       });
   };
   const setTimer = () => {
-    socket.emit("restart-timer");
-    socket.emit("view-timer");
+    setTimeout(() => {
+      socket.emit("restart-timer");
+    }, 50);
+    setTimeout(() => {
+      socket.emit("view-timer");
+    }, 100);
     setTimeout(() => {
       socket.emit("started-at");
-    }, 100);
+    }, 150);
   };
+
   const handleClickShowVotes = (e) => {
     e.preventDefault();
     socket.emit("clear-show-results", true, gameId, gameRound);
