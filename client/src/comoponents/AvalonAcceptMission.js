@@ -14,8 +14,17 @@ export default function AvalonAcceptMission() {
     socket.emit("accept-mission", username, false);
   };
 
-  const handleShow = () => {
+  const handleNext = () => {
     socket.emit("show-accept-mission", username, false);
+    setTimeout(() => {
+      socket.emit("restart-timer");
+    }, 50);
+    setTimeout(() => {
+      socket.emit("view-timer");
+    }, 100);
+    setTimeout(() => {
+      socket.emit("started-at");
+    }, 150);
   };
 
   return (
@@ -32,7 +41,7 @@ export default function AvalonAcceptMission() {
         </Button.Group>
       </Form>
       {username === "David" ? (
-        <Button style={marginStyle} onClick={handleShow}>
+        <Button style={marginStyle} onClick={handleNext}>
           Next
         </Button>
       ) : null}

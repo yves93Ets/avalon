@@ -73,7 +73,7 @@ module.exports = {
       });
   },
 
-  addPlayerTurn: (_id, length) => {
+  addPlayerTurn: (_id, length, finishesAt) => {
     Result.findOne({ _id })
       .select({
         playerTurn: 1,
@@ -82,7 +82,10 @@ module.exports = {
       .then((d) => {
         Result.updateOne(
           { _id },
-          { $set: { playerTurn: length > d.playerTurn ? d.playerTurn + 1 : 1 } }
+          {
+            $set: { playerTurn: length > d.playerTurn ? d.playerTurn + 1 : 1 },
+            finishesAt,
+          }
         ).exec();
       });
   },

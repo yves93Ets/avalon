@@ -207,7 +207,11 @@ const ioWorker = (server) => {
     socket.on("show-accept-mission", () => {
       const idCb = gameController.getResultId();
       idCb.then((r) => {
-        resultsController.addPlayerTurn(r.resultId, r.playersList.length);
+        resultsController.addPlayerTurn(
+          r.resultId,
+          r.playersList.length,
+          setFinishTime()
+        );
       });
     });
 

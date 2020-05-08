@@ -64,6 +64,7 @@ export default function AvalonCharacter() {
         console.log(err);
       });
   };
+
   const setTimer = () => {
     setTimeout(() => {
       socket.emit("restart-timer");
