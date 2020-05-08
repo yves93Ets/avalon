@@ -40,7 +40,6 @@ module.exports = {
       .select({
         playersList: 1,
         characteresList: 1,
-        round: 1,
         resultId: 1,
         _id: 0,
       })
@@ -85,7 +84,6 @@ module.exports = {
       distributionList: game.distributionList,
       characteresList: game.roles,
       resultId: game.resultId,
-      round: 1,
       showResults: false,
       //expires: new Date(Date.now()),
     };

@@ -139,13 +139,16 @@ const ioWorker = (server) => {
       const id = socket.id;
 
       playersCallback.then((docs) => {
-        io.to(id).emit(
-          "list",
-          docs.playersList,
-          docs.characteresList.map((c) => capitalize(c)),
-          docs.resultId,
-          docs.round
-        );
+        const roundCb = resultsController.getRound(docs.resultId);
+        roundCb.then((round) => {
+          io.to(id).emit(
+            "list",
+            docs.playersList,
+            docs.characteresList.map((c) => capitalize(c)),
+            docs.resultId,
+            round
+          );
+        });
       });
     });
 

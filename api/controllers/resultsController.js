@@ -22,6 +22,8 @@ module.exports = {
         playerTurn: 1,
       })
       .then((d) => {
+        console.log("results playerTurn", d.playerTurn + 1);
+        console.log("results round", round + 1);
         Result.updateOne(
           { _id },
           {
@@ -42,6 +44,14 @@ module.exports = {
       });
   },
 
+  getRound: (_id) => {
+    return Result.findOne({ _id })
+      .select("round")
+      .then((r) => {
+        return r === null ? 1 : r.round;
+      });
+  },
+
   addVotesFormMission: (username, vote, _id) => {
     Result.findOne({ _id })
       .select({
@@ -49,6 +59,8 @@ module.exports = {
         round: 1,
       })
       .then((d) => {
+        console.log("add votes round", d.round);
+        console.log("add votes player turn ", d.playerTurn);
         Result.updateOne(
           { _id },
           {
@@ -96,12 +108,16 @@ module.exports = {
   },
 
   deleteLastRound: (_id, round) => {
+    round++;
     return Result.findOne({ _id })
       .select("votesForMission")
       .then((r) => {
         const pt = r.votesForMission
           .filter((r) => r.round === round)
           .reduce((p, n) => (p.playerTurn < n.playerTurn ? p : n));
+        console.log("del last round :", round);
+        console.log("del last player turn :", pt.playerTurn);
+
         Result.updateOne(
           { _id },
           {
@@ -115,6 +131,8 @@ module.exports = {
   },
 
   deleteLastVoteFormission: (_id, playerTurn, round) => {
+    console.log("A round :", round);
+    console.log("A pt :", playerTurn);
     Result.updateOne(
       { _id },
       {

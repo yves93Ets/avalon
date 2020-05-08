@@ -23,10 +23,11 @@ export default function AvalonResults() {
         setVotesForMission(vfm);
       }
     });
-  }, [socket, setVotesForMission, votesForMission]);
+  }, [socket]);
 
   const handleDelete = (e, value) => {
-    socket.emit("delete-round", value.value + 1, id);
+    socket.emit("delete-round", value.value, id);
+    socket.emit("game-results");
   };
 
   return (

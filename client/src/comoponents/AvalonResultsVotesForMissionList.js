@@ -17,13 +17,14 @@ export default function AvalonResultsVotesForMissionList(props) {
 
   const handleDelete = (e, obj) => {
     socket.emit("delete-acceptance-round", obj.value);
+    socket.emit("game-results");
   };
 
   const createTable = () => {
     if (votesForMission === undefined) return;
     return votesForMission.map((vfm, t) =>
       vfm.round !== round + 1 ? null : (
-        <List.Item key={t}>
+        <List.Item key={t} className={vfm.vote ? "good" : "evil"}>
           {`${vfm.username} : ${vfm.vote ? "Accept" : "Decline"}`}
 
           {t + 1 === votesForMission.length ? null : vfm.playerTurn ===
@@ -31,9 +32,11 @@ export default function AvalonResultsVotesForMissionList(props) {
             <Divider />
           )}
 
+          {console.log(1111, votesForMission)}
           {last === true &&
           username === "David" &&
-          t === votesForMission.length - 1 ? (
+          t === votesForMission.length - 1 &&
+          votesForMission.length !== 1 ? (
             <div style={style}>
               <br></br>
               <Button
