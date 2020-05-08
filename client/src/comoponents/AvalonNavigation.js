@@ -11,13 +11,27 @@ export default function AvalonNavigation() {
 
   const [username, setUsername] = useContext(UserContext);
   const [seconds, setSeconds] = useState();
-
+  const [visible, setVisible] = useState(false);
   const socket = useContext(SocketContext);
+
+  useEffect(() => {
+    socket.on("restart-timer", () => {
+      setVisible(false);
+      setSeconds(0);
+    });
+  });
+
+  useEffect(() => {
+    socket.on("view-timer", (isVisible) => {
+      setVisible(isVisible);
+    });
+  });
+
   useEffect(() => {
     setActive(getTitle());
 
     socket.emit("started-at");
-    socket.on("started-at", (s) => {
+    socket.on("started", (s) => {
       setSeconds(s);
     });
   }, [socket]);
@@ -68,7 +82,7 @@ export default function AvalonNavigation() {
           active={active === "Results"}
           onClick={handleItemClick}
         />
-        <CountdownCircleTimer seconds={seconds} />
+        <CountdownCircleTimer visible={visible} seconds={seconds} />
         <Menu.Menu position="right">
           <Dropdown item text={username}>
             <Dropdown.Menu>

@@ -16,12 +16,10 @@ export default function AvalonResults() {
   useEffect(() => {
     socket.emit("game-results");
     socket.on("game-results", (results, vfm) => {
-      if (results) {
-        setVoters(results.votersList);
-        setVotes(results.voteResultList);
-        setId(results._id);
-        setVotesForMission(vfm);
-      }
+      setVoters(results.votersList);
+      setVotes(results.voteResultList);
+      setId(results._id);
+      setVotesForMission(vfm);
     });
   }, [socket]);
 

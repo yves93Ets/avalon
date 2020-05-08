@@ -129,9 +129,17 @@ const ioWorker = (server) => {
         const resultsCb = resultsController.getTimeLeft(r.resultId);
 
         resultsCb.then((c) => {
-          c && io.emit("started-at", getSecondsLeft(c.finishesAt));
+          io.emit("started", getSecondsLeft(c.finishesAt));
         });
       });
+    });
+
+    socket.on("view-timer", (isVisible) => {
+      io.emit("view-timer", isVisible);
+    });
+
+    socket.on("restart-timer", () => {
+      io.emit("restart-timer");
     });
 
     socket.on("list", () => {

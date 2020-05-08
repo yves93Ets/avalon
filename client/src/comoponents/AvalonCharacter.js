@@ -38,7 +38,7 @@ export default function AvalonCharacter() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     socket.emit("distribute", characteresArray, namesArray);
-    socket.emit("started-at");
+    setTimer();
   };
 
   const onChange = (e, data) => {
@@ -64,12 +64,20 @@ export default function AvalonCharacter() {
         console.log(err);
       });
   };
-
-  const handleClickRefresh = (e) => {
+  const setTimer = () => {
+    socket.emit("restart-timer");
+    socket.emit("view-timer");
+    setTimeout(() => {
+      socket.emit("started-at");
+    }, 100);
+  };
+  const handleClickShowVotes = (e) => {
     e.preventDefault();
     socket.emit("clear-show-results", true, gameId, gameRound);
     setGameRound(gameRound + 1);
+    setTimer();
   };
+
   return (
     <Form className="margin" onSubmit={handleSubmit}>
       <Form.Group grouped>
@@ -83,7 +91,7 @@ export default function AvalonCharacter() {
         <Button
           icon="refresh"
           content="Show"
-          onClick={handleClickRefresh}
+          onClick={handleClickShowVotes}
           className="bg-good "
         ></Button>
       </Form.Group>
@@ -110,7 +118,6 @@ export default function AvalonCharacter() {
         />
       </Form.Group>
       <Form.Button className="margin" type="submit">
-        {" "}
         <Icon name="gamepad" />
         play
       </Form.Button>

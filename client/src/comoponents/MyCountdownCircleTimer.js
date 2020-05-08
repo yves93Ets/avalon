@@ -11,13 +11,15 @@ const timerProps = {
 
 export default function MyCountdownCircleTimer(props) {
   const [seconds, setSeconds] = useState(props.seconds);
+  const [visible, setVisible] = useState(false);
 
   useLayoutEffect(() => {
     setSeconds(props.seconds);
+    setVisible(props.visible);
   }, [props]);
 
-  const display = (seconds = 600, elapsedTime) => {
-    const s = seconds - elapsedTime / 1000;
+  const display = (seconds = 600) => {
+    const s = seconds;
     const format = (val) => `0${Math.floor(val)}`.slice(-2);
     const minutes = (s % 3600) / 60;
     return [minutes, s % 60].map(format).join(":");
@@ -35,7 +37,7 @@ export default function MyCountdownCircleTimer(props) {
       </div>
     );
   };
-  return props.seconds ? (
+  return (visible && seconds > 0) || seconds > 0 ? (
     <CountdownCircleTimer
       {...timerProps}
       isPlaying
@@ -44,7 +46,7 @@ export default function MyCountdownCircleTimer(props) {
       initialRemainingTime={seconds}
       onComplete={handleTimeOver}
     >
-      {({ elapsedTime }) => renderTime(display(seconds, elapsedTime))}
+      {({ remainingTime }) => renderTime(display(remainingTime))}
     </CountdownCircleTimer>
   ) : null;
 }

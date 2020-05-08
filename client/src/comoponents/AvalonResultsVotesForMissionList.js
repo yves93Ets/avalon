@@ -32,7 +32,6 @@ export default function AvalonResultsVotesForMissionList(props) {
             <Divider />
           )}
 
-          {console.log(1111, votesForMission)}
           {last === true &&
           username === "David" &&
           t === votesForMission.length - 1 &&
