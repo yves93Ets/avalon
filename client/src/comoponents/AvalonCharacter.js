@@ -8,7 +8,8 @@ export default function AvalonCharacter() {
   const [characteresArray, setCharacteresArray] = useState([]);
   const [namesArray, setNamesArray] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
-  const [gameIdgameRound, setGameIdgameRound] = useState([]);
+  const [gameId, setGameId] = useState(0);
+  const [gameRound, setGameRound] = useState(1);
 
   useEffect(() => {
     const setArray = (array, arraySetter, optionSetter = null) => {
@@ -24,18 +25,20 @@ export default function AvalonCharacter() {
     socket.on("list", (namesList, characteresList, id, round) => {
       setArray(namesList, setNamesArray, setNameOptions);
       setArray(characteresList, setCharacteresArray);
-      setGameIdgameRound({ id, round });
+      setGameId(id);
+      setGameRound(round);
     });
 
-    socket.on("result-id", (id) => {
-      setGameIdgameRound({ id, round: 1 });
+    socket.on("result-id", (id, round) => {
+      setGameId(id);
+      setGameRound(round);
     });
   }, [socket]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     socket.emit("distribute", characteresArray, namesArray);
-    socket.emit("started-at");
+    setTimer();
   };
 
   const onChange = (e, data) => {
@@ -55,26 +58,26 @@ export default function AvalonCharacter() {
       method: "Delete",
     })
       .then(socket.emit("submit-count", 0))
-      .then(
-        socket.emit("clear-show-results"),
-        false,
-        gameIdgameRound.id,
-        gameIdgameRound.round
-      )
+      .then(socket.emit("clear-show-results"), false, gameId, gameRound)
+
       .catch((err) => {
         console.log(err);
       });
   };
-
-  const handleClickRefresh = (e) => {
-    e.preventDefault();
-    socket.emit(
-      "clear-show-results",
-      true,
-      gameIdgameRound.id,
-      gameIdgameRound.round + 1
-    );
+  const setTimer = () => {
+    socket.emit("restart-timer");
+    socket.emit("view-timer");
+    setTimeout(() => {
+      socket.emit("started-at");
+    }, 100);
   };
+  const handleClickShowVotes = (e) => {
+    e.preventDefault();
+    socket.emit("clear-show-results", true, gameId, gameRound);
+    setGameRound(gameRound + 1);
+    setTimer();
+  };
+
   return (
     <Form className="margin" onSubmit={handleSubmit}>
       <Form.Group grouped>
@@ -88,7 +91,7 @@ export default function AvalonCharacter() {
         <Button
           icon="refresh"
           content="Show"
-          onClick={handleClickRefresh}
+          onClick={handleClickShowVotes}
           className="bg-good "
         ></Button>
       </Form.Group>
@@ -115,7 +118,6 @@ export default function AvalonCharacter() {
         />
       </Form.Group>
       <Form.Button className="margin" type="submit">
-        {" "}
         <Icon name="gamepad" />
         play
       </Form.Button>

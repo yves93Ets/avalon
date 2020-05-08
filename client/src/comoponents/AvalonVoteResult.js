@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Header, Image, Table } from "semantic-ui-react";
 import { CountContext, SocketContext } from "../context";
 
-export default function AvalonResultTable(props) {
+export default function AvalonVoteResultTable(props) {
   const socket = useContext(SocketContext);
   const [count, setCount] = useContext(CountContext);
   const [votes, setVotes] = useState([]);

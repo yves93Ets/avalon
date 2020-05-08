@@ -11,7 +11,7 @@ import {
 import { isSuccesfullEnum } from "../const/enums";
 import { fail, succes, neutral } from "../const/constants";
 import { CountContext, SocketContext, UserContext } from "../context";
-export default function AvalonForm() {
+export default function AvalonVoteForm() {
   const url = "/api/avalon";
   const socket = useContext(SocketContext);
   const [count, setCount] = useContext(CountContext);
@@ -29,8 +29,7 @@ export default function AvalonForm() {
     const submitCount = count + 1;
     setCount(submitCount);
     socket.emit("submit-count", submitCount);
-    socket.emit("clear-show-results", false, 0, 0);
-    socket.emit("started-at");
+    socket.emit("clear-show-results", false);
   };
 
   const handleSubmit = async (e) => {

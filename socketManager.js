@@ -64,7 +64,7 @@ const ioWorker = (server) => {
       playersCallback.then((pList) => {
         const rcb = resultsController.getPlayerTurn(pList.resultId);
         rcb.then((playerTurn) => {
-          io.emit("player-list", pList.playersList, playerTurn);
+          io.emit("player-list", pList.playersList, playerTurn || 1);
         });
       });
     });
@@ -87,6 +87,40 @@ const ioWorker = (server) => {
 
     socket.on("delete-round", (round, id) => {
       resultsController.deleteLastRound(id, round);
+      const resultsCb = resultsController.get(id);
+
+      resultsCb.then((c) => {
+        if (c !== null) {
+          io.emit(
+            "game-results",
+            c,
+            convertToMultipleArray(c.votesForMission, c.round)
+          );
+        }
+      });
+    });
+
+    socket.on("delete-acceptance-round", (vfm) => {
+      const idCb = gameController.getResultId();
+
+      idCb.then((r) => {
+        resultsController.deleteLastVoteFormission(
+          r.resultId,
+          vfm.playerTurn,
+          vfm.round
+        );
+
+        const resultsCb = resultsController.get(r.resultId);
+        resultsCb.then((c) => {
+          if (c !== null) {
+            io.emit(
+              "game-results",
+              c,
+              convertToMultipleArray(c.votesForMission, c.round)
+            );
+          }
+        });
+      });
     });
 
     socket.on("started-at", () => {
@@ -95,9 +129,17 @@ const ioWorker = (server) => {
         const resultsCb = resultsController.getTimeLeft(r.resultId);
 
         resultsCb.then((c) => {
-          c && io.emit("started-at", getSecondsLeft(c.finishesAt));
+          io.emit("started", getSecondsLeft(c.finishesAt));
         });
       });
+    });
+
+    socket.on("view-timer", (isVisible) => {
+      io.emit("view-timer", isVisible);
+    });
+
+    socket.on("restart-timer", () => {
+      io.emit("restart-timer");
     });
 
     socket.on("list", () => {
@@ -105,13 +147,16 @@ const ioWorker = (server) => {
       const id = socket.id;
 
       playersCallback.then((docs) => {
-        io.to(id).emit(
-          "list",
-          docs.playersList,
-          docs.characteresList.map((c) => capitalize(c)),
-          docs.resultId,
-          docs.round
-        );
+        const roundCb = resultsController.getRound(docs.resultId);
+        roundCb.then((round) => {
+          io.to(id).emit(
+            "list",
+            docs.playersList,
+            docs.characteresList.map((c) => capitalize(c)),
+            docs.resultId,
+            round
+          );
+        });
       });
     });
 
@@ -139,7 +184,7 @@ const ioWorker = (server) => {
             resultId: r[0].id,
           });
           io.emit("roles", distributionList);
-          io.emit("result-id", r[0].id);
+          io.emit("result-id", r[0].id, r[0].round);
         });
       });
     });

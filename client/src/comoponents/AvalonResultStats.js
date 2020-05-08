@@ -16,30 +16,34 @@ export default function AvalonResults() {
   useEffect(() => {
     socket.emit("game-results");
     socket.on("game-results", (results, vfm) => {
-      if (results) {
-        setVoters(results.votersList);
-        setVotes(results.voteResultList);
-        setId(results._id);
-        setVotesForMission(vfm);
-      }
+      setVoters(results.votersList);
+      setVotes(results.voteResultList);
+      setId(results._id);
+      setVotesForMission(vfm);
     });
   }, [socket]);
 
   const handleDelete = (e, value) => {
     socket.emit("delete-round", value.value, id);
+    socket.emit("game-results");
   };
 
   return (
-    <Table unstackable compact celled textAlign="center">
+    <Table
+      style={marginBottomStyle}
+      unstackable
+      compact
+      celled
+      textAlign="center"
+    >
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell>Round</Table.HeaderCell>
           <Table.HeaderCell>Names</Table.HeaderCell>
           <Table.HeaderCell>Results</Table.HeaderCell>
-          <Table.HeaderCell>Votes for mission</Table.HeaderCell>
-          {username === "David" ? (
-            <Table.HeaderCell>Delete</Table.HeaderCell>
-          ) : null}
+          {votesForMission.length <= 0 ? null : (
+            <Table.HeaderCell>Votes for mission</Table.HeaderCell>
+          )}
         </Table.Row>
       </Table.Header>
       {voters.length === 0 ? (
@@ -48,7 +52,7 @@ export default function AvalonResults() {
         </Table.Body>
       ) : (
         <Table.Body>
-          {votes.map((vote, index) => {
+          {votesForMission.map((vfm, index) => {
             return (
               <Table.Row key={index}>
                 <Table.Cell>
@@ -58,44 +62,47 @@ export default function AvalonResults() {
                 </Table.Cell>
                 <Table.Cell>
                   <List>
-                    {vote.map((v, i) => {
-                      return (
-                        <List.Item key={i} className={v ? "good" : "evil"}>
-                          {v ? "Success" : "Fail"}
-                        </List.Item>
-                      );
-                    })}
+                    {votes.length === index
+                      ? null
+                      : votes[index].map((v, i) => {
+                          return (
+                            <List.Item key={i} className={v ? "good" : "evil"}>
+                              {v ? "Success" : "Fail"}
+                            </List.Item>
+                          );
+                        })}
                   </List>
                 </Table.Cell>
                 <Table.Cell>
                   <List>
-                    {voters[index].map((v, i) => {
-                      return <List.Item key={i}>{v}</List.Item>;
-                    })}
+                    {voters.length === index
+                      ? null
+                      : voters[index].map((v, i) => {
+                          return <List.Item key={i}>{v}</List.Item>;
+                        })}
+                    {username === "David" &&
+                    index === votesForMission.length - 1 ? (
+                      <Button
+                        color="red"
+                        basic
+                        icon
+                        value={index}
+                        onClick={handleDelete}
+                      >
+                        <Icon name="trash" circular fitted size="small" />
+                      </Button>
+                    ) : null}
                   </List>
                 </Table.Cell>
+
                 {votesForMission.length > 0 ? (
                   <Table.Cell>
                     <AvalonResultsVotesForMissionList
                       votesForMission={votesForMission[index]}
+                      round={index}
+                      last={index === votesForMission.length - 1}
                     />
                   </Table.Cell>
-                ) : null}
-
-                {username === "David" && index === votes.length - 1 ? (
-                  <Table.Cell>
-                    <Button
-                      color="red"
-                      basic
-                      icon
-                      value={index}
-                      onClick={handleDelete}
-                    >
-                      <Icon name="trash" circular fitted size="small" />
-                    </Button>
-                  </Table.Cell>
-                ) : username === "David" ? (
-                  <Table.Cell></Table.Cell>
                 ) : null}
               </Table.Row>
             );
@@ -105,3 +112,7 @@ export default function AvalonResults() {
     </Table>
   );
 }
+
+const marginBottomStyle = {
+  marginBottom: "20px",
+};

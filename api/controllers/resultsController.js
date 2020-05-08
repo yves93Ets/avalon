@@ -26,7 +26,7 @@ module.exports = {
           { _id },
           {
             $push: { votersList: voters, voteResultList: votes },
-            round,
+            round: round + 1,
             finishesAt,
             playerTurn: d.playerTurn + 1,
           }
@@ -38,7 +38,15 @@ module.exports = {
     return Result.findOne({ _id })
       .select("playerTurn")
       .then((r) => {
-        return r.playerTurn;
+        return r === null ? 1 : r.playerTurn;
+      });
+  },
+
+  getRound: (_id) => {
+    return Result.findOne({ _id })
+      .select("round")
+      .then((r) => {
+        return r === null ? 1 : r.round;
       });
   },
 
@@ -96,13 +104,40 @@ module.exports = {
   },
 
   deleteLastRound: (_id, round) => {
-    return Result.updateOne(
+    round++;
+    return Result.findOne({ _id })
+      .select("votesForMission")
+      .then((r) => {
+        const pt = r.votesForMission
+          .filter((r) => r.round === round)
+          .reduce((p, n) => (p.playerTurn < n.playerTurn ? p : n));
+
+        Result.updateOne(
+          { _id },
+          {
+            $pop: { voteResultList: 1, votersList: 1 },
+            round: round,
+            $pull: { votesForMission: { round: round } },
+            playerTurn: pt.playerTurn,
+          }
+        ).exec();
+      });
+  },
+
+  deleteLastVoteFormission: (_id, playerTurn, round) => {
+    Result.updateOne(
       { _id },
-      { $pop: { voteResultList: 1, votersList: 1 }, round }
+      {
+        $pull: {
+          votesForMission: { playerTurn: playerTurn, round },
+        },
+        playerTurn: playerTurn,
+      }
     ).exec();
   },
 
   deleteRound: (_id, round) => {
+    // no work
     Result.updateOne(
       { _id },
       {
@@ -112,14 +147,10 @@ module.exports = {
         },
       },
       {
-        arrayFilters: [{ element: round }],
+        arrayFilters: [{ element: clear - show - results }],
         upsert: true,
       }
-    )
-      .exec()
-      .then((r) => {
-        console.log(r);
-      });
+    ).exec();
 
     Result.updateOne(
       { _id },

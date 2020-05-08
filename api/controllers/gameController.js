@@ -40,7 +40,6 @@ module.exports = {
       .select({
         playersList: 1,
         characteresList: 1,
-        round: 1,
         resultId: 1,
         _id: 0,
       })
@@ -85,7 +84,6 @@ module.exports = {
       distributionList: game.distributionList,
       characteresList: game.roles,
       resultId: game.resultId,
-      round: 1,
       showResults: false,
       //expires: new Date(Date.now()),
     };
@@ -93,7 +91,7 @@ module.exports = {
   },
 
   setVoteAndRound: (isVisible, round) => {
-    if (round == 0) {
+    if (!round) {
       Game.updateOne(
         { room: "Avalon" },
         { $set: { showResults: isVisible } }
@@ -101,7 +99,7 @@ module.exports = {
     } else {
       Game.updateOne(
         { room: "Avalon" },
-        { $set: { showResults: isVisible, round } }
+        { $set: { showResults: isVisible, round: round + 1 } }
       ).exec();
     }
   },
