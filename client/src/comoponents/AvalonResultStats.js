@@ -9,9 +9,10 @@ export default function AvalonResults() {
   const [voters, setVoters] = useState([[]]);
   const [votes, setVotes] = useState([[]]);
   const [votesForMission, setVotesForMission] = useState([[]]);
+  const [id, setId] = useState();
+  const [currentTurn, setCurentTurn] = useState(1);
   const socket = useContext(SocketContext);
   const [username] = useContext(UserContext);
-  const [id, setId] = useState();
 
   useEffect(() => {
     socket.emit("game-results");
@@ -20,6 +21,7 @@ export default function AvalonResults() {
       setVotes(results.voteResultList);
       setId(results._id);
       setVotesForMission(vfm);
+      setCurentTurn(results.playerTurn);
     });
   }, [socket]);
 
@@ -41,12 +43,11 @@ export default function AvalonResults() {
           <Table.HeaderCell>Round</Table.HeaderCell>
           <Table.HeaderCell>Names</Table.HeaderCell>
           <Table.HeaderCell>Results</Table.HeaderCell>
-          {votesForMission.length <= 0 ? null : (
-            <Table.HeaderCell>Votes for mission</Table.HeaderCell>
-          )}
+          <Table.HeaderCell>Votes for mission</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
-      {voters.length === 0 ? (
+
+      {votesForMission.length === 0 ? (
         <Table.Body>
           <Table.Row></Table.Row>
         </Table.Body>
@@ -57,7 +58,7 @@ export default function AvalonResults() {
               <Table.Row key={index}>
                 <Table.Cell>
                   <Header as="h2" textAlign="center">
-                    {index + 1}{" "}
+                    {index + 1}
                   </Header>
                 </Table.Cell>
                 <Table.Cell>
@@ -94,13 +95,13 @@ export default function AvalonResults() {
                     ) : null}
                   </List>
                 </Table.Cell>
-
                 {votesForMission.length > 0 ? (
                   <Table.Cell>
                     <AvalonResultsVotesForMissionList
                       votesForMission={votesForMission[index]}
                       round={index}
                       last={index === votesForMission.length - 1}
+                      turn={currentTurn}
                     />
                   </Table.Cell>
                 ) : null}

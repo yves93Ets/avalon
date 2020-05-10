@@ -13,12 +13,15 @@ module.exports = {
   },
 
   removePlayer: (name) => {
-    Game.updateOne({ room: "Avalon" }, { $pull: { playersList: name } }).exec();
+    Game.updateOne(
+      { room: "Avalon2" },
+      { $pull: { playersList: name } }
+    ).exec();
   },
 
   updatePlayer: (newName, oldName) => {
     Game.updateOne(
-      { room: "Avalon" },
+      { room: "Avalon2" },
       { $set: { "playersList.$[element]": newName } },
       {
         arrayFilters: [{ element: oldName }],

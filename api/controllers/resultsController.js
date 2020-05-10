@@ -2,12 +2,13 @@ const Result = require("../models/resultsModel");
 const { shuffle } = require("../../utilities");
 const uuid = require("uuid");
 module.exports = {
-  createResult: (finishesAt) => {
+  createResult: (playerToChoose, finishesAt) => {
     const newResult = {
       round: 1,
       expires: new Date().getTime(),
       _id: uuid.v1(),
       finishesAt,
+      playerToChoose,
     };
     return Result.insertMany(newResult)
       .then((r) => {
@@ -22,15 +23,38 @@ module.exports = {
         playerTurn: 1,
       })
       .then((d) => {
+        const length = voters.length;
+        const pos = (d.playerTurn + 1) % length;
         Result.updateOne(
           { _id },
           {
-            $push: { votersList: voters, voteResultList: votes },
+            $push: { votersList: shuffle(voters), voteResultList: votes },
             round: round + 1,
             finishesAt,
             playerTurn: d.playerTurn + 1,
+            playerToChoose: playersList[pos],
           }
         ).exec();
+      });
+  },
+
+  getVfmCount: (_id) => {
+    return Result.findOne({ _id })
+      .select({
+        playerTurn: 1,
+        round: 1,
+      })
+      .then((d) => {
+        return !d
+          ? null
+          : Result.findOne({
+              _id,
+              votesForMission: {
+                $elemMatch: { round: d.round, playerTurn: d.playerTurn },
+              },
+            }).then((r) => {
+              return r;
+            });
       });
   },
 
@@ -73,18 +97,21 @@ module.exports = {
       });
   },
 
-  addPlayerTurn: (_id, length, finishesAt) => {
+  addPlayerTurn: (_id, finishesAt, playersList) => {
     Result.findOne({ _id })
       .select({
         playerTurn: 1,
         round: 1,
       })
       .then((d) => {
+        const length = playersList.length;
+        const pos = (d.playerTurn + 1) % length;
         Result.updateOne(
           { _id },
           {
-            $set: { playerTurn: length > d.playerTurn ? d.playerTurn + 1 : 1 },
+            $set: { playerTurn: d.playerTurn + 1 },
             finishesAt,
+            playerToChoose: playersList[pos],
           }
         ).exec();
       });

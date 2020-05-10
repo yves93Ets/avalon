@@ -6,6 +6,7 @@ export default function AvalonResultsVotesForMissionList(props) {
   const [votesForMission, setVotesForMission] = useState([[]]);
   const [last, setLast] = useState();
   const [round, setRound] = useState(0);
+  const [turn, setTurn] = useState(1);
   const socket = useContext(SocketContext);
   const [username] = useContext(UserContext);
 
@@ -13,6 +14,7 @@ export default function AvalonResultsVotesForMissionList(props) {
     setVotesForMission(props.votesForMission);
     setLast(props.last);
     setRound(props.round);
+    setTurn(props.turn);
   }, [props]);
 
   const handleDelete = (e, obj) => {
@@ -22,11 +24,11 @@ export default function AvalonResultsVotesForMissionList(props) {
 
   const createTable = () => {
     if (votesForMission === undefined) return;
+
     return votesForMission.map((vfm, t) =>
-      vfm.round !== round + 1 ? null : (
+      vfm.round !== round + 1 || turn === vfm.playerTurn ? null : (
         <List.Item key={t} className={vfm.vote ? "good" : "evil"}>
           {`${vfm.username} : ${vfm.vote ? "Accept" : "Decline"}`}
-
           {t + 1 === votesForMission.length ? null : vfm.playerTurn ===
             votesForMission[t + 1].playerTurn ? null : (
             <Divider />

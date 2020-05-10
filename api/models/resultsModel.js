@@ -8,6 +8,7 @@ const resultsSchema = new mongoose.Schema({
   expires: Date,
   finishesAt: Date,
   playerTurn: { type: Number, default: 1 },
+  playerToChoose: String,
   votesForMission: [Object],
 });
 

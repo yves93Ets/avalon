@@ -48,7 +48,7 @@ const ioWorker = (server) => {
           });
           resultsController.addResults(
             shuffle(votes),
-            shuffle(names),
+            names,
             round,
             setFinishTime(),
             id
@@ -129,7 +129,9 @@ const ioWorker = (server) => {
         const resultsCb = resultsController.getTimeLeft(r.resultId);
 
         resultsCb.then((c) => {
-          io.emit("started", getSecondsLeft(c.finishesAt));
+          if (c) {
+            io.emit("started", getSecondsLeft(c.finishesAt));
+          }
         });
       });
     });
@@ -168,6 +170,14 @@ const ioWorker = (server) => {
       socket.broadcast.emit("submit-count", count);
     });
 
+    socket.on("players-mission", () => {
+      socket.broadcast.emit("submit-count");
+    });
+
+    socket.on("get-secret-vote", () => {
+      socket.broadcast.emit("secret-vote");
+    });
+
     socket.on("distribute", (roles, names) => {
       io.emit("clear-show-results", false);
       const lastGameListCB = gameController.getDistributionList();
@@ -175,7 +185,10 @@ const ioWorker = (server) => {
         const distributionList = distributeRoles(names, roles, gList);
         roles = roles.map((r) => r.toLowerCase());
         names = shuffle(names);
-        const resultIdCb = resultsController.createResult(setFinishTime());
+        const resultIdCb = resultsController.createResult(
+          names[0],
+          setFinishTime()
+        );
         resultIdCb.then((r) => {
           gameController.newGame({
             names,
@@ -197,6 +210,26 @@ const ioWorker = (server) => {
       });
     });
 
+    socket.on("mission-vote-count", () => {
+      /// accept vote count
+      const idCb = gameController.getResultId();
+      idCb.then((g) => {
+        const resultCb = resultsController.getVfmCount(g.resultId);
+        resultCb.then((v) => {
+          if (v) {
+            io.emit(
+              "mission-vote-count",
+              v.votesForMission.length,
+              g.playersList,
+              v.playerToChoose
+            );
+          } else {
+            io.emit("mission-vote-count", 0, g.playersList, g.playersList[0]);
+          }
+        });
+      });
+    });
+
     socket.on("accept-mission", (username, vote) => {
       const idCb = gameController.getResultId();
       idCb.then((r) => {
@@ -204,13 +237,17 @@ const ioWorker = (server) => {
       });
     });
 
+    socket.on("mission-choices", (names) => {
+      socket.broadcast.emit("mission-choices-names", names);
+    });
+
     socket.on("show-accept-mission", () => {
       const idCb = gameController.getResultId();
       idCb.then((r) => {
         resultsController.addPlayerTurn(
           r.resultId,
-          r.playersList.length,
-          setFinishTime()
+          setFinishTime(),
+          r.playersList
         );
       });
     });
