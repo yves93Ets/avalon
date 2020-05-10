@@ -21,5 +21,10 @@ export default function AvalonVoteForm() {
     });
   }, [socket]);
 
-  return <>{isSecretVote ? <AvalonSecretVote /> : <AvalonAcceptMission />}</>;
+  // return <>{isSecretVote ? <AvalonSecretVote /> : <AvalonAcceptMission />}</>;
+  return (
+    <>
+      <AvalonAcceptMission /> <AvalonSecretVote />
+    </>
+  );
 }
