@@ -6,8 +6,6 @@ export default function SelectPlayer(props) {
   const socket = useContext(SocketContext);
   const [namesArray, setNamesArray] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
-  const [gameRound, setGameRound] = useState(1);
-  const [resultId, setResultId] = useState(0);
 
   useEffect(() => {
     const setArray = (array, optionSetter = null) => {

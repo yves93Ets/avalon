@@ -44,9 +44,10 @@ export default function AvalonAcceptMission() {
   };
 
   const handleNext = () => {
-    socket.emit("show-accept-mission", username, false);
+    socket.emit("show-accept-mission");
     setTimeout(() => {
       socket.emit("restart-timer");
+      socket.emit("mission-vote-count");
     }, 50);
     setTimeout(() => {
       socket.emit("view-timer");
@@ -60,13 +61,13 @@ export default function AvalonAcceptMission() {
     <>
       <Card centered>
         <Card.Content>
-          <Card.Header>
+          <Card.Header className={name === username ? "turn" : null}>
             {name === username
               ? "Your turn to choose"
               : `${name} is choosing ...`}
           </Card.Header>
           <Card.Meta style={marginStyle}>
-            <SelectPlayer names={playersList} />
+            {name === username ? <SelectPlayer names={playersList} /> : null}
           </Card.Meta>
           <Card.Description>
             <List items={selectedNames}></List>

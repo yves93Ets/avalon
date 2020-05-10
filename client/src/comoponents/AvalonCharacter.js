@@ -88,6 +88,9 @@ export default function AvalonCharacter() {
   const handleClickShowVotes = (e) => {
     e.preventDefault();
     socket.emit("clear-show-results", true, resultId, gameRound);
+    setTimeout(() => {
+      socket.emit("mission-vote-count");
+    }, 200);
     setGameRound(gameRound + 1);
     setTimer();
   };

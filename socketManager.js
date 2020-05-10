@@ -46,13 +46,18 @@ const ioWorker = (server) => {
             votes.push(v.vote);
             names.push(v.username);
           });
-          resultsController.addResults(
-            shuffle(votes),
-            names,
-            round,
-            setFinishTime(),
-            id
-          );
+
+          const playersCallback = gameController.getPlayersAndResultId();
+          playersCallback.then((pList) => {
+            resultsController.addResults(
+              shuffle(votes),
+              names,
+              round,
+              setFinishTime(),
+              id,
+              pList.playersList
+            );
+          });
         });
       }
       gameController.setVoteAndRound(isVisible, round);
@@ -217,7 +222,7 @@ const ioWorker = (server) => {
       idCb.then((g) => {
         const resultCb = resultsController.getVfmCount(g.resultId);
         resultCb.then((v) => {
-          if (v) {
+          if (v.votesForMission) {
             io.emit(
               "mission-vote-count",
               v.votesForMission.length,
@@ -225,7 +230,7 @@ const ioWorker = (server) => {
               v.playerToChoose
             );
           } else {
-            io.emit("mission-vote-count", 0, g.playersList, g.playersList[0]);
+            io.emit("mission-vote-count", 0, g.playersList, v.playerToChoose);
           }
         });
       });

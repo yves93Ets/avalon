@@ -17,14 +17,14 @@ module.exports = {
       .catch((e) => console.log("error", e));
   },
 
-  addResults: (votes, voters, round, finishesAt, _id) => {
+  addResults: (votes, voters, round, finishesAt, _id, playersList) => {
     Result.findOne({ _id })
       .select({
         playerTurn: 1,
       })
       .then((d) => {
-        const length = voters.length;
-        const pos = (d.playerTurn + 1) % length;
+        const length = playersList.length;
+        const pos = d.playerTurn % length;
         Result.updateOne(
           { _id },
           {
@@ -43,6 +43,7 @@ module.exports = {
       .select({
         playerTurn: 1,
         round: 1,
+        playerToChoose: 1,
       })
       .then((d) => {
         return !d
@@ -53,7 +54,7 @@ module.exports = {
                 $elemMatch: { round: d.round, playerTurn: d.playerTurn },
               },
             }).then((r) => {
-              return r;
+              return r ? r : d;
             });
       });
   },
@@ -105,7 +106,7 @@ module.exports = {
       })
       .then((d) => {
         const length = playersList.length;
-        const pos = (d.playerTurn + 1) % length;
+        const pos = d.playerTurn % length;
         Result.updateOne(
           { _id },
           {

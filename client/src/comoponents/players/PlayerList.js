@@ -31,10 +31,10 @@ const PlayerList = () => {
       <Modal.Content>
         <Modal.Description>
           <Step link>
-            <Step.Group fluid size="small" ordered>
+            <Step.Group fluid ordered>
               {names.map((n, i) => {
                 return (
-                  <Step key={i} active={i + 1 === playerTurn}>
+                  <Step key={i} active={i === (playerTurn - 1) % names.length}>
                     {n}
                   </Step>
                 );

@@ -64,7 +64,8 @@
   color: #8e4a4b !important;
 }
 
-.card-blue-header {
+.card-blue-header,
+.turn {
   color: #4882b4 !important;
 }
 
