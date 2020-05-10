@@ -10,13 +10,15 @@ import {
 } from "semantic-ui-react";
 import { isSuccesfullEnum } from "../const/enums";
 import { fail, succes, neutral } from "../const/constants";
-import { CountContext, SocketContext } from "../context";
-export default function AvalonForm() {
+import { CountContext, SocketContext, UserContext } from "../context";
+
+export default function AvalonVoteForm() {
   const url = "/api/avalon";
   const socket = useContext(SocketContext);
   const [count, setCount] = useContext(CountContext);
   const [card, setCard] = useState(succes);
   const [isSubmitted, setIsSubmitted] = useState(true);
+  const [username] = useContext(UserContext);
 
   useEffect(() => {
     socket.on("submit-count", (c) => {
@@ -38,12 +40,12 @@ export default function AvalonForm() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ vote: card.isSuccesfull }),
+      body: JSON.stringify({ vote: card.isSuccesfull, username }),
     })
       .then((e) => {
+        send();
         setIsSubmitted(false);
         setCard(neutral);
-        send();
       })
       .catch((err) => {
         console.log(err);
@@ -52,7 +54,7 @@ export default function AvalonForm() {
     setTimeout(() => {
       setCard(succes);
       setIsSubmitted(true);
-    }, 3000);
+    }, 1500);
   };
 
   const handleCheckbox = () => {

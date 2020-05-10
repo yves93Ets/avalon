@@ -9,7 +9,7 @@ const PlayerRoleMessage = (props) => {
 
   useEffect(() => {
     socket.on("roles", (roles) => {
-      roles.map((r) => {
+      roles.forEach((r) => {
         if (r.username === props.username) {
           setRole({
             charactere: r.charactere,
@@ -33,20 +33,21 @@ const PlayerRoleMessage = (props) => {
 
   return (
     <>
-      {isVisible ? (
+      {isVisible && role ? (
         <Message onDismiss={handleDismiss} floating size="small">
           <Message.Content style={contentStyle}>
             You are
             <p
               className={
-                role.group === ("mordred" || "oberon") ? "evil" : "good"
+                role.group === "mordred" || role.group === "oberon"
+                  ? "evil"
+                  : "good"
               }
               style={pStyle}
             >
-              {" "}
-              {role.charactere}{" "}
+              {role.charactere.name}
             </p>
-            and you know
+            {role.charactere.description}
           </Message.Content>
           <Message.List style={ListStyle}>
             {role.knowledge.map((k) => (

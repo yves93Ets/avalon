@@ -1,7 +1,10 @@
 function RolesCreator(charactere, username) {
-  this.charactere = charactere;
+  this.charactere = {
+    name: charactere.name.toLowerCase(),
+    description: charactere.description,
+  };
   this.username = username;
-  this.group = getGroup(this.charactere);
+  this.group = getGroup(this.charactere.name);
   this.knowledge = [];
 }
 
@@ -31,7 +34,7 @@ function setKnowledge(group, username, characteresArray) {
       break;
     case "percival":
       characteresArray.map((a) => {
-        if (a.charactere === "merlin" || a.charactere === "morgana") {
+        if (a.charactere.name === "merlin" || a.charactere.name === "morgana") {
           knowledge.push(a.username);
         }
       });
@@ -70,4 +73,17 @@ function getGroup(charactereName) {
   return group;
 }
 
-module.exports = { create, setKnowledge };
+function verifyRoles(cArray, lgList) {
+  let sameCount = 0;
+  cArray.map((c) => {
+    lgList.map((l) => {
+      l.charactere == c.charactere && l.username == c.username
+        ? sameCount++
+        : sameCount;
+    });
+  });
+
+  return sameCount > 2 ? true : false;
+}
+
+module.exports = { create, setKnowledge, verifyRoles };

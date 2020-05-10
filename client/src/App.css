@@ -64,7 +64,8 @@
   color: #8e4a4b !important;
 }
 
-.card-blue-header {
+.card-blue-header,
+.turn {
   color: #4882b4 !important;
 }
 
@@ -77,6 +78,16 @@
 .users,
 .good {
   color: #4882b4;
+}
+
+.bg-good {
+  background-color: #4882b4 !important;
+  color: white !important;
+}
+
+.bg-evil {
+  background-color: #8e4a4b !important;
+  color: white !important;
 }
 
 .margin {
@@ -95,4 +106,15 @@
 
 .width {
   width: 150px !important;
+}
+
+.timer {
+  display: flex;
+  justify-content: space-around;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.time {
+  font-size: 12.5px;
 }

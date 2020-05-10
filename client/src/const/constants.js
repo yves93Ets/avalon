@@ -100,80 +100,127 @@ export const characteres = [
     src: LoyalOneSrc,
     description: "You are an innocent GOOD guy",
     isGood: true,
-    name: "Loyal Servant of Arthur 1",
+    name: "Loyal servant of arthur 1",
   },
   {
     src: LoyalTwoSrc,
     description: "You are an innocent GOOD guy",
     isGood: true,
-    name: "Loyal Servant of Arthur 2",
+    name: "Loyal servant of arthur 2",
   },
   {
     src: LoyalThreeSrc,
     description: "You are an innocent GOOD guy",
     isGood: true,
-    name: "Loyal Servant of Arthur 3",
+    name: "Loyal servant of arthur 3",
   },
   {
     src: LoyalFourSrc,
     description: "You are an innocent GOOD guy",
     isGood: true,
-    name: "Loyal Servant of Arthur 4",
+    name: "Loyal servant of arthur 4",
   },
   {
     src: LoyalFiveSrc,
     description: "You are an innocent GOOD guy",
     isGood: true,
-    name: "Loyal Servant of Arthur 5",
+    name: "Loyal servant of arthur 5",
   },
 ];
 
 export const options = [
-  { key: "Assassin", text: "Assassin", value: "Assassin" },
-  { key: "Mordred", text: "Mordred", value: "Mordred" },
-  { key: "Morgana", text: "Morgana", value: "Morgana" },
-  { key: "Oberon", text: "Oberon", value: "Oberon" },
+  {
+    key: "Assassin",
+    text: "Assassin",
+    value: "Assassin",
 
-  { key: "Merlin", text: "Merlin", value: "Merlin" },
-  { key: "Percival", text: "Percival", value: "Percival" },
-  {
-    key: "Loyal Servant of Arthur 1",
-    text: "Loyal Servant of Arthur 1",
-    value: "Loyal Servant of Arthur 1",
+    description:
+      "You are a BAD Guy. If the Good Guys win, you’ll get one chance to kill Merlin. Choose wisely. Think of who knew a little too much. The other Bad Guys are :",
   },
   {
-    key: "Loyal Servant of Arthur 2",
-    text: "Loyal Servant of Arthur 2",
-    value: "Loyal Servant of Arthur 2",
+    key: "Mordred",
+    text: "Mordred",
+    value: "Mordred",
+    description: "Merlin doesn't know who you are. The other Bad Guys are :",
   },
   {
-    key: "Loyal Servant of Arthur 3",
-    text: "Loyal Servant of Arthur 3",
-    value: "Loyal Servant of Arthur 3",
+    key: "Morgana",
+    text: "Morgana",
+    value: "Morgana",
+    description: "Evil must prevail. The other Bad Guys are :",
   },
   {
-    key: "Loyal Servant of Arthur 4",
-    text: "Loyal Servant of Arthur 4",
-    value: "Loyal Servant of Arthur 4",
+    key: "Oberon",
+    text: "Oberon",
+    value: "Oberon",
+    description:
+      "You are a BAD guy, but you don’t reveal yourself to the other Bad Guys (and don’t know who they are either), you know :",
+  },
+
+  {
+    key: "Merlin",
+    text: "Merlin",
+    value: "Merlin",
+    description: "Don't get caught. The bad Guys you found are :",
   },
   {
-    key: "Loyal Servant of Arthur 5",
-    text: "Loyal Servant of Arthur 5",
-    value: "Loyal Servant of Arthur 5",
+    key: "Percival",
+    text: "Percival",
+    value: "Percival",
+    description:
+      "These two are Merlin and Morgana, but you are unsure which is which",
   },
   {
-    key: "Minion of Mordred 1",
-    text: "Minion of Mordred 1",
-    value: "Minion of Mordred 1",
+    key: "Loyal servant of arthur 1",
+    text: "Loyal servant of arthur 1",
+    value: "Loyal servant of arthur 1",
+    description:
+      "Good must prevail. Try to figure out who your fellow Good Guys are :",
   },
   {
-    key: "Minion of Mordred 2",
-    text: "Minion of Mordred 2",
-    value: "Minion of Mordred 2",
+    key: "Loyal servant of arthur 2",
+    text: "Loyal servant of arthur 2",
+    value: "Loyal servant of arthur 2",
+    description:
+      "Good must prevail. Try to figure out who your fellow Good Guys are :",
   },
   {
-    key: "Minion of Mordred 3",
-    text: "Minion of Mordred 3",
-    value: "Minion of Mordred 3",
+    key: "Loyal servant of arthur 3",
+    text: "Loyal servant of arthur 3",
+    value: "Loyal servant of arthur 3",
+    description:
+      "Good must prevail. Try to figure out who your fellow Good Guys are :",
+  },
+  {
+    key: "Loyal servant of arthur 4",
+    text: "Loyal servant of arthur 4",
+    value: "Loyal servant of arthur 4",
+    description:
+      "Good must prevail. Try to figure out who your fellow Good Guys are :",
+  },
+  {
+    key: "Loyal servant of arthur 5",
+    text: "Loyal servant of arthur 5",
+    value: "Loyal servant of arthur 5",
+    description:
+      "Good must prevail. Try to figure out who your fellow Good Guys are :",
+  },
+  {
+    key: "Minion of mordred 1",
+    text: "Minion of mordred 1",
+    value: "Minion of mordred 1",
+    description: "Evil must prevail. The other Bad Guys are :",
+  },
+  {
+    key: "Minion of mordred 2",
+    text: "Minion of mordred 2",
+    value: "Minion of mordred 2",
+    description: "Evil must prevail. The other Bad Guys are :",
+  },
+  {
+    key: "Minion of mordred 3",
+    text: "Minion of mordred 3",
+    value: "Minion of mordred 3",
+    description: "Evil must prevail. The other Bad Guys are :",
   },
 ];
