@@ -37,13 +37,20 @@ export default function AvalonCharacter() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    socket.emit("distribute", characteresArray, namesArray);
+    socket.emit("distribute", setDescription(), namesArray);
     setTimer();
+  };
+
+  const setDescription = () => {
+    const charac = characteresArray.map((name) => {
+      const description = options.find((o) => o.value === name).description;
+      return { name, description };
+    });
+    return charac;
   };
 
   const onChange = (e, data) => {
     e.preventDefault();
-    console.log(1111, data.value);
     setCharacteresArray(data.value);
   };
 

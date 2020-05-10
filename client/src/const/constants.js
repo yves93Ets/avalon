@@ -130,21 +130,12 @@ export const characteres = [
 
 export const options = [
   {
-    key: "Yves",
-    text: "YVES",
-    value: {
-      name: "Assassin",
-      description:
-        "You are a BAD guy. If the Good Guys win, you’ll get one chance to kill Merlin. Choose wisely. Think of who knew a little too much",
-    },
-  },
-  {
     key: "Assassin",
     text: "Assassin",
     value: "Assassin",
 
     description:
-      "You are a BAD guy. If the Good Guys win, you’ll get one chance to kill Merlin. Choose wisely. Think of who knew a little too much",
+      "You are a BAD Guy. If the Good Guys win, you’ll get one chance to kill Merlin. Choose wisely. Think of who knew a little too much. The other Bad Guys are :",
   },
   {
     key: "Mordred",
@@ -177,7 +168,7 @@ export const options = [
     text: "Percival",
     value: "Percival",
     description:
-      "Thes two are Merlin and Morgana, but you are unsure which is which",
+      "These two are Merlin and Morgana, but you are unsure which is which",
   },
   {
     key: "Loyal servant of arthur 1",

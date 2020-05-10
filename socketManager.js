@@ -183,8 +183,9 @@ const ioWorker = (server) => {
       const lastGameListCB = gameController.getDistributionList();
       lastGameListCB.then((gList) => {
         const distributionList = distributeRoles(names, roles, gList);
-        roles = roles.map((r) => r.toLowerCase());
+        roles = roles.map((r) => r.name.toLowerCase());
         names = shuffle(names);
+
         const resultIdCb = resultsController.createResult(
           names[0],
           setFinishTime()

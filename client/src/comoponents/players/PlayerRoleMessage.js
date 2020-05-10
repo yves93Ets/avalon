@@ -45,10 +45,9 @@ const PlayerRoleMessage = (props) => {
               }
               style={pStyle}
             >
-              {" "}
-              {role.charactere}{" "}
+              {role.charactere.name}
             </p>
-            and you know
+            {role.charactere.description}
           </Message.Content>
           <Message.List style={ListStyle}>
             {role.knowledge.map((k) => (
