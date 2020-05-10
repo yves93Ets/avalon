@@ -28,6 +28,7 @@ export default function AvalonAcceptMission() {
   const handleClick = (e, v) => {
     socket.emit("accept-mission", username, v.value, selectedNames);
     sendCount();
+    setSelectedNames([]);
   };
 
   const sendCount = () => {
