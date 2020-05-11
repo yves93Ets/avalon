@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Button, Card, List } from "semantic-ui-react";
+import { Form, Button, Card, List } from "semantic-ui-react";
 import { SocketContext, UserContext } from "../context";
 import SelectPlayer from "../comoponents/common/SelectPlayer";
 export default function AvalonAcceptMission() {
@@ -28,7 +28,6 @@ export default function AvalonAcceptMission() {
   const handleClick = (e, v) => {
     socket.emit("accept-mission", username, v.value, selectedNames);
     sendCount();
-    setSelectedNames([]);
   };
 
   const sendCount = () => {
@@ -45,10 +44,11 @@ export default function AvalonAcceptMission() {
   };
 
   const handleNext = () => {
-    socket.emit("show-accept-mission");
+    socket.emit("show-accept-mission", selectedNames, name);
     setTimeout(() => {
       socket.emit("restart-timer");
       socket.emit("mission-vote-count");
+      socket.emit("mission-choices-names");
     }, 50);
     setTimeout(() => {
       socket.emit("view-timer");
@@ -56,6 +56,10 @@ export default function AvalonAcceptMission() {
     setTimeout(() => {
       socket.emit("started-at");
     }, 150);
+  };
+
+  const handleVote = () => {
+    socket.emit("set-secret-vote", true);
   };
 
   return (
@@ -100,9 +104,26 @@ export default function AvalonAcceptMission() {
       </Card>
 
       {username === "David" ? (
-        <Button style={marginStyle} onClick={handleNext}>
-          Next
-        </Button>
+        <Form className="margin">
+          <Form.Group grouped>
+            <Button
+              fluid
+              style={marginStyle}
+              className="bg-good "
+              onClick={handleNext}
+            >
+              Next
+            </Button>
+            <Button
+              fluid
+              style={marginStyle}
+              className="bg-evil"
+              onClick={handleVote}
+            >
+              Secret vote
+            </Button>
+          </Form.Group>
+        </Form>
       ) : null}
     </>
   );

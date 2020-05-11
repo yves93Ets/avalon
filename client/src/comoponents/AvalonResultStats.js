@@ -8,6 +8,7 @@ export default function AvalonResults() {
 
   const [voters, setVoters] = useState([[]]);
   const [votes, setVotes] = useState([[]]);
+  const [selectedNames, setSelecteNames] = useState([[]]);
   const [votesForMission, setVotesForMission] = useState([[]]);
   const [id, setId] = useState();
   const [currentTurn, setCurentTurn] = useState(1);
@@ -22,6 +23,7 @@ export default function AvalonResults() {
       setId(results._id);
       setVotesForMission(vfm);
       setCurentTurn(results.playerTurn);
+      setSelecteNames(results.selectedNames);
     });
   }, [socket]);
 
@@ -102,6 +104,7 @@ export default function AvalonResults() {
                       round={index}
                       last={index === votesForMission.length - 1}
                       turn={currentTurn}
+                      selectedNames={selectedNames}
                     />
                   </Table.Cell>
                 ) : null}

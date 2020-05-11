@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { List, Divider, Button, Icon } from "semantic-ui-react";
+import { List, Divider, Button, Icon, Segment } from "semantic-ui-react";
 import { SocketContext, UserContext } from "../context";
 
 export default function AvalonResultsVotesForMissionList(props) {
@@ -7,6 +7,7 @@ export default function AvalonResultsVotesForMissionList(props) {
   const [last, setLast] = useState();
   const [round, setRound] = useState(0);
   const [turn, setTurn] = useState(1);
+  const [selectedNames, setSelecteNames] = useState([[]]);
   const socket = useContext(SocketContext);
   const [username] = useContext(UserContext);
 
@@ -15,6 +16,7 @@ export default function AvalonResultsVotesForMissionList(props) {
     setLast(props.last);
     setRound(props.round);
     setTurn(props.turn);
+    setSelecteNames(props.selectedNames);
   }, [props]);
 
   const handleDelete = (e, obj) => {
@@ -58,7 +60,12 @@ export default function AvalonResultsVotesForMissionList(props) {
     );
   };
 
-  return <List>{createTable()}</List>;
+  return (
+    <List>
+      <Segment>{selectedNames[0].selectedNames}</Segment>
+      {createTable()}
+    </List>
+  );
 }
 
 const style = {

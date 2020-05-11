@@ -10,6 +10,7 @@ const resultsSchema = new mongoose.Schema({
   playerTurn: { type: Number, default: 1 },
   playerToChoose: String,
   votesForMission: [Object],
+  selectedNames: [Object],
 });
 
 module.exports = mongoose.model("Result", resultsSchema);

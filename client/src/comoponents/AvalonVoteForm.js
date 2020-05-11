@@ -8,7 +8,6 @@ export default function AvalonVoteForm() {
   const socket = useContext(SocketContext);
   const [isSecretVote, setIsSecretVote] = useState(false);
   useEffect(() => {
-    socket.emit("get-secret-vote");
     socket.on("secret-vote", (isv) => {
       setIsSecretVote(isv);
     });
@@ -21,10 +20,5 @@ export default function AvalonVoteForm() {
     });
   }, [socket]);
 
-  // return <>{isSecretVote ? <AvalonSecretVote /> : <AvalonAcceptMission />}</>;
-  return (
-    <>
-      <AvalonAcceptMission /> <AvalonSecretVote />
-    </>
-  );
+  return <>{isSecretVote ? <AvalonSecretVote /> : <AvalonAcceptMission />}</>;
 }

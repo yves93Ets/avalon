@@ -51,7 +51,8 @@ module.exports = {
           : Result.findOne({
               _id,
               votesForMission: {
-                $elemMatch: { round: d.round, playerTurn: d.playerTurn },
+                // returning all
+                $elemMatch: { round: d.round },
               },
             }).then((r) => {
               return r ? r : d;
@@ -98,7 +99,7 @@ module.exports = {
       });
   },
 
-  addPlayerTurn: (_id, finishesAt, playersList) => {
+  addPlayerTurn: (_id, finishesAt, playersList, selectedNames, selector) => {
     Result.findOne({ _id })
       .select({
         playerTurn: 1,
@@ -113,6 +114,14 @@ module.exports = {
             $set: { playerTurn: d.playerTurn + 1 },
             finishesAt,
             playerToChoose: playersList[pos],
+            $push: {
+              selectedNames: {
+                selectedNames,
+                selector,
+                round: d.round,
+                playerTurn: d.playerTurn,
+              },
+            },
           }
         ).exec();
       });
@@ -146,7 +155,7 @@ module.exports = {
         Result.updateOne(
           { _id },
           {
-            $pop: { voteResultList: 1, votersList: 1 },
+            $pop: { voteResultList: 1, votersList: 1, selectedNames: 1 },
             round: round,
             $pull: { votesForMission: { round: round } },
             playerTurn: pt.playerTurn,
