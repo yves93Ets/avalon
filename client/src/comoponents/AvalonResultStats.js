@@ -100,7 +100,7 @@ export default function AvalonResults() {
                 {votesForMission.length > 0 ? (
                   <Table.Cell>
                     <AvalonResultsVotesForMissionList
-                      votesForMission={votesForMission[index]}
+                      votesForMission={vfm}
                       round={index}
                       last={index === votesForMission.length - 1}
                       turn={currentTurn}

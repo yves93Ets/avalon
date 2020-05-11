@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { List, Divider, Button, Icon, Segment } from "semantic-ui-react";
+import { List, Divider, Button, Icon } from "semantic-ui-react";
 import { SocketContext, UserContext } from "../context";
 
 export default function AvalonResultsVotesForMissionList(props) {
@@ -31,9 +31,28 @@ export default function AvalonResultsVotesForMissionList(props) {
       vfm.round !== round + 1 || turn === vfm.playerTurn ? null : (
         <List.Item key={t} className={vfm.vote ? "good" : "evil"}>
           {`${vfm.username} : ${vfm.vote ? "Accept" : "Decline"}`}
-          {t + 1 === votesForMission.length ? null : vfm.playerTurn ===
-            votesForMission[t + 1].playerTurn ? null : (
-            <Divider />
+
+          {t + 1 === votesForMission.length ? (
+            <>
+              {selectedNames.map((sn, i) =>
+                sn.round === round + 1 && vfm.playerTurn === sn.playerTurn ? (
+                  <p className="normal" key={i}>
+                    {`${sn.selector} : ${sn.selectedNames}`}
+                  </p>
+                ) : null
+              )}
+            </>
+          ) : vfm.playerTurn === votesForMission[t + 1].playerTurn ? null : (
+            <>
+              {selectedNames.map((sn, i) =>
+                sn.round === round + 1 && vfm.playerTurn === sn.playerTurn ? (
+                  <p className="normal" key={i}>
+                    {`${sn.selector} : ${sn.selectedNames}`}
+                  </p>
+                ) : null
+              )}
+              <Divider />
+            </>
           )}
 
           {last === true &&
@@ -60,12 +79,7 @@ export default function AvalonResultsVotesForMissionList(props) {
     );
   };
 
-  return (
-    <List>
-      <Segment>{selectedNames[0].selectedNames}</Segment>
-      {createTable()}
-    </List>
-  );
+  return <List>{createTable()}</List>;
 }
 
 const style = {

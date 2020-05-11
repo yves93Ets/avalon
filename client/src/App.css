@@ -80,6 +80,12 @@
   color: #4882b4;
 }
 
+.normal {
+  margin-top: 10px !important;
+  color: black;
+  font-weight: bold;
+}
+
 .bg-good {
   background-color: #4882b4 !important;
   color: white !important;
