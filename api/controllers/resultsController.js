@@ -10,14 +10,10 @@ module.exports = {
       finishesAt,
       playerToChoose,
     };
-    return Result.insertMany(newResult)
-      .then((r) => {
-        return r;
-      })
-      .catch((e) => console.log("error", e));
+    return Result.insertMany(newResult).catch((e) => console.log("error", e));
   },
 
-  addResults: (votes, voters, round, finishesAt, _id, playersList) => {
+  addResults: (votes, voters, finishesAt, _id, playersList) => {
     Result.findOne({ _id })
       .select({
         playerTurn: 1,
@@ -29,9 +25,8 @@ module.exports = {
           { _id },
           {
             $push: { votersList: shuffle(voters), voteResultList: votes },
-            round: round + 1,
+            $inc: { round: 1 },
             finishesAt,
-            playerTurn: d.playerTurn + 1,
             playerToChoose: playersList[pos],
           }
         ).exec();
@@ -127,6 +122,14 @@ module.exports = {
       });
   },
 
+  getAcceptanceVotes: (_id) => {
+    return Result.findOne({ _id }).select({
+      playerTurn: 1,
+      round: 1,
+      votesForMission: 1,
+    });
+  },
+
   get: (id) => {
     return Result.findOne({ _id: id })
       .select()
@@ -143,7 +146,7 @@ module.exports = {
       });
   },
 
-  deleteLastRound: (_id, round) => {
+  deleteLastRound: (_id, round, playersList) => {
     round++;
     return Result.findOne({ _id })
       .select("votesForMission")
@@ -152,6 +155,8 @@ module.exports = {
           .filter((r) => r.round === round)
           .reduce((p, n) => (p.playerTurn < n.playerTurn ? p : n));
 
+        const length = playersList.length;
+        const pos = pt.playerTurn % length;
         Result.updateOne(
           { _id },
           {
@@ -159,12 +164,15 @@ module.exports = {
             round: round,
             $pull: { votesForMission: { round: round } },
             playerTurn: pt.playerTurn,
+            playerToChoose: playersList[pos],
           }
         ).exec();
       });
   },
 
-  deleteLastVoteFormission: (_id, playerTurn, round) => {
+  deleteLastVoteFormission: (_id, playerTurn, round, playersList) => {
+    const length = playersList.length;
+    const pos = (playerTurn % length) - 1;
     Result.updateOne(
       { _id },
       {
@@ -172,6 +180,7 @@ module.exports = {
           votesForMission: { playerTurn: playerTurn, round },
         },
         playerTurn: playerTurn,
+        playerToChoose: playersList[pos],
       }
     ).exec();
   },

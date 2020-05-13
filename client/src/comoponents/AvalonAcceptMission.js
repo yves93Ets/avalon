@@ -48,14 +48,15 @@ export default function AvalonAcceptMission() {
     setTimeout(() => {
       socket.emit("restart-timer");
       socket.emit("mission-vote-count");
-      socket.emit("mission-choices-names");
-    }, 50);
+      socket.emit("mission-choices", []);
+    }, 75);
     setTimeout(() => {
       socket.emit("view-timer");
-    }, 100);
+    }, 150);
     setTimeout(() => {
       socket.emit("started-at");
-    }, 150);
+      socket.emit("check-acceptance-votes", selectedNames);
+    }, 200);
   };
 
   const handleVote = () => {

@@ -29,7 +29,9 @@ export default function AvalonResults() {
 
   const handleDelete = (e, value) => {
     socket.emit("delete-round", value.value, id);
-    socket.emit("game-results");
+    setTimeout(() => {
+      socket.emit("game-results");
+    }, 200);
   };
 
   return (

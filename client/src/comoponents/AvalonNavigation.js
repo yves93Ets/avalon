@@ -84,7 +84,7 @@ export default function AvalonNavigation() {
         />
         <CountdownCircleTimer visible={visible} seconds={seconds} />
         <Menu.Menu position="right">
-          <Dropdown item text={username}>
+          <Dropdown item text={username} icon="setting">
             <Dropdown.Menu>
               <Dropdown.Item
                 icon="user"
