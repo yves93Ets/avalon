@@ -60,7 +60,7 @@ export default function AvalonAcceptMission() {
   };
 
   const handleVote = () => {
-    socket.emit("set-secret-vote", true);
+    socket.emit("check-acceptance-votes", selectedNames);
   };
 
   return (

@@ -127,6 +127,7 @@ module.exports = {
       playerTurn: 1,
       round: 1,
       votesForMission: 1,
+      selectedNames: 1,
     });
   },
 

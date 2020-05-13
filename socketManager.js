@@ -9,6 +9,7 @@ const {
   getSecondsLeft,
   convertToMultipleArray,
   calculateVotes,
+  getSelectedNamesByTurn,
 } = require("./utilities");
 
 const { emptyUsersList } = require("./services/userService");
@@ -267,6 +268,10 @@ const ioWorker = (server) => {
         const av = resultsController.getAcceptanceVotes(r.resultId);
         av.then((d) => {
           const passed = calculateVotes(d);
+          if (selectedNames.length === 0) {
+            selectedNames = getSelectedNamesByTurn(d);
+          }
+
           io.emit("acceptance-votes-results", selectedNames);
           io.emit("secret-vote", passed);
         });

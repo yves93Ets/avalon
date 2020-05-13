@@ -37,6 +37,16 @@ const calculateVotes = ({ votesForMission, round, playerTurn }) => {
 
   return posCount > count - posCount;
 };
+
+const getSelectedNamesByTurn = ({ selectedNames, playerTurn, round }) => {
+  const turn = playerTurn - 1;
+  const r = round;
+  const sn = selectedNames.find(({ playerTurn, round }) => {
+    return playerTurn === turn && round == round;
+  });
+  return sn.selectedNames;
+};
+
 const convertToMultipleArray = (array, round) => {
   const arr = [];
   for (j = 1; j <= round + 1; j++) {
@@ -65,4 +75,5 @@ module.exports = {
   getSecondsLeft,
   convertToMultipleArray,
   calculateVotes,
+  getSelectedNamesByTurn,
 };
