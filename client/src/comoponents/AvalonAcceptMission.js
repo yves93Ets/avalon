@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Form, Button, Card, List } from "semantic-ui-react";
 import { SocketContext, UserContext } from "../context";
+import { getTitle } from "hookrouter";
 import SelectPlayer from "../comoponents/common/SelectPlayer";
 export default function AvalonAcceptMission() {
   const socket = useContext(SocketContext);
@@ -19,7 +20,6 @@ export default function AvalonAcceptMission() {
       setPlayersList(pl);
       setName(name);
     });
-
     socket.on("mission-choices-names", (names) => {
       setSelectedNames(names);
     });
@@ -104,7 +104,7 @@ export default function AvalonAcceptMission() {
         ) : null}
       </Card>
 
-      {username === "David" ? (
+      {username === "David" && getTitle() === "Admin" ? (
         <Form className="margin">
           <Form.Group grouped>
             <Button
