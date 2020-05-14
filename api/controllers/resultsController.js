@@ -19,15 +19,18 @@ module.exports = {
         playerTurn: 1,
       })
       .then((d) => {
-        const length = playersList.length;
-        const pos = d.playerTurn % length;
+        // TODO remove playerList
+        // const length = playersList.length;
+        //const pos = d.playerTurn % length;
+        //console.log(2222, pos);
+
         Result.updateOne(
           { _id },
           {
             $push: { votersList: shuffle(voters), voteResultList: votes },
             $inc: { round: 1 },
             finishesAt,
-            playerToChoose: playersList[pos],
+            //  playerToChoose: playersList[pos],
           }
         ).exec();
       });

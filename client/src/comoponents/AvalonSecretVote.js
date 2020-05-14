@@ -105,6 +105,13 @@ export default function AvalonSecretVote(props) {
               Are Votin...
               <Icon name="clock" />
             </Card.Content>
+            {username === "David" || username === "Yves" ? (
+              <Card.Content extra>
+                <Segment>
+                  <Icon name="users" /> : {count}
+                </Segment>
+              </Card.Content>
+            ) : null}
           </Card>
         </Form>
       )}

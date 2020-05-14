@@ -115,6 +115,7 @@ export default function AvalonCharacter() {
       </Form.Group>
       <Form.Group className="margin">
         <Form.Dropdown
+          lazyLoad
           fluid
           placeholder="Characteres"
           multiple
