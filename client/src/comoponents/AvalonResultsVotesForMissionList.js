@@ -42,17 +42,21 @@ export default function AvalonResultsVotesForMissionList(props) {
                 ) : null
               )}
             </>
-          ) : vfm.playerTurn === votesForMission[t + 1].playerTurn ? null : (
-            <>
-              {selectedNames.map((sn, i) =>
-                sn.round === round + 1 && vfm.playerTurn === sn.playerTurn ? (
-                  <p className="normal" key={i}>
-                    {`${sn.selector} : ${sn.selectedNames}`}
-                  </p>
-                ) : null
-              )}
-              <Divider />
-            </>
+          ) : (
+            vfm.playerTurn !== votesForMission[t + 1].playerTurn && (
+              <>
+                {selectedNames.map(
+                  (sn, i) =>
+                    sn.round === round + 1 &&
+                    vfm.playerTurn === sn.playerTurn && (
+                      <p className="normal" key={i}>
+                        {`${sn.selector} : ${sn.selectedNames}`}
+                      </p>
+                    )
+                )}
+                <Divider />
+              </>
+            )
           )}
 
           {last === true &&

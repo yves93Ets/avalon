@@ -80,26 +80,25 @@ export default function AvalonResults() {
                 </Table.Cell>
                 <Table.Cell>
                   <List>
-                    {voters.length === index
-                      ? null
-                      : voters[index].map((v, i) => {
-                          return <List.Item key={i}>{v}</List.Item>;
-                        })}
+                    {voters.length !== index &&
+                      voters[index].map((v, i) => {
+                        return <List.Item key={i}>{v}</List.Item>;
+                      })}
                     {username === "David" &&
-                    index === votesForMission.length - 1 ? (
-                      <Button
-                        color="red"
-                        basic
-                        icon
-                        value={index}
-                        onClick={handleDelete}
-                      >
-                        <Icon name="trash" circular fitted size="small" />
-                      </Button>
-                    ) : null}
+                      index === votesForMission.length - 1 && (
+                        <Button
+                          color="red"
+                          basic
+                          icon
+                          value={index}
+                          onClick={handleDelete}
+                        >
+                          <Icon name="trash" circular fitted size="small" />
+                        </Button>
+                      )}
                   </List>
                 </Table.Cell>
-                {votesForMission.length > 0 ? (
+                {votesForMission.length > 0 && (
                   <Table.Cell>
                     <AvalonResultsVotesForMissionList
                       votesForMission={vfm}
@@ -109,7 +108,7 @@ export default function AvalonResults() {
                       selectedNames={selectedNames}
                     />
                   </Table.Cell>
-                ) : null}
+                )}
               </Table.Row>
             );
           })}
