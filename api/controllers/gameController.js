@@ -9,19 +9,28 @@ module.exports = {
   },
 
   addPlayer: (name) => {
-    Game.updateOne({ room: "Avalon" }, { $push: { playersList: name } }).exec();
+    Game.findOne({ room: "Avalon", playersList: { $in: [name] } })
+      .select("_id")
+      .then((g) => {
+        if (!g) {
+          Game.updateOne(
+            { room: "Avalon" },
+            { $push: { playersList: name } }
+          ).exec();
+        }
+      });
   },
 
   removePlayer: (name) => {
     Game.updateOne(
-      { room: "Avalon2" },
-      { $pull: { playersList: name } }
+      { room: "Avalon" },
+      { $pull: { playersList: { $in: [name] } } }
     ).exec();
   },
 
   updatePlayer: (newName, oldName) => {
     Game.updateOne(
-      { room: "Avalon2" },
+      { room: "Avalon" },
       { $set: { "playersList.$[element]": newName } },
       {
         arrayFilters: [{ element: oldName }],
