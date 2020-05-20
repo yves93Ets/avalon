@@ -242,10 +242,17 @@ const ioWorker = (server) => {
               "mission-vote-count",
               count,
               g.playersList,
-              v.playerToChoose
+              v.playerToChoose,
+              v.round
             );
           } else {
-            io.emit("mission-vote-count", 0, g.playersList, v.playerToChoose);
+            io.emit(
+              "mission-vote-count",
+              0,
+              g.playersList,
+              v.playerToChoose,
+              v.round
+            );
           }
         });
       });
@@ -258,7 +265,21 @@ const ioWorker = (server) => {
       });
     });
 
+    socket.on("get-mission-choices", (names) => {
+      const idCb = gameController.getResultId();
+      idCb.then((r) => {
+        const rcb = resultsController.getMissionNames(r.resultId);
+        rcb.then((n) => {
+          io.emit("mission-choices-names", n);
+        });
+      });
+    });
+
     socket.on("mission-choices", (names) => {
+      const idCb = gameController.getResultId();
+      idCb.then((r) => {
+        resultsController.addMissionChoices(r.resultId, names);
+      });
       io.emit("mission-choices-names", names);
     });
 

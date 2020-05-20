@@ -74,6 +74,14 @@ module.exports = {
       });
   },
 
+  getMissionNames: (_id) => {
+    return Result.findOne({ _id })
+      .select("missionNames")
+      .then((r) => {
+        return r === null ? 1 : r.missionNames;
+      });
+  },
+
   addVotesFormMission: (username, vote, _id) => {
     Result.findOne({ _id })
       .select({
@@ -95,6 +103,15 @@ module.exports = {
           }
         ).exec();
       });
+  },
+
+  addMissionChoices: (_id, missionNames) => {
+    Result.updateOne(
+      { _id },
+      {
+        missionNames,
+      }
+    ).exec();
   },
 
   addPlayerTurn: (_id, finishesAt, playersList, selectedNames, selector) => {

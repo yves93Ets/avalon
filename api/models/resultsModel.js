@@ -11,6 +11,7 @@ const resultsSchema = new mongoose.Schema({
   playerToChoose: String,
   votesForMission: [Object],
   selectedNames: [Object],
+  missionNames: [String],
 });
 
 module.exports = mongoose.model("Result", resultsSchema);

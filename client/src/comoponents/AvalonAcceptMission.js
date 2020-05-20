@@ -1,8 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Form, Button, Card, List } from "semantic-ui-react";
+import { Form, Button, Card, List, Icon } from "semantic-ui-react";
 import { SocketContext, UserContext } from "../context";
 import { getTitle } from "hookrouter";
 import SelectPlayer from "../comoponents/common/SelectPlayer";
+import { questNumbers } from "../const/constants";
+
 export default function AvalonAcceptMission() {
   const socket = useContext(SocketContext);
   const [username] = useContext(UserContext);
@@ -12,14 +14,20 @@ export default function AvalonAcceptMission() {
   const [count, setCount] = useState(0);
   const [playersList, setPlayersList] = useState([]);
   const [selectedNames, setSelectedNames] = useState([]);
+  const [nPlayersToselect, setNplayersToselect] = useState(0);
 
   useEffect(() => {
     socket.emit("mission-vote-count");
-    socket.on("mission-vote-count", (c, pl, name) => {
+    socket.on("mission-vote-count", (c, pl, name, round) => {
       setCount(c);
       setPlayersList(pl);
+      const i = pl.length > 9 ? 6 : pl.length - 4;
+      round = round > 5 ? round % 5 : round;
+      setNplayersToselect(questNumbers[round - 1][i]);
       setName(name);
     });
+
+    socket.emit("get-mission-choices");
     socket.on("mission-choices-names", (names) => {
       setSelectedNames(names);
     });
@@ -36,11 +44,11 @@ export default function AvalonAcceptMission() {
     setDisabled(true);
     setTimeout(() => {
       setIsVisible(true);
-    }, 1500);
+    }, 10000);
 
     setTimeout(() => {
       setDisabled(false);
-    }, 5000);
+    }, 13000);
   };
 
   const handleNext = () => {
@@ -69,14 +77,16 @@ export default function AvalonAcceptMission() {
         <Card.Content>
           <Card.Header className={name === username ? "turn" : null}>
             {name === username
-              ? "Your turn to choose"
-              : `${name} is choosing ...`}
+              ? `Your turn to choose `
+              : `${name} is choosing ... `}
+            <Icon className="good" name="male" />
+            {` ${nPlayersToselect}`}
           </Card.Header>
           <Card.Meta style={marginStyle}>
             {name === username ? <SelectPlayer names={playersList} /> : null}
           </Card.Meta>
           <Card.Description>
-            <List items={selectedNames}></List>
+            {selectedNames.length > 0 && <List items={selectedNames}></List>}
           </Card.Description>
         </Card.Content>
         {isvisible ? (
