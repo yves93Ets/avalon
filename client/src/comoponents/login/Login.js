@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
-import { Form, Input, Grid, Header, Image } from "semantic-ui-react";
-import { UserContext, SocketContext } from "../context";
-import merlinSrc from "../images/Merlin.jpg";
+import { Form, Input, Grid, Header, Image, Button } from "semantic-ui-react";
+import { UserContext, SocketContext } from "../../context";
+import merlinSrc from "../../images/Merlin.jpg";
 import { useTitle } from "hookrouter";
 
-export default function AvalonLogin() {
+export default function Login() {
   const [username, setUsername] = useContext(UserContext);
   const [name, setName] = useState("");
   const socket = useContext(SocketContext);
@@ -28,7 +28,7 @@ export default function AvalonLogin() {
     <Grid textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
       <Grid.Column style={{ maxWidth: 450 }}>
         <Image centered size="small" src={merlinSrc} />
-        <Header as="h2" color="blue" textAlign="center">
+        <Header as="h2" className="card-blue-header" textAlign="center">
           Choose a player name
         </Header>
         <Grid.Row centered>
@@ -45,9 +45,9 @@ export default function AvalonLogin() {
               />
             </Form.Field>
             <Form.Field>
-              <Form.Button
+              <Button
                 fluid
-                color="blue"
+                className="bg-good"
                 content={username === "" ? "Login" : "Rename"}
               />
             </Form.Field>

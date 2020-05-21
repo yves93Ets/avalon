@@ -2,6 +2,20 @@ const Game = require("../models/gameModel");
 const { shuffle } = require("../../utilities");
 
 module.exports = {
+  createGamRoom: (owner, room) => {
+    const newRoom = {
+      room,
+      owner,
+      expires: new Date().getTime(),
+    };
+    return Game.insertMany(newRoom).catch((e) => console.log("error", e));
+  },
+
+  getRooms: () => {
+    return Game.find()
+      .select("room")
+      .then((r) => r);
+  },
   getResultId: () => {
     return Game.findOne({ room: "Avalon" })
       .select({ resultId: 1, playersList: 1 })

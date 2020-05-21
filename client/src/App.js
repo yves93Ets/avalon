@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import "./App.css";
 import { useRoutes } from "hookrouter";
-import AvalonLogin from "./comoponents/AvalonLogin";
+import AvalonRoom from "./comoponents/AvalonRoom";
 import AvalonApp from "./comoponents/AvalonApp";
 import AvalonAdmin from "./comoponents/AvalonAdmin";
 import AvalonNavigation from "./comoponents/AvalonNavigation";
@@ -22,7 +22,7 @@ export default function App() {
   }, [username, setUsername]);
 
   const routes = {
-    "/": () => <AvalonLogin />,
+    "/": () => <AvalonRoom />,
     "/vote": () => <AvalonApp />,
     "/admin": () => <AvalonAdmin />,
     "/rules": () => <AvalonRules />,
@@ -33,7 +33,7 @@ export default function App() {
   return (
     <div>
       {username === "" || username === "undefined" ? (
-        <AvalonLogin />
+        <AvalonRoom />
       ) : (
         <div>
           <AvalonNavigation />

@@ -18,10 +18,6 @@ const PlayerList = () => {
     socket.emit("player-list");
   };
 
-  const handleDelete = (e, name) => {
-    console.log(1111, name);
-    socket.emit("delete-name", name);
-  };
   return (
     <Modal
       trigger={
@@ -53,7 +49,3 @@ const PlayerList = () => {
 };
 
 export default PlayerList;
-
-const myStyle = {
-  margin: "10px",
-};

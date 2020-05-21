@@ -10,6 +10,7 @@ const gameSchema = new mongoose.Schema({
   resultId: String,
   showResults: { type: Boolean, default: false },
   expires: Date,
+  owner: String,
 });
 
 module.exports = mongoose.model("Game", gameSchema);
