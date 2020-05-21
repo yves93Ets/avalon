@@ -1,10 +1,9 @@
 import React, { useState, useContext } from "react";
-import { Form, Input, Grid, Header, Image, Button } from "semantic-ui-react";
+import { Form, Input, Grid, Header, Button } from "semantic-ui-react";
 import { UserContext, SocketContext } from "../../context";
-import merlinSrc from "../../images/Merlin.jpg";
 import { useTitle } from "hookrouter";
 
-export default function Login() {
+export default function Login({ roomName }) {
   const [username, setUsername] = useContext(UserContext);
   const [name, setName] = useState("");
   const socket = useContext(SocketContext);
@@ -25,39 +24,37 @@ export default function Login() {
 
   const handleChange = (e, { value }) => setName(value);
   return (
-    <Grid textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
-      <Grid.Column style={{ maxWidth: 450 }}>
-        <Image centered size="small" src={merlinSrc} />
-        <Header as="h2" className="card-blue-header" textAlign="center">
-          Choose a player name
-        </Header>
-        <Grid.Row centered>
-          <Form onSubmit={handleSubmit} style={cardStyle}>
-            <Form.Field required>
-              <label>User name</label>
-              <Input
-                fluid
-                icon="user"
-                iconPosition="left"
-                placeholder="User name"
-                value={name}
-                onChange={handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <Button
-                fluid
-                className="bg-good"
-                content={username === "" ? "Login" : "Rename"}
-              />
-            </Form.Field>
-          </Form>
-        </Grid.Row>
-      </Grid.Column>
-    </Grid>
+    <Grid.Row centered style={style}>
+      <Header as="h2" className="card-blue-header" textAlign="center">
+        {roomName}
+      </Header>
+      <Form onSubmit={handleSubmit} style={cardStyle}>
+        <Form.Field required>
+          <Input
+            fluid
+            icon="user"
+            iconPosition="left"
+            placeholder="User name"
+            value={name}
+            onChange={handleChange}
+          />
+        </Form.Field>
+        <Form.Field>
+          <Button
+            fluid
+            className="bg-good"
+            content={username === "" ? "Login" : "Rename"}
+          />
+        </Form.Field>
+      </Form>
+    </Grid.Row>
   );
 }
 
 const cardStyle = {
   margin: "10px",
+};
+
+const style = {
+  marginTop: "50px",
 };
