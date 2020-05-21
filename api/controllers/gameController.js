@@ -9,11 +9,23 @@ module.exports = {
   },
 
   addPlayer: (name) => {
-    Game.updateOne({ room: "Avalon" }, { $push: { playersList: name } }).exec();
+    Game.findOne({ room: "Avalon", playersList: { $in: [name] } })
+      .select("_id")
+      .then((g) => {
+        if (!g) {
+          Game.updateOne(
+            { room: "Avalon" },
+            { $push: { playersList: name } }
+          ).exec();
+        }
+      });
   },
 
   removePlayer: (name) => {
-    Game.updateOne({ room: "Avalon" }, { $pull: { playersList: name } }).exec();
+    Game.updateOne(
+      { room: "Avalon" },
+      { $pull: { playersList: { $in: [name] } } }
+    ).exec();
   },
 
   updatePlayer: (newName, oldName) => {

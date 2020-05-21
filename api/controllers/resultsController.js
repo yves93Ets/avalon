@@ -2,35 +2,59 @@ const Result = require("../models/resultsModel");
 const { shuffle } = require("../../utilities");
 const uuid = require("uuid");
 module.exports = {
-  createResult: (finishesAt) => {
+  createResult: (playerToChoose, finishesAt) => {
     const newResult = {
       round: 1,
       expires: new Date().getTime(),
       _id: uuid.v1(),
       finishesAt,
+      playerToChoose,
     };
-    return Result.insertMany(newResult)
-      .then((r) => {
-        return r;
-      })
-      .catch((e) => console.log("error", e));
+    return Result.insertMany(newResult).catch((e) => console.log("error", e));
   },
 
-  addResults: (votes, voters, round, finishesAt, _id) => {
+  addResults: (votes, voters, finishesAt, _id, playersList) => {
     Result.findOne({ _id })
       .select({
         playerTurn: 1,
       })
       .then((d) => {
+        // TODO remove playerList
+        // const length = playersList.length;
+        //const pos = d.playerTurn % length;
+        //console.log(2222, pos);
+
         Result.updateOne(
           { _id },
           {
-            $push: { votersList: voters, voteResultList: votes },
-            round: round + 1,
+            $push: { votersList: shuffle(voters), voteResultList: votes },
+            $inc: { round: 1 },
             finishesAt,
-            playerTurn: d.playerTurn + 1,
+            //  playerToChoose: playersList[pos],
           }
         ).exec();
+      });
+  },
+
+  getVfmCount: (_id) => {
+    return Result.findOne({ _id })
+      .select({
+        playerTurn: 1,
+        round: 1,
+        playerToChoose: 1,
+      })
+      .then((d) => {
+        return !d
+          ? null
+          : Result.findOne({
+              _id,
+              votesForMission: {
+                // returning all
+                $elemMatch: { round: d.round },
+              },
+            }).then((r) => {
+              return r ? r : d;
+            });
       });
   },
 
@@ -47,6 +71,14 @@ module.exports = {
       .select("round")
       .then((r) => {
         return r === null ? 1 : r.round;
+      });
+  },
+
+  getMissionNames: (_id) => {
+    return Result.findOne({ _id })
+      .select("missionNames")
+      .then((r) => {
+        return r === null ? 1 : r.missionNames;
       });
   },
 
@@ -73,18 +105,50 @@ module.exports = {
       });
   },
 
-  addPlayerTurn: (_id, length) => {
+  addMissionChoices: (_id, missionNames) => {
+    Result.updateOne(
+      { _id },
+      {
+        missionNames,
+      }
+    ).exec();
+  },
+
+  addPlayerTurn: (_id, finishesAt, playersList, selectedNames, selector) => {
     Result.findOne({ _id })
       .select({
         playerTurn: 1,
         round: 1,
       })
       .then((d) => {
+        const length = playersList.length;
+        const pos = d.playerTurn % length;
         Result.updateOne(
           { _id },
-          { $set: { playerTurn: length > d.playerTurn ? d.playerTurn + 1 : 1 } }
+          {
+            $set: { playerTurn: d.playerTurn + 1 },
+            finishesAt,
+            playerToChoose: playersList[pos],
+            $push: {
+              selectedNames: {
+                selectedNames,
+                selector,
+                round: d.round,
+                playerTurn: d.playerTurn,
+              },
+            },
+          }
         ).exec();
       });
+  },
+
+  getAcceptanceVotes: (_id) => {
+    return Result.findOne({ _id }).select({
+      playerTurn: 1,
+      round: 1,
+      votesForMission: 1,
+      selectedNames: 1,
+    });
   },
 
   get: (id) => {
@@ -103,7 +167,7 @@ module.exports = {
       });
   },
 
-  deleteLastRound: (_id, round) => {
+  deleteLastRound: (_id, round, playersList) => {
     round++;
     return Result.findOne({ _id })
       .select("votesForMission")
@@ -112,19 +176,24 @@ module.exports = {
           .filter((r) => r.round === round)
           .reduce((p, n) => (p.playerTurn < n.playerTurn ? p : n));
 
+        const length = playersList.length;
+        const pos = pt.playerTurn % length;
         Result.updateOne(
           { _id },
           {
-            $pop: { voteResultList: 1, votersList: 1 },
+            $pop: { voteResultList: 1, votersList: 1, selectedNames: 1 },
             round: round,
             $pull: { votesForMission: { round: round } },
             playerTurn: pt.playerTurn,
+            playerToChoose: playersList[pos],
           }
         ).exec();
       });
   },
 
-  deleteLastVoteFormission: (_id, playerTurn, round) => {
+  deleteLastVoteFormission: (_id, playerTurn, round, playersList) => {
+    const length = playersList.length;
+    const pos = (playerTurn % length) - 1;
     Result.updateOne(
       { _id },
       {
@@ -132,6 +201,7 @@ module.exports = {
           votesForMission: { playerTurn: playerTurn, round },
         },
         playerTurn: playerTurn,
+        playerToChoose: playersList[pos],
       }
     ).exec();
   },

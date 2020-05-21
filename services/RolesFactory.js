@@ -1,7 +1,10 @@
 function RolesCreator(charactere, username) {
-  this.charactere = charactere;
+  this.charactere = {
+    name: charactere.name.toLowerCase(),
+    description: charactere.description,
+  };
   this.username = username;
-  this.group = getGroup(this.charactere);
+  this.group = getGroup(this.charactere.name);
   this.knowledge = [];
 }
 
@@ -22,7 +25,7 @@ function setKnowledge(group, username, characteresArray) {
     case "merlin":
       characteresArray.map((a) => {
         if (
-          (a.group === "mordred" && a.charactere !== "mordred") ||
+          (a.group === "mordred" && a.charactere.name !== "mordred") ||
           a.group === "oberon"
         ) {
           knowledge.push(a.username);
@@ -31,7 +34,7 @@ function setKnowledge(group, username, characteresArray) {
       break;
     case "percival":
       characteresArray.map((a) => {
-        if (a.charactere === "merlin" || a.charactere === "morgana") {
+        if (a.charactere.name === "merlin" || a.charactere.name === "morgana") {
           knowledge.push(a.username);
         }
       });

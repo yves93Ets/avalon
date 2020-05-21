@@ -66,12 +66,13 @@ export default function AvalonNavigation() {
           active={active === "Vote"}
           onClick={handleItemClick}
         />
-        <Menu.Item
-          disabled={username === "David" || username === "Yves" ? false : true}
-          name="Admin"
-          active={active === "Admin"}
-          onClick={handleItemClick}
-        />
+        {username === "David" && (
+          <Menu.Item
+            name="Admin"
+            active={active === "Admin"}
+            onClick={handleItemClick}
+          />
+        )}
         <Menu.Item
           name="Rules"
           active={active === "Rules"}
@@ -84,7 +85,7 @@ export default function AvalonNavigation() {
         />
         <CountdownCircleTimer visible={visible} seconds={seconds} />
         <Menu.Menu position="right">
-          <Dropdown item text={username}>
+          <Dropdown item text={username} icon="setting">
             <Dropdown.Menu>
               <Dropdown.Item
                 icon="user"

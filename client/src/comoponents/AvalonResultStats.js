@@ -8,10 +8,12 @@ export default function AvalonResults() {
 
   const [voters, setVoters] = useState([[]]);
   const [votes, setVotes] = useState([[]]);
+  const [selectedNames, setSelecteNames] = useState([[]]);
   const [votesForMission, setVotesForMission] = useState([[]]);
+  const [id, setId] = useState();
+  const [currentTurn, setCurentTurn] = useState(1);
   const socket = useContext(SocketContext);
   const [username] = useContext(UserContext);
-  const [id, setId] = useState();
 
   useEffect(() => {
     socket.emit("game-results");
@@ -20,12 +22,16 @@ export default function AvalonResults() {
       setVotes(results.voteResultList);
       setId(results._id);
       setVotesForMission(vfm);
+      setCurentTurn(results.playerTurn);
+      setSelecteNames(results.selectedNames);
     });
   }, [socket]);
 
   const handleDelete = (e, value) => {
     socket.emit("delete-round", value.value, id);
-    socket.emit("game-results");
+    setTimeout(() => {
+      socket.emit("game-results");
+    }, 200);
   };
 
   return (
@@ -41,12 +47,11 @@ export default function AvalonResults() {
           <Table.HeaderCell>Round</Table.HeaderCell>
           <Table.HeaderCell>Names</Table.HeaderCell>
           <Table.HeaderCell>Results</Table.HeaderCell>
-          {votesForMission.length <= 0 ? null : (
-            <Table.HeaderCell>Votes for mission</Table.HeaderCell>
-          )}
+          <Table.HeaderCell>Votes for mission</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
-      {voters.length === 0 ? (
+
+      {votesForMission.length === 0 ? (
         <Table.Body>
           <Table.Row></Table.Row>
         </Table.Body>
@@ -57,7 +62,7 @@ export default function AvalonResults() {
               <Table.Row key={index}>
                 <Table.Cell>
                   <Header as="h2" textAlign="center">
-                    {index + 1}{" "}
+                    {index + 1}
                   </Header>
                 </Table.Cell>
                 <Table.Cell>
@@ -75,35 +80,35 @@ export default function AvalonResults() {
                 </Table.Cell>
                 <Table.Cell>
                   <List>
-                    {voters.length === index
-                      ? null
-                      : voters[index].map((v, i) => {
-                          return <List.Item key={i}>{v}</List.Item>;
-                        })}
+                    {voters.length !== index &&
+                      voters[index].map((v, i) => {
+                        return <List.Item key={i}>{v}</List.Item>;
+                      })}
                     {username === "David" &&
-                    index === votesForMission.length - 1 ? (
-                      <Button
-                        color="red"
-                        basic
-                        icon
-                        value={index}
-                        onClick={handleDelete}
-                      >
-                        <Icon name="trash" circular fitted size="small" />
-                      </Button>
-                    ) : null}
+                      index === votesForMission.length - 1 && (
+                        <Button
+                          color="red"
+                          basic
+                          icon
+                          value={index}
+                          onClick={handleDelete}
+                        >
+                          <Icon name="trash" circular fitted size="small" />
+                        </Button>
+                      )}
                   </List>
                 </Table.Cell>
-
-                {votesForMission.length > 0 ? (
+                {votesForMission.length > 0 && (
                   <Table.Cell>
                     <AvalonResultsVotesForMissionList
-                      votesForMission={votesForMission[index]}
+                      votesForMission={vfm}
                       round={index}
                       last={index === votesForMission.length - 1}
+                      turn={currentTurn}
+                      selectedNames={selectedNames}
                     />
                   </Table.Cell>
-                ) : null}
+                )}
               </Table.Row>
             );
           })}

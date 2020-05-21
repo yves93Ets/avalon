@@ -8,6 +8,8 @@ const {
   setFinishTime,
   getSecondsLeft,
   convertToMultipleArray,
+  calculateVotes,
+  getSelectedNamesByTurn,
 } = require("./utilities");
 
 const { emptyUsersList } = require("./services/userService");
@@ -46,13 +48,17 @@ const ioWorker = (server) => {
             votes.push(v.vote);
             names.push(v.username);
           });
-          resultsController.addResults(
-            shuffle(votes),
-            shuffle(names),
-            round,
-            setFinishTime(),
-            id
-          );
+
+          const playersCallback = gameController.getPlayersAndResultId();
+          playersCallback.then((pList) => {
+            resultsController.addResults(
+              shuffle(votes),
+              names,
+              setFinishTime(),
+              id,
+              pList.playersList
+            );
+          });
         });
       }
       gameController.setVoteAndRound(isVisible, round);
@@ -86,17 +92,19 @@ const ioWorker = (server) => {
     });
 
     socket.on("delete-round", (round, id) => {
-      resultsController.deleteLastRound(id, round);
-      const resultsCb = resultsController.get(id);
-
-      resultsCb.then((c) => {
-        if (c !== null) {
-          io.emit(
-            "game-results",
-            c,
-            convertToMultipleArray(c.votesForMission, c.round)
-          );
-        }
+      const playersCallback = gameController.getPlayersAndResultId();
+      playersCallback.then((pl) => {
+        resultsController.deleteLastRound(id, round, pl.playersList);
+        const resultsCb = resultsController.get(id);
+        resultsCb.then((c) => {
+          if (c !== null) {
+            io.emit(
+              "game-results",
+              c,
+              convertToMultipleArray(c.votesForMission, c.round)
+            );
+          }
+        });
       });
     });
 
@@ -107,7 +115,8 @@ const ioWorker = (server) => {
         resultsController.deleteLastVoteFormission(
           r.resultId,
           vfm.playerTurn,
-          vfm.round
+          vfm.round,
+          r.playersList
         );
 
         const resultsCb = resultsController.get(r.resultId);
@@ -129,7 +138,9 @@ const ioWorker = (server) => {
         const resultsCb = resultsController.getTimeLeft(r.resultId);
 
         resultsCb.then((c) => {
-          io.emit("started", getSecondsLeft(c.finishesAt));
+          if (c) {
+            io.emit("started", getSecondsLeft(c.finishesAt));
+          }
         });
       });
     });
@@ -168,14 +179,27 @@ const ioWorker = (server) => {
       socket.broadcast.emit("submit-count", count);
     });
 
+    socket.on("players-mission", () => {
+      socket.broadcast.emit("submit-count");
+    });
+
+    socket.on("get-secret-vote", () => {
+      socket.broadcast.emit("secret-vote");
+    });
+
     socket.on("distribute", (roles, names) => {
       io.emit("clear-show-results", false);
       const lastGameListCB = gameController.getDistributionList();
       lastGameListCB.then((gList) => {
         const distributionList = distributeRoles(names, roles, gList);
-        roles = roles.map((r) => r.toLowerCase());
+        roles = roles.map((r) => r.name.toLowerCase());
         names = shuffle(names);
-        const resultIdCb = resultsController.createResult(setFinishTime());
+
+        const resultIdCb = resultsController.createResult(
+          names[0],
+          setFinishTime()
+        );
+
         resultIdCb.then((r) => {
           gameController.newGame({
             names,
@@ -183,6 +207,7 @@ const ioWorker = (server) => {
             roles,
             resultId: r[0].id,
           });
+
           io.emit("roles", distributionList);
           io.emit("result-id", r[0].id, r[0].round);
         });
@@ -197,6 +222,42 @@ const ioWorker = (server) => {
       });
     });
 
+    socket.on("set-secret-vote", (goToSecretVote) => {
+      io.emit("secret-vote", goToSecretVote);
+    });
+
+    socket.on("mission-vote-count", () => {
+      /// accept vote count
+      const idCb = gameController.getResultId();
+      idCb.then((g) => {
+        const resultCb = resultsController.getVfmCount(g.resultId);
+        resultCb.then((v) => {
+          if (!v) return;
+          if (v.votesForMission) {
+            count = v.votesForMission.filter((vfm) => {
+              return vfm.playerTurn === v.playerTurn && vfm.round === v.round;
+            }).length;
+
+            io.emit(
+              "mission-vote-count",
+              count,
+              g.playersList,
+              v.playerToChoose,
+              v.round
+            );
+          } else {
+            io.emit(
+              "mission-vote-count",
+              0,
+              g.playersList,
+              v.playerToChoose,
+              v.round
+            );
+          }
+        });
+      });
+    });
+
     socket.on("accept-mission", (username, vote) => {
       const idCb = gameController.getResultId();
       idCb.then((r) => {
@@ -204,10 +265,50 @@ const ioWorker = (server) => {
       });
     });
 
-    socket.on("show-accept-mission", () => {
+    socket.on("get-mission-choices", (names) => {
       const idCb = gameController.getResultId();
       idCb.then((r) => {
-        resultsController.addPlayerTurn(r.resultId, r.playersList.length);
+        const rcb = resultsController.getMissionNames(r.resultId);
+        rcb.then((n) => {
+          io.emit("mission-choices-names", n);
+        });
+      });
+    });
+
+    socket.on("mission-choices", (names) => {
+      const idCb = gameController.getResultId();
+      idCb.then((r) => {
+        resultsController.addMissionChoices(r.resultId, names);
+      });
+      io.emit("mission-choices-names", names);
+    });
+
+    socket.on("check-acceptance-votes", (selectedNames) => {
+      const idCb = gameController.getResultId();
+      idCb.then((r) => {
+        const av = resultsController.getAcceptanceVotes(r.resultId);
+        av.then((d) => {
+          const passed = calculateVotes(d);
+          if (selectedNames.length === 0) {
+            selectedNames = getSelectedNamesByTurn(d);
+          }
+
+          io.emit("acceptance-votes-results", selectedNames);
+          io.emit("secret-vote", passed);
+        });
+      });
+    });
+
+    socket.on("show-accept-mission", (selectedNames, selector) => {
+      const idCb = gameController.getResultId();
+      idCb.then((r) => {
+        resultsController.addPlayerTurn(
+          r.resultId,
+          setFinishTime(),
+          r.playersList,
+          selectedNames,
+          selector
+        );
       });
     });
 

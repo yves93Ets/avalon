@@ -64,7 +64,8 @@
   color: #8e4a4b !important;
 }
 
-.card-blue-header {
+.card-blue-header,
+.turn {
   color: #4882b4 !important;
 }
 
@@ -77,6 +78,12 @@
 .users,
 .good {
   color: #4882b4;
+}
+
+.normal {
+  margin-top: 10px !important;
+  color: black;
+  font-weight: bold;
 }
 
 .bg-good {

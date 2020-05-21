@@ -8,11 +8,10 @@ const distributeRoles = (names, roles, lastGameList) => {
     const array = shuffle(roles).map((r, index) => {
       return { charactere: r, username: names[index] };
     });
+
     var characteresArray = [];
     array.map((a) => {
-      characteresArray.push(
-        RolesFactory.create(a.charactere.toLowerCase(), a.username)
-      );
+      characteresArray.push(RolesFactory.create(a.charactere, a.username));
     });
 
     matches = RolesFactory.verifyRoles(characteresArray, lastGameList);
