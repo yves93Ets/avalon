@@ -26,8 +26,11 @@ const ioWorker = (server) => {
     });
 
     socket.on("login", (name) => {
-      socket.username = name;
       gameController.addPlayer(name);
+    });
+
+    socket.on("create-room", (owner, name) => {
+      gameController.createGamRoom(owner, name);
     });
 
     socket.on("get-rooms", () => {
