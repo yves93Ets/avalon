@@ -6,7 +6,7 @@ import { SocketContext } from "../../context";
 import merlinSrc from "../../images/Merlin.jpg";
 
 export default function Room() {
-  const [rooms, setRooms] = useState(["avalon", "avalon2"]);
+  const [rooms, setRooms] = useState([]);
   const socket = useContext(SocketContext);
   const [roomName, setRoomName] = useState("");
   const [isjoinRoom, setIsjoinRoom] = useState(false);
@@ -67,18 +67,18 @@ export default function Room() {
             >
               Join Room
             </Button>
-            {rooms.map((r, i) => {
+            {rooms.map((r) => {
               return (
                 <Button
-                  key={i}
+                  key={r.id}
                   onClick={handleSelectRoom}
                   style={style}
                   circular
                   className="bg-evil"
                   type="submit"
-                  value={r}
+                  value={r.room}
                 >
-                  {r}
+                  {r.room}
                 </Button>
               );
             })}

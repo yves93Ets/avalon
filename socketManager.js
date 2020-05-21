@@ -30,6 +30,15 @@ const ioWorker = (server) => {
       gameController.addPlayer(name);
     });
 
+    socket.on("get-rooms", () => {
+      const id = socket.id;
+
+      const rcb = gameController.getRooms();
+      rcb.then((r) => {
+        io.to(id).emit("rooms", r);
+      });
+    });
+
     socket.on("rename", (newName, oldName) => {
       gameController.updatePlayer(newName, oldName);
     });
