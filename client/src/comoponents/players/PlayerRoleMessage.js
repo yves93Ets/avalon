@@ -35,19 +35,21 @@ const PlayerRoleMessage = (props) => {
     <>
       {isVisible && role ? (
         <Message onDismiss={handleDismiss} floating size="small">
-          <Message.Content style={contentStyle}>
-            You are
-            <p
-              className={
-                role.group === "mordred" || role.group === "oberon"
-                  ? "evil"
-                  : "good"
-              }
-              style={pStyle}
-            >
-              {role.charactere.name}
-            </p>
-            {role.charactere.description}
+          <Message.Content>
+            <div style={contentStyle}>
+              You are
+              <p
+                className={
+                  role.group === "mordred" || role.group === "oberon"
+                    ? "evil"
+                    : "good"
+                }
+                style={pStyle}
+              >
+                {role.charactere.name}
+              </p>
+              {role.charactere.description}
+            </div>
           </Message.Content>
           <Message.List style={ListStyle}>
             {role.knowledge.map((k) => (
@@ -63,7 +65,7 @@ const PlayerRoleMessage = (props) => {
 export default PlayerRoleMessage;
 
 const contentStyle = {
-  display: "flex",
+  display: "block ruby",
 };
 
 const ListStyle = {

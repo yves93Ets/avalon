@@ -25,6 +25,28 @@ const getSecondsLeft = (time) => {
   return seconds > 0 ? seconds : 0;
 };
 
+const calculateVotes = ({ votesForMission, round, playerTurn }) => {
+  const votes = votesForMission.filter((v) => {
+    return v.playerTurn === playerTurn - 1 && v.round === round;
+  });
+
+  const count = votes.length;
+  const posCount = votes.reduce((count, { vote }) => {
+    return vote ? count + 1 : count;
+  }, 0);
+
+  return posCount > count - posCount;
+};
+
+const getSelectedNamesByTurn = ({ selectedNames, playerTurn, round }) => {
+  const turn = playerTurn - 1;
+  const r = round;
+  const sn = selectedNames.find(({ playerTurn, round }) => {
+    return playerTurn === turn && round == round;
+  });
+  return sn.selectedNames;
+};
+
 const convertToMultipleArray = (array, round) => {
   const arr = [];
   for (j = 1; j <= round + 1; j++) {
@@ -52,4 +74,6 @@ module.exports = {
   setFinishTime,
   getSecondsLeft,
   convertToMultipleArray,
+  calculateVotes,
+  getSelectedNamesByTurn,
 };

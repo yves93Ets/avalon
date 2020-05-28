@@ -7,6 +7,7 @@ export default function AvalonResultsVotesForMissionList(props) {
   const [last, setLast] = useState();
   const [round, setRound] = useState(0);
   const [turn, setTurn] = useState(1);
+  const [selectedNames, setSelecteNames] = useState([[]]);
   const socket = useContext(SocketContext);
   const [username] = useContext(UserContext);
 
@@ -15,6 +16,7 @@ export default function AvalonResultsVotesForMissionList(props) {
     setLast(props.last);
     setRound(props.round);
     setTurn(props.turn);
+    setSelecteNames(props.selectedNames);
   }, [props]);
 
   const handleDelete = (e, obj) => {
@@ -29,9 +31,32 @@ export default function AvalonResultsVotesForMissionList(props) {
       vfm.round !== round + 1 || turn === vfm.playerTurn ? null : (
         <List.Item key={t} className={vfm.vote ? "good" : "evil"}>
           {`${vfm.username} : ${vfm.vote ? "Accept" : "Decline"}`}
-          {t + 1 === votesForMission.length ? null : vfm.playerTurn ===
-            votesForMission[t + 1].playerTurn ? null : (
-            <Divider />
+
+          {t + 1 === votesForMission.length ? (
+            <>
+              {selectedNames.map((sn, i) =>
+                sn.round === round + 1 && vfm.playerTurn === sn.playerTurn ? (
+                  <p className="normal" key={i}>
+                    {`${sn.selector} : ${sn.selectedNames}`}
+                  </p>
+                ) : null
+              )}
+            </>
+          ) : (
+            vfm.playerTurn !== votesForMission[t + 1].playerTurn && (
+              <>
+                {selectedNames.map(
+                  (sn, i) =>
+                    sn.round === round + 1 &&
+                    vfm.playerTurn === sn.playerTurn && (
+                      <p className="normal" key={i}>
+                        {`${sn.selector} : ${sn.selectedNames}`}
+                      </p>
+                    )
+                )}
+                <Divider />
+              </>
+            )
           )}
 
           {last === true &&

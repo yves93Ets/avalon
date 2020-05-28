@@ -7,24 +7,27 @@ import {
   Button,
   Segment,
   Icon,
+  List,
 } from "semantic-ui-react";
 import { isSuccesfullEnum } from "../const/enums";
 import { fail, succes, neutral } from "../const/constants";
 import { CountContext, SocketContext, UserContext } from "../context";
 
-export default function AvalonVoteForm() {
+export default function AvalonSecretVote(props) {
   const url = "/api/avalon";
   const socket = useContext(SocketContext);
   const [count, setCount] = useContext(CountContext);
   const [card, setCard] = useState(succes);
   const [isSubmitted, setIsSubmitted] = useState(true);
   const [username] = useContext(UserContext);
+  const [selectedNames, setSelectedNames] = useState([]);
 
   useEffect(() => {
     socket.on("submit-count", (c) => {
       setCount(c);
     });
-  }, [setCount, socket]);
+    setSelectedNames(props.names);
+  }, [setCount, socket, props]);
 
   const send = () => {
     const submitCount = count + 1;
@@ -62,34 +65,57 @@ export default function AvalonVoteForm() {
   };
 
   return (
-    <Form size="small" onSubmit={handleSubmit}>
-      <Form.Group>
-        <Card className="width" fluid centered>
-          <Image size="small" src={card.src} />
-          <Card.Header className={card.cssClass}>
-            {card.isSuccesfull === isSuccesfullEnum.FAIL
-              ? "Fail"
-              : card.isSuccesfull === isSuccesfullEnum.SUCCES
-              ? "Succes"
-              : ""}
-          </Card.Header>
-          <Card.Content extra>
-            <Checkbox
-              disabled={!isSubmitted}
-              checked={card.isSuccesfull !== 0 ? true : false}
-              toggle
-              onChange={handleCheckbox}
-            />
-            <Segment>
-              <Icon name="users" /> : {count}
-            </Segment>
-          </Card.Content>
-        </Card>
-      </Form.Group>
-      <Button disabled={!isSubmitted} style={marginStyle}>
-        Submit
-      </Button>
-    </Form>
+    <>
+      {selectedNames.includes(username) ? (
+        <Form size="small" onSubmit={handleSubmit}>
+          <Form.Group>
+            <Card className="width" fluid centered>
+              <Image size="small" src={card.src} />
+              <Card.Header className={card.cssClass}>
+                {card.isSuccesfull === isSuccesfullEnum.FAIL
+                  ? "Fail"
+                  : card.isSuccesfull === isSuccesfullEnum.SUCCES
+                  ? "Succes"
+                  : ""}
+              </Card.Header>
+              <Card.Content extra>
+                <Checkbox
+                  disabled={!isSubmitted}
+                  checked={card.isSuccesfull !== 0 ? true : false}
+                  toggle
+                  onChange={handleCheckbox}
+                />
+                <Segment>
+                  <Icon name="users" /> : {count}
+                </Segment>
+              </Card.Content>
+            </Card>
+          </Form.Group>
+          <Button disabled={!isSubmitted} style={marginStyle}>
+            Submit
+          </Button>
+        </Form>
+      ) : (
+        <Form style={marginStyle} size="small">
+          <Card centered>
+            <Card.Header>
+              <List icon="clock" items={selectedNames} />
+            </Card.Header>
+            <Card.Content>
+              Are Votin...
+              <Icon name="clock" />
+            </Card.Content>
+            {username === "David" || username === "Yves" ? (
+              <Card.Content extra>
+                <Segment>
+                  <Icon name="users" /> : {count}
+                </Segment>
+              </Card.Content>
+            ) : null}
+          </Card>
+        </Form>
+      )}
+    </>
   );
 }
 

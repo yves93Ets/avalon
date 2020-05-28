@@ -17,6 +17,11 @@ const PlayerList = () => {
   const handlePlayersListClick = () => {
     socket.emit("player-list");
   };
+
+  const handleDelete = (e, name) => {
+    console.log(1111, name);
+    socket.emit("delete-name", name);
+  };
   return (
     <Modal
       trigger={
@@ -31,7 +36,7 @@ const PlayerList = () => {
       <Modal.Content>
         <Modal.Description>
           <Step link>
-            <Step.Group fluid ordered>
+            <Step.Group fluid vertical ordered>
               {names.map((n, i) => {
                 return (
                   <Step key={i} active={i === (playerTurn - 1) % names.length}>
@@ -48,3 +53,7 @@ const PlayerList = () => {
 };
 
 export default PlayerList;
+
+const myStyle = {
+  margin: "10px",
+};

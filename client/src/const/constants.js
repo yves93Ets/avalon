@@ -17,6 +17,14 @@ import LoyalFiveSrc from "../images/Loyal-5.jpeg";
 
 import { isSuccesfullEnum } from "../const/enums";
 
+export const questNumbers = [
+  ["1st Quest", 2, 2, 2, 3, 3, 3],
+  ["2nd Quest", 3, 3, 3, 4, 4, 4],
+  ["3nd Quest", 2, 4, 3, 4, 4, 4],
+  ["4nd Quest", 3, 3, "4*", "5*", "5*", "5*"],
+  ["5nd Quest", 3, 4, 4, 5, 5, 5],
+];
+
 export const succes = {
   isSuccesfull: isSuccesfullEnum.SUCCES,
   src: successSrc,

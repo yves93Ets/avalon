@@ -76,6 +76,7 @@ export default function AvalonCharacter() {
   const setTimer = () => {
     setTimeout(() => {
       socket.emit("restart-timer");
+      socket.emit("mission-vote-count");
     }, 50);
     setTimeout(() => {
       socket.emit("view-timer");
@@ -87,6 +88,7 @@ export default function AvalonCharacter() {
 
   const handleClickShowVotes = (e) => {
     e.preventDefault();
+    socket.emit("set-secret-vote", false);
     socket.emit("clear-show-results", true, resultId, gameRound);
     setTimeout(() => {
       socket.emit("mission-vote-count");
@@ -98,21 +100,22 @@ export default function AvalonCharacter() {
     <Form className="margin" onSubmit={handleSubmit}>
       <Form.Group grouped>
         <Button
+          icon="refresh"
+          content="Show"
+          onClick={handleClickShowVotes}
+          className="bg-good "
+        ></Button>
+        <Button
           negative
           icon="trash"
           content="Clear"
           onClick={handleClickDelete}
           className="bg-evil"
         ></Button>
-        <Button
-          icon="refresh"
-          content="Show"
-          onClick={handleClickShowVotes}
-          className="bg-good "
-        ></Button>
       </Form.Group>
       <Form.Group className="margin">
         <Form.Dropdown
+          lazyLoad
           fluid
           placeholder="Characteres"
           multiple

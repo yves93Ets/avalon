@@ -25,7 +25,7 @@ function setKnowledge(group, username, characteresArray) {
     case "merlin":
       characteresArray.map((a) => {
         if (
-          (a.group === "mordred" && a.charactere !== "mordred") ||
+          (a.group === "mordred" && a.charactere.name !== "mordred") ||
           a.group === "oberon"
         ) {
           knowledge.push(a.username);
